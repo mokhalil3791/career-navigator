@@ -61,3 +61,13 @@ tests/unit/              core, AI, content      tests/e2e/     Playwright, 5 bro
 ## Status (2026-10-23)
 Phases 0–5 are implemented (see `docs/plans/`). v1 is served at `/next/` until the maintainer approves moving it
 to the root and signs off the manual checklist in `docs/RELEASE-CHECKLIST.md`. Then they tag `v1.0.0`.
+
+## Handoff: where to pick up
+- **State by requirement:** `docs/STATUS.md` (implemented / automatically tested / manually verified).
+- **Known issues:** `docs/KNOWN-ISSUES.md`. The mobile-WebKit axe flake is a WebKit computed-style defect; do not loosen the axe tests.
+- **Decisions and interpretations:** the "Implementation record" section at the end of `docs/PRD.md`, and `docs/plans/phase-*.md`.
+- **Next priority (maintainer, 2026-10-23):** no new features. Make the primary journey dominant
+  (import CV → verify facts → add one advert → review tailored draft → export), then observe five intended users.
+- **Do not:** tag `v1.0.0`, move v1 from `/next/` to the root, add runtime dependencies, or weaken `tests/guardrails/`, without the maintainer.
+- **Before any commit:** `npm test && npm run typecheck && npm run build:all && npx playwright test --project=chromium`.
+- **Branches:** work on a branch from `main` and open one PR into `main`. Do not stack PRs; stacked PRs merged into their base branches, not into `main`.
