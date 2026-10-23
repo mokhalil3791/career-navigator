@@ -197,7 +197,10 @@ export function startApp(root, options = {}) {
     if (!file) return;
     const t = ctx().t;
     try {
-      if (file.size > 1048576) throw new Error(t('This backup is larger than one MiB. Choose a smaller Career Navigator backup.'));
+      // Coach packs (.html) hold the workspace AND the rendered work pack, so they may be
+      // larger than a backup; readCoachPack() enforces their own 4 MiB limit.
+      const isHtml = /\.html?$/i.test(file.name);
+      if (file.size > (isHtml ? 4 * 1048576 : 1048576)) throw new Error(isHtml ? t('This coach pack is too large.') : t('This backup is larger than one MiB. Choose a smaller Career Navigator backup.'));
       const text = await file.text();
       if (services.importOther && (await services.importOther(file, text))) return;
       const next = parseWorkspace(text);
@@ -225,6 +228,9 @@ export function startApp(root, options = {}) {
   const app = { store, pages, services, ui, ctx, rerender, go, notify };
   for (const extend of options.extensions || []) extend(app);
   view = viewFromHash();
+  // lit-html's render() adds to the container and would leave the static
+  // "Opening Career Navigator…" placeholder from index.html on screen.
+  root.replaceChildren();
   rerender();
 
   device.loadSaved().then(({ state, message, error }) => {
