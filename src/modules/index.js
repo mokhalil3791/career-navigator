@@ -6,6 +6,8 @@
  */
 import features from '../../config/features.json';
 import { aiModule } from './ai/index.js';
+import { knowledgeModule } from './knowledge/index.js';
+import { i18nModule } from './i18n/index.js';
 
 /** @param {string} flag */
 export function enabled(flag) {
@@ -14,4 +16,6 @@ export function enabled(flag) {
 
 /** @type {((app: any) => void)[]} */
 export const extensions = [];
+extensions.push(i18nModule);
 if (enabled('builtinAi')) extensions.push(aiModule);
+if (enabled('knowledge')) extensions.push(knowledgeModule);

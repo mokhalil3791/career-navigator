@@ -15,11 +15,12 @@ export function renderHome(ctx) {
     ['cv', 'document', '03', t('Prepare with purpose'), t('Build your application and practise your interview.'), state.cv.reviewed ? t('CV reviewed') : state.cv.summary ? t('CV draft started') : t('Create a truthful draft')],
     ['plan', 'path', '04', t('Make your next move'), t('Turn one learning gap into a 90-day plan.'), state.plan.nextAction ? t('Next action recorded') : t('Choose one small step')],
   ];
-  return html`
+  return html`${ctx.services.welcome ? ctx.services.welcome(ctx) : ''}
 <section class="hero"><div class="hero-copy"><p class="eyebrow">${t('A fresh start, on your terms')}</p><h1 tabindex="-1" class="focus-heading">${t('Your experience.')}<br><em>${t('Your next step.')}</em></h1><p class="lead">${t('Build a clear profile, explore jobs in the Netherlands and prepare an application you can stand behind.')}</p><div class="actions">${goButton(ctx, profileStarted ? t('Continue my profile') : t('Start my journey'), 'profile', '')}${button(t('Try a fictional example'), () => ctx.services.loadDemo(), { style: 'secondary' })}</div></div>${heroVisual(t)}</section>
 ${progressOverview(ctx)}
 <section class="section-space"><div class="section-head"><h2>${t('Your journey, made practical')}</h2><span class="muted">${t('Start anywhere. Come back anytime.')}</span></div><div class="grid four">${steps.map((s) => html`<button type="button" class="step-card" @click=${() => ctx.go(s[0])}><div class="step-top"><span class="step-icon">${icon(s[1], 20)}</span><span class="step-num">${s[2]}</span></div><h3>${s[3]}</h3><p>${s[4]}</p><span class="step-status"><span class="dot"></span>${s[5]}</span></button>`)}</div></section>
 <section class="strip section-space"><div class="inline"><span class="icon-badge">${icon('spark', 24)}</span><div><h3>${t('A little help from AI. You stay in control.')}</h3><p>${t('Six career prompts, ready for your preferred AI chat. Review what you share and what comes back.')}</p></div></div>${goButton(ctx, html`${t('Open prompt studio')} ${icon('arrow', 16)}`, 'prompts', 'secondary')}</section>
+${ctx.services.knowledgeFor ? html`<div class="grid two section-space">${ctx.services.knowledgeFor(ctx, 'home')}</div>` : ''}
 <div class="home-mini section-space">${icon('shield', 18)}<span><strong>${t('No sign-up or payment.')}</strong> ${t('The app works on your device. AI help is optional and free.')}</span></div>`;
 }
 

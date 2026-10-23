@@ -111,6 +111,7 @@ export function startApp(root, options = {}) {
     const page = pages.find((p) => p.id === view) || pages[0];
     document.documentElement.lang = c.state.settings.uiLanguage;
     document.documentElement.dir = languageDir(c.state.settings.uiLanguage);
+    document.documentElement.classList.toggle('simple', c.state.settings.simpleLanguage);
     render(shell(c, pages.filter((p) => !p.hidden), view, page.render(c)), root);
     applyFocus();
   }

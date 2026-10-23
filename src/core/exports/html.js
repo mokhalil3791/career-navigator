@@ -26,18 +26,30 @@ export function documentHTML(title, body, lang = 'en') {
   return '<!doctype html>\n<html lang="' + escapeHTML(lang) + '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; base-uri \'none\'; form-action \'none\'"><title>' + escapeHTML(title) + '</title><style>body{font:15px/1.55 Arial,sans-serif;color:#172c35;max-width:800px;margin:36px auto;padding:0 28px}h1{font-size:32px;line-height:1.15;margin-bottom:8px}h2{font-size:19px;border-bottom:1px solid #b8c5ca;padding-bottom:5px;margin-top:26px}h3{font-size:16px;margin:20px 0 6px}p{margin:8px 0}.preserve{white-space:pre-wrap;overflow-wrap:anywhere}.muted{color:#52646b}.banner{background:#fff3d6;border:1px solid #bd8500;padding:12px}.meta{color:#52646b}.letter{break-before:page}table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}th,td{text-align:left;vertical-align:top;border:1px solid #b8c5ca;padding:8px;overflow-wrap:anywhere;white-space:pre-wrap}th{background:#edf2f2}a{color:#145a6a;overflow-wrap:anywhere}section{break-inside:auto}li{margin:6px 0}footer{border-top:1px solid #b8c5ca;margin-top:30px;padding-top:12px;color:#52646b;font-size:12px}@page{size:A4;margin:18mm}@media print{body{max-width:none;margin:0;padding:0;font-size:10.5pt}h1{font-size:24pt}h2{font-size:14pt}h2,h3{break-after:avoid}tr{break-inside:avoid}.banner{background:none}}</style></head><body>' + body + '</body></html>';
 }
 
+/** CV section headings per application language (NFR-I18N-3). English is the v0.1 text. */
+export const CV_HEADINGS = {
+  English: { cv: 'My CV', profile: 'Profile', experience: 'Experience', education: 'Education', skills: 'Skills', languages: 'Languages', letter: 'Motivation letter' },
+  Dutch: { cv: 'Mijn cv', profile: 'Profiel', experience: 'Werkervaring', education: 'Opleidingen', skills: 'Vaardigheden', languages: 'Talen', letter: 'Motivatiebrief' },
+};
+
+/** @param {any} state */
+export function cvLanguage(state) {
+  return state.settings && state.settings.applicationLanguage === 'Dutch' ? 'Dutch' : 'English';
+}
+
 /**
  * @param {any} state
  * @param {boolean} includeReview
  */
 export function cvBody(state, includeReview) {
   const cv = state.cv, p = state.profile;
+  const h = CV_HEADINGS[cvLanguage(state)];
   let body = state.demo ? '<p class="banner"><strong>FICTIONAL EXAMPLE — practice data, not a real application.</strong></p>' : '';
-  body += '<h1>' + escapeHTML(p.name || 'My CV') + '</h1>' + paragraph(cv.headline, 'meta');
+  body += '<h1>' + escapeHTML(p.name || h.cv) + '</h1>' + paragraph(cv.headline, 'meta');
   body += paragraph([p.city, p.availability].filter(Boolean).join(' · '), 'meta');
   if (includeReview) body += '<p class="banner">CV status: ' + (cv.reviewed === true ? 'marked reviewed by the user' : 'not yet reviewed — check every claim before sharing') + '.</p>';
-  body += section('Profile', cv.summary) + section('Experience', cv.experience) + section('Education', cv.education) + section('Skills', cv.skills) + section('Languages', cv.languages);
-  if (cv.letter && cv.letter.trim()) body += '<section class="letter"><h2>Motivation letter</h2>' + paragraph(cv.letter, 'preserve') + '</section>';
+  body += section(h.profile, cv.summary) + section(h.experience, cv.experience) + section(h.education, cv.education) + section(h.skills, cv.skills) + section(h.languages, cv.languages);
+  if (cv.letter && cv.letter.trim()) body += '<section class="letter"><h2>' + escapeHTML(h.letter) + '</h2>' + paragraph(cv.letter, 'preserve') + '</section>';
   return body;
 }
 
@@ -47,7 +59,7 @@ export function cvBody(state, includeReview) {
  */
 export function buildCVHTML(state) {
   if (!state || !state.cv || state.cv.reviewed !== true) throw new Error('Review every CV and letter claim, then mark the draft reviewed before exporting.');
-  return documentHTML((state.profile.name || 'My') + ' — CV', cvBody(state, false));
+  return documentHTML((state.profile.name || 'My') + ' — CV', cvBody(state, false), cvLanguage(state) === 'Dutch' ? 'nl' : 'en');
 }
 
 /**
