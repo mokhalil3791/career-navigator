@@ -109,9 +109,7 @@ export function startApp(root, options = {}) {
   function rerender() {
     const c = ctx();
     const page = pages.find((p) => p.id === view) || pages[0];
-    document.documentElement.lang = c.state.settings.uiLanguage;
-    document.documentElement.dir = languageDir(c.state.settings.uiLanguage);
-    document.documentElement.classList.toggle('simple', c.state.settings.simpleLanguage);
+    setRootAttributes(c.state.settings.uiLanguage, c.state.settings.simpleLanguage);
     render(shell(c, pages.filter((p) => !p.hidden), view, page.render(c)), root);
     applyFocus();
   }
@@ -247,6 +245,22 @@ export function startApp(root, options = {}) {
     services.afterStart?.();
   });
   return app;
+}
+
+/**
+ * Updates lang, dir and the simple-language class on <html> ONLY when they change.
+ * Rewriting them on every render invalidated the root style each keystroke, and in
+ * WebKit this sometimes left descendants with stale var(--…) values: the dark
+ * sidebar briefly computed as transparent (docs/KNOWN-ISSUES.md).
+ * @param {string} lang
+ * @param {boolean} simple
+ */
+function setRootAttributes(lang, simple) {
+  const html = document.documentElement;
+  const dir = languageDir(lang);
+  if (html.lang !== lang) html.lang = lang;
+  if (html.dir !== dir) html.dir = dir;
+  if (html.classList.contains('simple') !== simple) html.classList.toggle('simple', simple);
 }
 
 function applyBrandColours() {
