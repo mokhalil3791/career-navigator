@@ -32,9 +32,29 @@ await build({
 let html = readFileSync(join(OUT, 'index.html'), 'utf8');
 /** @param {string} s */
 const hash = (s) => "'sha256-" + createHash('sha256').update(s, 'utf8').digest('base64') + "'";
-// Case-insensitive, and tolerant of "</script >", so no inline block is missed.
-const scripts = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script\s*>/gi)].map((m) => hash(m[1]));
-const styles = [...html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style\s*>/gi)].map((m) => hash(m[1]));
+/**
+ * Contents of every inline <tag>…</tag> block, found by scanning (case-insensitive),
+ * so no inline script or style can be missed by a too-narrow pattern.
+ * @param {string} source
+ * @param {string} tag
+ */
+function blocks(source, tag) {
+  const lower = source.toLowerCase();
+  const out = [];
+  let from = 0;
+  while (true) {
+    const open = lower.indexOf('<' + tag, from);
+    if (open === -1) break;
+    const start = lower.indexOf('>', open) + 1;
+    const close = lower.indexOf('</' + tag, start);
+    if (start === 0 || close === -1) break;
+    out.push(source.slice(start, close));
+    from = lower.indexOf('>', close) + 1 || source.length;
+  }
+  return out;
+}
+const scripts = blocks(html, 'script').map(hash);
+const styles = blocks(html, 'style').map(hash);
 const csp = [
   "default-src 'none'",
   `script-src ${scripts.join(' ')}`,
