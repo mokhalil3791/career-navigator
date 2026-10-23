@@ -1,0 +1,43 @@
+{
+  "title": "Evidence suggestions per requirement",
+  "type": "object",
+  "required": [
+    "suggestions"
+  ],
+  "properties": {
+    "suggestions": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "supported",
+              "partial",
+              "missing",
+              "unknown"
+            ]
+          },
+          "quote": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      }
+    }
+  }
+}
