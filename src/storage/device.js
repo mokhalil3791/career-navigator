@@ -47,13 +47,21 @@ async function tx(mode, run, storeName = STORE) {
 
 /**
  * Loads the saved workspace, if the user had device saving on.
- * Also picks up a v0.1 save from localStorage once, then deletes it.
- * @returns {Promise<{ state: import('../core/schema.js').Workspace | null, message: string }>}
+ * Also picks up a v0.1 save from localStorage. The old copy is deleted ONLY after
+ * the new copy was saved successfully, so a failed move never loses the user's work.
+ * @returns {Promise<{ state: import('../core/schema.js').Workspace | null, message: string, error?: boolean }>}
  */
 export async function loadSaved() {
   const legacy = readLegacy();
   if (legacy) {
-    await save(legacy).catch(() => {});
+    try {
+      await save(legacy);
+    } catch (_) {
+      // Keep the v0.1 copy where it is; this session works without device saving.
+      legacy.settings.remember = false;
+      return { state: legacy, error: true, message: 'Your saved v0.1 workspace is open, but this browser did not let it be moved to the new storage. Your original saved copy has been kept. Download a backup to be safe.' };
+    }
+    removeLegacy();
     return { state: legacy, message: 'Your saved v0.1 workspace was moved to the new version.' };
   }
   const raw = await tx('readonly', (s) => s.get(KEY));
@@ -63,17 +71,25 @@ export async function loadSaved() {
   return { state, message: 'Your saved workspace is open.' };
 }
 
-/** v0.1 kept data only when remember was true; otherwise it removed the key (same here). */
+/**
+ * Reads the v0.1 save without deleting it. A v0.1 copy without "remember" was not
+ * meant to be kept, so it is removed (the same rule v0.1 used). An unreadable copy is left alone.
+ */
 function readLegacy() {
+  let stored;
+  try { stored = globalThis.localStorage?.getItem(LEGACY_KEY); } catch (_) { return null; }
+  if (!stored) return null;
   try {
-    const stored = globalThis.localStorage?.getItem(LEGACY_KEY);
-    if (!stored) return null;
-    globalThis.localStorage.removeItem(LEGACY_KEY);
     const state = normalizeWorkspace(migrate(JSON.parse(stored)));
-    return state.settings.remember ? state : null;
+    if (!state.settings.remember) { removeLegacy(); return null; }
+    return state;
   } catch (_) {
     return null;
   }
+}
+
+function removeLegacy() {
+  try { globalThis.localStorage?.removeItem(LEGACY_KEY); } catch (_) { /* storage blocked */ }
 }
 
 /** @param {import('../core/schema.js').Workspace} state */
@@ -89,17 +105,31 @@ export async function clearSaved() {
 }
 
 /**
- * "Delete everything" (NFR-SEC-5): the database (workspace and any saved API keys),
- * legacy localStorage, and every Cache Storage entry this app created.
+ * Cache Storage names this app owns: our app-shell caches (src/sw.js) and the
+ * caches the in-browser model library creates for downloaded models ("webllm/…").
+ * @param {string} name
+ */
+export function isOwnCache(name) {
+  return name.startsWith('career-navigator-') || name.startsWith('webllm/');
+}
+
+/**
+ * "Delete everything" (NFR-SEC-5): our database (workspace and any saved API keys),
+ * our legacy localStorage key and our caches. ONLY what this app owns: on GitHub
+ * Pages other projects share the same origin, and their data must not be touched.
  */
 export async function deleteEverything() {
-  try { globalThis.localStorage?.clear(); globalThis.sessionStorage?.clear(); } catch (_) { /* storage blocked */ }
+  removeLegacy();
+  try {
+    const session = globalThis.sessionStorage;
+    if (session) for (const key of Object.keys(session)) if (key.startsWith('career-navigator')) session.removeItem(key);
+  } catch (_) { /* storage blocked */ }
   await new Promise((resolve) => {
     if (!globalThis.indexedDB) { resolve(null); return; }
     const request = indexedDB.deleteDatabase(DB_NAME);
     request.onsuccess = request.onerror = request.onblocked = () => resolve(null);
   });
-  if (globalThis.caches) for (const name of await caches.keys()) await caches.delete(name);
+  if (globalThis.caches) for (const name of await caches.keys()) if (isOwnCache(name)) await caches.delete(name);
 }
 
 /** Small key/value helpers for other opt-in data (e.g. a saved API key). */

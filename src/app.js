@@ -227,8 +227,12 @@ export function startApp(root, options = {}) {
   view = viewFromHash();
   rerender();
 
-  device.loadSaved().then(({ state, message }) => {
-    if (state) { store.dispatch({ type: 'replace', state }); notify(ctx().t(message)); }
+  device.loadSaved().then(({ state, message, error }) => {
+    if (state) {
+      store.dispatch({ type: 'replace', state });
+      if (error) ui.storageError = ctx().t('Device save failed — download a backup');
+      notify(ctx().t(message), Boolean(error));
+    }
     services.afterStart?.();
   }).catch(() => {
     ui.storageError = ctx().t('Saved data unavailable — import a backup if needed');
