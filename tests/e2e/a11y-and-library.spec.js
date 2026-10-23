@@ -1,7 +1,9 @@
 // @ts-check
 // NFR-A11Y-2: axe-core on every page (empty and demo). FR-LIB: prompt library page.
 import AxeBuilder from '@axe-core/playwright';
-import { test, expect, openApp } from './fixtures.js';
+import { test, expect, openApp, loadDemo } from './fixtures.js';
+// Axe measures colours; transitions (toast, hover lift) can give false contrast results mid-animation.
+test.use({ reducedMotion: 'reduce' });
 
 const PAGES = ['home', 'profile', 'jobs', 'cv', 'interview', 'plan', 'prompts'];
 
@@ -14,7 +16,7 @@ async function seriousViolations(page) {
 for (const demo of [false, true]) {
   test(`axe: no serious issues on any page (${demo ? 'demo' : 'empty'})`, async ({ page }) => {
     await openApp(page);
-    if (demo) await page.getByRole('button', { name: 'Try a fictional example' }).click();
+    if (demo) await loadDemo(page);
     for (const id of PAGES) {
       await page.goto('./#/' + id);
       await expect(page.locator('h1')).toBeVisible();

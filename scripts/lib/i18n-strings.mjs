@@ -38,5 +38,10 @@ export function extractStrings() {
   seen.add('Independent tool. No employer or partner endorsement implied.');
   // Application-language options, translated through t(l).
   seen.add('English'); seen.add('Dutch');
+  // Constants translated through t(constant): stage labels, the coach-file warning, question-pack titles.
+  for (const s of ['Saved', 'Applied', 'Interview', 'Offer', 'Rejected', 'Withdrawn']) seen.add(s);
+  seen.add('This file contains personal details. Share it only with people you trust, and delete it when you no longer need it.');
+  for (const f of readdirSync(join(ROOT, 'content', 'interview'))) seen.add(JSON.parse(readFileSync(join(ROOT, 'content', 'interview', f), 'utf8')).title);
+  seen.delete('');
   return [...seen];
 }

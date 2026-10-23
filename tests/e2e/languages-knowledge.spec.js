@@ -2,7 +2,9 @@
 // Phase 3: journey 4 (Dutch interface), onboarding, knowledge cards, axe in English and Dutch.
 import AxeBuilder from '@axe-core/playwright';
 import { readFileSync } from 'node:fs';
-import { test, expect, openApp } from './fixtures.js';
+import { test, expect, openApp, loadDemo } from './fixtures.js';
+// Axe measures colours; transitions (toast, hover lift) can give false contrast results mid-animation.
+test.use({ reducedMotion: 'reduce' });
 
 test('onboarding: language → example or own → AI mode, with privacy before data entry (FR-ONB-1/2)', async ({ page }) => {
   await openApp(page);
@@ -70,7 +72,7 @@ for (const lang of ['en', 'nl']) {
   test(`axe: no serious issues on every page in ${lang === 'en' ? 'English' : 'Dutch'} (NFR-A11Y-2)`, async ({ page }) => {
     await openApp(page);
     await page.locator('#ui-language').selectOption(lang);
-    await page.getByRole('button', { name: lang === 'en' ? 'Try a fictional example' : 'Probeer een fictief voorbeeld' }).click();
+    await loadDemo(page, lang === 'en' ? 'Try a fictional example' : 'Probeer een fictief voorbeeld');
     for (const id of ['home', 'profile', 'jobs', 'cv', 'interview', 'plan', 'prompts', 'learn']) {
       await page.goto('./#/' + id);
       await expect(page.locator('h1')).toBeVisible();

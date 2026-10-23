@@ -55,3 +55,11 @@ progress{inline-size:100%;block-size:10px;accent-color:var(--teal)}
 .simple .source-note,.simple .field-hint,.simple .card-sub+.card-sub{display:none}
 /* WCAG 2.2 target size: every disclosure summary is at least 44px tall. */
 .details summary,.privacy-drawer summary,.connect-card summary{min-block-size:44px;display:flex;align-items:center;gap:6px}
+/* Phase 4: profile rows, applications, coach */
+.subform{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:0}
+.subform legend{font-weight:650;font-size:.84rem;padding:0 6px}
+.row-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;align-items:end;padding-block:8px;border-block-end:1px dashed var(--line)}
+.application .card-head{align-items:center}
+.coach-notes blockquote{margin:10px 0;padding:10px 14px;background:#fff;border-inline-start:3px solid var(--teal);border-radius:8px}
+.coach-note{margin-block-start:12px}
+.pack-picker{max-inline-size:420px}

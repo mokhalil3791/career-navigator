@@ -8,6 +8,9 @@ import features from '../../config/features.json';
 import { aiModule } from './ai/index.js';
 import { knowledgeModule } from './knowledge/index.js';
 import { i18nModule } from './i18n/index.js';
+import { applicationsModule } from './applications/index.js';
+import { profilePlusModule } from './profile-plus/index.js';
+import { coachModule } from './coach/index.js';
 
 /** @param {string} flag */
 export function enabled(flag) {
@@ -19,3 +22,6 @@ export const extensions = [];
 extensions.push(i18nModule);
 if (enabled('builtinAi')) extensions.push(aiModule);
 if (enabled('knowledge')) extensions.push(knowledgeModule);
+if (enabled('applications')) extensions.push(applicationsModule);
+extensions.push(profilePlusModule);
+if (enabled('coach')) extensions.push(coachModule);
