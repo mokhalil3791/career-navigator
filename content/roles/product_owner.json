@@ -1,0 +1,64 @@
+{
+  "order": 90,
+  "id": "product_owner",
+  "role": "Product Owner",
+  "family": "Product Owner",
+  "starting_point": "Experience understanding users, coordinating work or solving business problems. Domain knowledge and communication matter; coding is optional for this exercise.",
+  "priorities": [
+    "User problems and measurable value",
+    "Backlog ordering and acceptance criteria",
+    "Feedback, trade-offs and accountable decisions"
+  ],
+  "roadmaps": [
+    {
+      "title": "Product Manager",
+      "url": "https://roadmap.sh/product-manager",
+      "kind": "adapted"
+    },
+    {
+      "title": "Scrum Guide: Product Owner",
+      "url": "https://scrumguides.org/scrum-guide.html",
+      "kind": "role_definition"
+    }
+  ],
+  "mapping_note": "Selected Product Manager topics are adapted for Product Owner practice. The roles overlap but are not identical. The Scrum Guide anchors Product Owner accountability for product value and the Product Backlog.",
+  "phase_1": {
+    "days": "1–30",
+    "label": "Understand one useful problem",
+    "slide": "A user need, product goal and success measure",
+    "actions": [
+      "Study a fictional workshop help service or interview up to three consenting volunteers about a small, non-sensitive problem.",
+      "Write a concise problem statement, user group, desired outcome and evidence behind the need. Label invented research as simulated."
+    ],
+    "output": "A one-page product brief with a measurable goal and explicit assumptions."
+  },
+  "phase_2": {
+    "days": "31–60",
+    "label": "Turn the goal into choices",
+    "slide": "An ordered backlog and a small prototype",
+    "actions": [
+      "Create ten backlog items and order them by user value, effort, risk and dependencies.",
+      "Write testable acceptance criteria for the first three items and create a simple paper or clickable prototype."
+    ],
+    "output": "An ordered backlog, prototype and explanation of what you deliberately deferred."
+  },
+  "phase_3": {
+    "days": "61–90",
+    "label": "Inspect feedback and adapt",
+    "slide": "A review, changed priorities and a decision log",
+    "actions": [
+      "Test the prototype with consenting peers and record what you observed separately from your interpretation.",
+      "Run a mock review, update the backlog and present the strongest trade-off. Practise explaining your own contribution in an interview."
+    ],
+    "output": "A small product case study showing how evidence changed the plan."
+  },
+  "portfolio": "A product brief and tested prototype for a workshop help service, including backlog and decision history.",
+  "tools": "A document, spreadsheet and paper or simple prototype tool. Use any available free option.",
+  "acceptance": [
+    "One product goal links to a measurable user outcome and a stated baseline or baseline-collection plan.",
+    "Ten ordered backlog items include a clear rationale, with testable acceptance criteria for the first three.",
+    "At least two feedback observations produce a documented change or an explained decision to retain the current approach."
+  ],
+  "first_step": "Write the user, problem and desired outcome in three plain sentences.",
+  "beginner_adjustment": "Use a small familiar problem and ask a practitioner to challenge your prioritisation. A certificate alone does not demonstrate product judgement."
+}

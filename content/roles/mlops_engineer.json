@@ -1,0 +1,63 @@
+{
+  "order": 60,
+  "id": "mlops_engineer",
+  "role": "MLOps Engineer",
+  "family": "Platform/MLOps",
+  "starting_point": "Python and either DevOps/software delivery experience or familiarity with a trained ML model. This plan develops an existing foundation.",
+  "priorities": [
+    "Reproducible model versions",
+    "Automated validation and delivery",
+    "Monitoring and rollback"
+  ],
+  "roadmaps": [
+    {
+      "title": "MLOps",
+      "url": "https://roadmap.sh/mlops",
+      "kind": "direct"
+    },
+    {
+      "title": "DevOps",
+      "url": "https://roadmap.sh/devops",
+      "kind": "supporting"
+    }
+  ],
+  "phase_1": {
+    "days": "1–30",
+    "label": "Make a model reproducible",
+    "slide": "Version code, data references and experiment results",
+    "actions": [
+      "Start with one small scikit-learn model and synthetic data. Pin dependencies and record data-generation settings.",
+      "Track parameters, evaluation results and model files for two runs."
+    ],
+    "output": "A repeatable training command and an experiment comparison."
+  },
+  "phase_2": {
+    "days": "31–60",
+    "label": "Create a controlled release",
+    "slide": "Automated tests and one local serving path",
+    "actions": [
+      "Wrap inference in a batch command or simple local API and validate input schemas.",
+      "Add an automated quality check that prevents promotion of a failing model and retain the previous model version."
+    ],
+    "output": "A tested local delivery pipeline with an explicit model approval rule."
+  },
+  "phase_3": {
+    "days": "61–90",
+    "label": "Operate and recover",
+    "slide": "Monitor inputs and rehearse a rollback",
+    "actions": [
+      "Log requests, latency or batch duration and data-quality failures. Simulate changed input data and inspect the signal.",
+      "Demonstrate rollback, explain why drift alone does not prove degraded model quality, and write an incident runbook."
+    ],
+    "output": "A small model service with monitoring evidence, release history and recovery instructions."
+  },
+  "portfolio": "A versioned model delivery pipeline with validation, operational monitoring and rollback.",
+  "tools": "Python, scikit-learn, local MLflow or a simple structured experiment log, Git and local tests. Containers are optional.",
+  "acceptance": [
+    "A documented command reproduces a model and its evaluation from the recorded code and data settings.",
+    "A deliberately failing release cannot pass the automated promotion check.",
+    "A simulated bad release can be rolled back, with input/output checks and recovery time recorded."
+  ],
+  "first_step": "Choose one existing small model and list everything required to reproduce it.",
+  "beginner_adjustment": "Learn Python, Git and basic model evaluation first. Kubernetes and a feature store are optional later work."
+}
