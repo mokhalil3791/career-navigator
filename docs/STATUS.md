@@ -63,6 +63,8 @@ See `docs/KNOWN-ISSUES.md`.
 
 **Agent visual check:** Chromium at 360 × 732, file input at approximately 464 px from the top (44 px target), visible without scrolling. This is not real-device verification or five-user evidence.
 
+**CI finding:** the new Dutch 360 px check exposed header overflow with Linux WebKit system fonts. Header controls now wrap on narrow screens, retaining all actions; the test still requires no horizontal overflow. Final CI results are available on the PR.
+
 **PDF warning investigated, not fixed:** `UnknownErrorException: Ensure that the standardFontDataUrl API parameter is provided.` The importer does not supply standard font data. The fictional PDF extracts correctly; that does not prove all PDFs are unaffected. No remote fonts added and no warning hidden. A fix needs separate packaging scope for hosted/offline/single-file builds.
 
 **Verified by a person:** none for this change. Dutch review, real-phone use, real CV compatibility, the five-user timing target and all manual release checks remain pending. See `docs/plans/primary-journey-observation.md` for the approved pilot procedure.
