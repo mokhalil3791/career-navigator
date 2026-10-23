@@ -1,6 +1,6 @@
 // @ts-check
 // Phase 2 journeys: free AI via copy-paste (journey 2, AI parts) and Gemini mocked (journey 3).
-import { test, expect, openApp, navigate } from './fixtures.js';
+import { test, expect, openApp, navigate, loadDemo } from './fixtures.js';
 import { mockGemini, PASTED_EXTRACT_REPLY, PASTED_TAILOR_REPLY } from './mock-ai.js';
 
 test('journey 2 (copy-paste): extract requirements from a pasted reply, accept one by one, tailor CV, review, export', async ({ page }) => {
@@ -47,7 +47,7 @@ test('journey 2 (copy-paste): extract requirements from a pasted reply, accept o
 
 test('a pasted reply that is not valid JSON is shown as an unverified draft and changes nothing', async ({ page }) => {
   await openApp(page);
-  await page.getByRole('button', { name: 'Try a fictional example' }).click();
+  await loadDemo(page);
   await navigate(page, 'Compare jobs', 'jobs');
   const before = await page.locator('.requirement').count();
   await page.getByTestId('extract').click();
@@ -97,7 +97,7 @@ test('journey 3 (Gemini, mocked): connect key, preview, redact, confirm, mock in
 test('a wrong Gemini key gives a plain-language message, and copy-paste still works', async ({ page, offOrigin }) => {
   await mockGemini(page, offOrigin);
   await openApp(page);
-  await page.getByRole('button', { name: 'Try a fictional example' }).click();
+  await loadDemo(page);
   await navigate(page, 'AI prompt studio', 'prompts');
   await page.locator('.connect-card summary').click();
   await page.locator('input[name^=ai-route][value=gemini]').check();

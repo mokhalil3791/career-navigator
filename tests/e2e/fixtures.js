@@ -65,3 +65,16 @@ export async function navigate(page, label, id) {
   if (await select.isVisible()) await select.selectOption(id);
   else await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('button', { name: label }).click();
 }
+
+/**
+ * Loads the fictional example and waits until the app has finished (it clears
+ * saved data, then returns to the overview), so the next navigation is not undone.
+ * @param {import('@playwright/test').Page} page
+ * @param {string} [label] button text (differs per interface language)
+ */
+export async function loadDemo(page, label = 'Try a fictional example') {
+  await page.getByRole('button', { name: label }).first().click();
+  await expect(page.locator('.banner').first()).toBeVisible();
+  await expect(page).toHaveURL(/#\/home$/);
+  await expect(page.locator('#notice')).toHaveClass(/visible/);
+}

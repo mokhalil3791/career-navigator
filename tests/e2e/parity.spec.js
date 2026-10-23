@@ -1,7 +1,7 @@
 // @ts-check
 // End-to-end parity with v0.1 ("Keep from v0.1") plus guardrails G3, G6, G10.
 import { readFileSync } from 'node:fs';
-import { test, expect, openApp, navigate } from './fixtures.js';
+import { test, expect, openApp, navigate, loadDemo } from './fixtures.js';
 
 const AREAS = [['Overview', 'home'], ['My profile', 'profile'], ['Compare jobs', 'jobs'], ['My application', 'cv'], ['Interview practice', 'interview'], ['My 90-day plan', 'plan'], ['AI prompt studio', 'prompts']];
 
@@ -17,7 +17,7 @@ test('seven areas open, each focuses its heading, with the fixed independence no
 
 test('fictional example: three adverts, banner, and "Start my own"', async ({ page }) => {
   await openApp(page);
-  await page.getByRole('button', { name: 'Try a fictional example' }).click();
+  await loadDemo(page);
   await expect(page.locator('.banner').first()).toContainText('Fictional example.');
   await navigate(page, 'Compare jobs', 'jobs');
   await expect(page.locator('.job-card')).toHaveCount(3);
@@ -28,7 +28,7 @@ test('fictional example: three adverts, banner, and "Start my own"', async ({ pa
 
 test('review gate: export locked until reviewed, any edit re-locks it (G3)', async ({ page }) => {
   await openApp(page);
-  await page.getByRole('button', { name: 'Try a fictional example' }).click();
+  await loadDemo(page);
   await navigate(page, 'My application', 'cv');
   const exportButton = page.getByTestId('export-cv');
   await expect(exportButton).toBeDisabled();
@@ -51,7 +51,7 @@ test('review gate: export locked until reviewed, any edit re-locks it (G3)', asy
 
 test('backup round trip: export, then import resets saving and review (G6)', async ({ page }, info) => {
   await openApp(page);
-  await page.getByRole('button', { name: 'Try a fictional example' }).click();
+  await loadDemo(page);
   await navigate(page, 'My profile', 'profile');
   await page.locator('#field-profile-city').fill('Zwolle');
   const downloading = page.waitForEvent('download');
