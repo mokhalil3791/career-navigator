@@ -36,6 +36,19 @@ export async function docxText(bytes) {
 }
 
 /**
+ * In the single-file release the worker is inlined as a data: URL; browsers will not start
+ * a worker from data:, so it is turned into a blob: URL (allowed by worker-src blob:).
+ * @param {string} src
+ */
+function workerUrl(src) {
+  if (!src.startsWith('data:')) return src;
+  const [meta, body] = src.split(',');
+  const text = meta.includes(';base64') ? atob(body) : decodeURIComponent(body);
+  const bytes = Uint8Array.from(text, (c) => c.charCodeAt(0));
+  return URL.createObjectURL(new Blob([bytes], { type: 'text/javascript' }));
+}
+
+/**
  * Text of a PDF with Mozilla pdf.js, loaded only when needed (approved dependency).
  * Scanned PDFs (images only) have no text; the caller explains that.
  * @param {Uint8Array} bytes
@@ -43,7 +56,7 @@ export async function docxText(bytes) {
 export async function pdfText(bytes) {
   const pdfjs = await import('pdfjs-dist');
   const worker = await import('pdfjs-dist/build/pdf.worker.min.mjs?url');
-  pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
+  pdfjs.GlobalWorkerOptions.workerSrc = workerUrl(worker.default);
   // We only read text: no fonts, no rendering. The strict CSP (no eval) stays in place.
   const task = pdfjs.getDocument(/** @type {any} */ ({ data: bytes, isEvalSupported: false, disableFontFace: true, useSystemFonts: false }));
   const doc = await task.promise;

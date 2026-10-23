@@ -276,7 +276,7 @@ Pages read and write the store; all logic that matters for safety lives in pure 
 | Heavy libraries | pdf.js, mammoth.js, docx, WebLLM, all lazy-loaded and vendored (no CDN at runtime) | Fast first load; works offline; CSP stays strict |
 | Offline | Service worker (Workbox) caching the app shell and content | Installable PWA; usable without data |
 | Hosting | GitHub Pages via GitHub Actions on `main` | Free, no ops |
-| Node | Node 20 LTS or later for development only | Matches current CI images |
+| Node | Node 22 LTS or later for development only (Node 20 reached end of life in April 2026) | Matches current CI images |
 
 **Repository layout**
 
@@ -292,7 +292,7 @@ career-navigator/
     components/           # field, card, diff-review, ai-panel, privacy-drawer
     ai/
       provider.js         # adapter contract + registry
-      providers/          # copy-paste, gemini, webllm, ollama, openrouter, anthropic-byok
+      providers/          # gemini, webllm, ollama, openrouter (copy-paste is the default route in the studio; no paid adapters, principle 5)
       redact.js  schemas/
     i18n/                 # en.json nl.json + loader (RTL-ready for later)
     styles/               # tokens.css (from v0.1 palette), layout.css, print.css
@@ -420,3 +420,47 @@ Rules:
 | Forks break safeguards | Unsafe derivatives | Guardrail tests, AGENTS.md rules, "official version" link in README |
 | Implied endorsement by NN or RTH | Reputational and legal exposure | Independent branding, fixed footer notice, no logos without written permission |
 | Scope too big for volunteers | Stalls after workshop | Phase gates; Phase 0 alone already delivers value |
+
+## Implementation record and decisions (added 2026-10-23)
+
+v1.0 was built in one day in gated phases (PRs #1–#6). Phase plans with full decision logs are in `docs/plans/phase-0.md` … `phase-5.md`.
+This section records every place where the build differs from, or adds to, the requirements above.
+
+**Maintainer decisions (2026-10-23)**
+- **Phase 0 first.** v0.1 is hosted at `/`. v1 is deployed to `/next/` until the maintainer approves moving it to the root.
+- **Runtime dependencies approved:** `lit-html`, `@mlc-ai/web-llm` (lazy) and `pdfjs-dist` (lazy). That is 3 of the allowed fewer-than-5. `docx`, `mammoth`, `DOMPurify` and Workbox were **not** needed:
+  - DOCX read and write, ZIP, `.ics`, Markdown, JSON Schema checking and the service worker are small in-house modules.
+  - AI output is never rendered as HTML, so there is nothing to sanitise (NFR-SEC-3).
+- **Original workshop prompts vs principle 2.** Some originals ask for "a match score from 0 to 100", so they are never attached to outgoing prompts. They are kept as attributed reference text in `content/prompts/originals/`. The hosted v0.1 copy is patched the same way. A parity test allows exactly this one difference from v0.1 `buildPrompt`.
+- **No `anthropic-byok` adapter**, and no paid adapter of any kind (principle 5).
+- **Schema v2** = the v1 shape plus additive optional sections (target roles, preferences, language and education rows, applications, check-ins, custom prompts, coach notes, LinkedIn draft, mock interview), all with defaults. v0.1 backups import losslessly.
+- **G8 (free forever) and G9 (dignity) are permanent guardrails.** Guardrails G10–G13 were added: independence notice, XSS/CSP lint, repository policy, and AI task prompts.
+- **Pulled into scope:** the WebLLM large-download warning (Phase 2) and an optional passphrase on coach packs using Web Crypto (Phase 4).
+- **Backlog:** a "shared phone" mode (saving locked off, visible delete, neutral title).
+
+**Free AI solution (maintainer: "use free AI chats; people have no money yet")**
+- Copy-paste stays the default and gains a **structured round trip**: task prompts ask any free chat to end with one JSON block, and the pasted reply becomes proposals the user accepts one by one.
+- On phones: **Share to an AI app**. For short prompts: **open pre-filled** in Claude or ChatGPT.
+- Free chat links: Claude, Gemini, Le Chat, Copilot, ChatGPT and Duck.ai.
+- Built-in routes: Gemini free tier and OpenRouter (`:free` models only, enforced in code), using the user's own free key, plus WebLLM and Ollama on the user's own device.
+
+**Interpretations of requirements**
+- **Principle 2, "no percentages anywhere in UI".** The knowledge card writes holiday allowance as "at least 8 euros for every 100 euros". The G8 paywall word list contains "trial period", so the employment concept is called "probation period (proeftijd)".
+- **FR-CV-3 note.** The UI says what the werk.nl CV guide shows: its personal details list has no photo, date of birth, nationality or marital status. The broader claim "Dutch CVs commonly omit them" is a `TODO verify` in the knowledge card.
+- **FR-JOB-3.** Evidence quotes are verified in code against the profile text. An AI quote that is not in the profile becomes "Not shown", whatever the AI claimed.
+- **FR-AI-6.** Confirmation is asked once per provider per session. The exact outgoing text with a Send button is shown before **every** built-in call (FR-PS-2).
+- **NFR-SEC-1.** CSP `connect-src` is generated at build time from `config/providers.json`. A runtime allow-list (`src/ai/net.js`) blocks every provider host until the user confirms. The G5 fixture checks network traffic in every end-to-end test.
+- **NFR-I18N-2.** Dutch ships at 100% string coverage, marked machine-assisted until a fluent speaker reviews it. Dutch knowledge cards (SHOULD) are not written yet; English is shown with a note.
+
+**Not built in v1.0**
+- FR-INT-4 (MAY) voice answers: Chrome's Web Speech API sends audio to Google, which needs its own consent flow.
+- FR-AI-8 (SHOULD) per-page AI chat panel: the per-page AI panel covers the defined tasks.
+- Lighthouse scoring in CI: the 300 KB budget is enforced in CI; Lighthouse is a manual check.
+
+**Bugs found by the new tests and fixed during the build**
+- A prototype-pollution path in migration (`__proto__` with `Object.assign`).
+- A race where an in-flight save could undo "device saving off".
+- Name redaction breaking email masking.
+- A shared radio group across two pickers.
+- v0.1 contrast failures, and WCAG 2.2 target sizes on `<summary>`.
+- An unclosed TODO comment could have rendered (CodeQL).

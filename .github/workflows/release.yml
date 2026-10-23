@@ -1,0 +1,31 @@
+name: Release
+
+# Runs when the maintainer pushes a version tag (e.g. v1.0.0) after the manual
+# pre-release checklist is signed off. It attaches the single-file build
+# (everything except WebLLM) for workshop USB sticks and offline sharing.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build:single
+      - name: Create GitHub Release with the single-file build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" release/*.html \
+            --title "Career Navigator $GITHUB_REF_NAME" \
+            --notes "Single-file version: download the .html file and open it in a browser. It works without internet, except built-in AI routes. The in-browser model (WebLLM) needs the website: https://mokhalil3791.github.io/career-navigator/"

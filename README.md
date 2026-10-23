@@ -4,7 +4,8 @@ A free, private career workspace for newcomers to the Netherlands. Build a truth
 compare job adverts with your own evidence, practise interviews and make a 90-day learning plan.
 Everything runs in your browser.
 
-- **Open the app:** https://mokhalil3791.github.io/career-navigator/
+- **Open the app (workshop version, v0.1):** https://mokhalil3791.github.io/career-navigator/
+- **Try the new version (v1 preview):** https://mokhalil3791.github.io/career-navigator/next/ (works offline, can be installed on your phone, English and Dutch)
 - **Free AI career prompts:** https://mokhalil3791.github.io/career-navigator/prompts/
 - **Short links for slides:** `…/career-navigator/p/cv`, `/p/check`, `/p/tailor`, `/p/interview`, `/p/letter`, `/p/jobs`, `/p/compare`
 - **QR codes:** [`assets/qr/app.svg`](assets/qr/app.svg) and [`assets/qr/prompts.svg`](assets/qr/prompts.svg)
@@ -68,14 +69,30 @@ Then run `ollama pull llama3.2` and choose **Ollama** in Free AI routes. If you 
 Career Navigator is an independent, open-source tool. No employer, training provider or partner organisation
 endorses it, and it makes no hiring decisions. It does not give legal, immigration, tax or benefits advice.
 
+## What v1 adds
+
+- Free built-in AI: Gemini free tier, OpenRouter free models, Ollama, or a model inside your browser. Copy-paste always works.
+- AI suggestions are shown as changes that you accept or reject. Evidence quotes are checked against your own profile.
+- Dutch interface (machine-assisted, under review), plus sourced cards about the Dutch job market.
+- CV import (PDF, Word, text) in your browser, Word (DOCX) export, an applications tracker and calendar (.ics) reminders.
+- A free coach view: share one file (optionally protected with a passphrase), get notes back.
+
+## Make it your own
+
+- [Customise](docs/CUSTOMISING.md): add a role, prompt, language, question pack or free AI provider; rebrand; switch modules on or off.
+- [Deploy your own copy](docs/DEPLOY.md) to GitHub Pages without a command line.
+- [Ready-made prompts for AI coding assistants](starter-prompts/).
+
 ## For developers
 
-See [`docs/PRD.md`](docs/PRD.md) for the product requirements and [`AGENTS.md`](AGENTS.md) for how the code is organised.
+Read [`docs/PRD.md`](docs/PRD.md), [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) and [`AGENTS.md`](AGENTS.md). Privacy: [`docs/PRIVACY.md`](docs/PRIVACY.md).
 
 ```
 npm install
-npm test            # unit + guardrail tests
-npm run build:site  # builds the GitHub Pages site into _site/
+npm test              # unit, parity and guardrail tests
+npm run build:all     # app + GitHub Pages site into _site/ (v1 at /next/)
+npm run build:single  # one-file release for USB sticks
+npm run e2e           # Playwright end-to-end tests (after build:all)
 ```
 
 ## Licence
