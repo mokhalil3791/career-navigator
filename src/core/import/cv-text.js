@@ -22,11 +22,17 @@ export async function docxText(bytes) {
   const xml = await readZipEntry(bytes, 'word/document.xml');
   if (!xml) throw new Error('This DOCX has no document text.');
   const text = new TextDecoder().decode(xml);
-  return text
-    .replace(/<w:tab\/>/g, '\t').replace(/<w:br[^>]*\/>/g, '\n').replace(/<\/w:p>/g, '\n')
-    .replace(/<[^>]+>/g, '')
-    .split('\n').map((l) => decodeXml(l).replace(/[ \t]+$/g, '')).join('\n')
-    .replace(/\n{3,}/g, '\n\n').trim();
+  // Read only the text runs (<w:t>), tabs and breaks of each paragraph, instead of
+  // stripping tags: nothing from the XML markup can end up in the result.
+  const lines = text.split('</w:p>').map((paragraph) => {
+    let line = '';
+    for (const m of paragraph.matchAll(/<w:t(?:\s[^>]*)?>([^<]*)<\/w:t>|<w:tab\/>|<w:br\b[^>]*\/>/g)) {
+      if (m[1] !== undefined) line += decodeXml(m[1]);
+      else line += m[0].startsWith('<w:tab') ? '\t' : '\n';
+    }
+    return line.replace(/[ \t]+$/g, '');
+  });
+  return lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
 }
 
 /**
