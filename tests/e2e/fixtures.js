@@ -103,3 +103,31 @@ export async function gotoView(page, id) {
   await expect(page).toHaveURL(new RegExp('#/' + id + '$'));
   await expect(page.locator('h1')).toBeVisible();
 }
+
+/**
+ * What the browser itself reports for the dark sidebar at this moment, to tell a real
+ * styling problem (computed background wrong) from a hit-testing artefact
+ * (elementsFromPoint missing the sidebar, which axe uses to find the background).
+ * @param {import('@playwright/test').Page} page
+ */
+export async function sidebarDiagnostics(page) {
+  const now = await sidebarState(page);
+  await page.waitForTimeout(1000);
+  const later = await sidebarState(page);
+  const shot = test.info().outputPath('sidebar-at-failure.png');
+  await page.screenshot({ path: shot });
+  await test.info().attach('sidebar-at-failure', { path: shot, contentType: 'image/png' });
+  return `${now} || 1 s later: ${later}`;
+}
+
+/** @param {import('@playwright/test').Page} page */
+async function sidebarState(page) {
+  return page.evaluate(() => {
+    const brand = document.querySelector('.brand > span:nth-child(2)');
+    const sidebar = document.querySelector('.sidebar');
+    if (!brand || !sidebar) return 'no sidebar';
+    const r = brand.getBoundingClientRect();
+    const stack = document.elementsFromPoint(r.left + r.width / 2, r.top + r.height / 2).map((e) => e.tagName.toLowerCase() + (e.className && typeof e.className === 'string' ? '.' + e.className.split(' ')[0] : ''));
+    return `sidebar computed bg ${getComputedStyle(sidebar).backgroundColor}; --deep "${getComputedStyle(document.documentElement).getPropertyValue('--deep').trim()}"; brand rect ${Math.round(r.top)},${Math.round(r.left)} ${Math.round(r.width)}x${Math.round(r.height)}; elementsFromPoint: ${stack.join(' > ')}`;
+  });
+}

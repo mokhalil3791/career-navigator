@@ -1,7 +1,7 @@
 // @ts-check
 // NFR-A11Y-2: axe-core on every page (empty and demo). FR-LIB: prompt library page.
 import AxeBuilder from '@axe-core/playwright';
-import { test, expect, openApp, loadDemo, seriousAxe, gotoView } from './fixtures.js';
+import { test, expect, openApp, loadDemo, seriousAxe, gotoView, sidebarDiagnostics } from './fixtures.js';
 // Axe measures colours; transitions (toast, hover lift) can give false contrast results mid-animation.
 test.use({ reducedMotion: 'reduce' });
 
@@ -20,7 +20,8 @@ for (const demo of [false, true]) {
     for (const id of PAGES) {
       await gotoView(page, id);
       await expect(page.locator('h1')).toBeVisible();
-      expect(await seriousViolations(page), `${id} (scrollY ${await page.evaluate(() => window.scrollY)})`).toEqual([]);
+      const found = await seriousViolations(page);
+      expect(found, `${id} (scrollY ${await page.evaluate(() => window.scrollY)}) ${found.length ? await sidebarDiagnostics(page) : ''}`).toEqual([]);
     }
   });
 }

@@ -2,7 +2,7 @@
 // Phase 3: journey 4 (Dutch interface), onboarding, knowledge cards, axe in English and Dutch.
 import AxeBuilder from '@axe-core/playwright';
 import { readFileSync } from 'node:fs';
-import { test, expect, openApp, loadDemo, seriousAxe, gotoView } from './fixtures.js';
+import { test, expect, openApp, loadDemo, seriousAxe, gotoView, sidebarDiagnostics } from './fixtures.js';
 // Axe measures colours; transitions (toast, hover lift) can give false contrast results mid-animation.
 test.use({ reducedMotion: 'reduce' });
 
@@ -78,7 +78,8 @@ for (const lang of ['en', 'nl']) {
       await expect(page.locator('h1')).toBeVisible();
       await page.locator('details').evaluateAll((els) => els.forEach((d) => { /** @type {HTMLDetailsElement} */ (d).open = true; }));
       const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze();
-      expect(seriousAxe(results), `${lang}/${id} (scrollY ${await page.evaluate(() => window.scrollY)})`).toEqual([]);
+      const found = seriousAxe(results);
+      expect(found, `${lang}/${id} (scrollY ${await page.evaluate(() => window.scrollY)}) ${found.length ? await sidebarDiagnostics(page) : ''}`).toEqual([]);
     }
   });
 }
