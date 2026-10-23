@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@mlc-ai/web-llm": "0.2.86",
-    "lit-html": "3.3.3"
+    "lit-html": "3.3.3",
+    "pdfjs-dist": "6.4.299"
   }
 }
