@@ -110,6 +110,13 @@ for (const language of ['en', 'nl']) {
     await expect(page.locator('#lang-lang-test')).toHaveValue('Nederlands');
     await expect(page.locator('#field-profile-education')).toHaveValue(state.profile.education);
     await page.setViewportSize({ width: 360, height: 732 });
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    // Firefox can resolve resize before the responsive layout has been painted.
+    await expect(page.locator('#mobile-view')).toBeVisible();
+    await expect.poll(() => page.evaluate(() => {
+      if (document.documentElement.scrollWidth <= innerWidth) return 'No horizontal overflow';
+      const overflowing = [...document.querySelectorAll('body *')].filter((el) => el.getBoundingClientRect().right > innerWidth + 1)
+        .map((el) => ({ tag: el.tagName, id: el.id, class: el.className, right: el.getBoundingClientRect().right }));
+      return JSON.stringify({ viewport: innerWidth, width: document.documentElement.scrollWidth, overflowing });
+    })).toBe('No horizontal overflow');
   });
 }
