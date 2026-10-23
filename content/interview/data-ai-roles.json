@@ -1,0 +1,16 @@
+{
+  "id": "data-ai-roles",
+  "title": "Data & AI roles",
+  "roles": ["data_analyst", "data_engineer", "data_scientist", "ai_engineer", "mlops_engineer", "data_platform_engineer"],
+  "author": "Career Navigator contributors (2026 workshop)",
+  "questions": [
+    { "id": "da1", "question": "Walk me through a dataset you cleaned. What problems did you find, and how did you check your result?", "tip": "Name one real dataset (it can be from a course or a personal project). Describe one check you did, such as duplicates or missing values." },
+    { "id": "da2", "question": "Explain a chart or result you made to someone without a technical background.", "tip": "Start with the question it answered, then the main finding in one sentence. Say what you did not know." },
+    { "id": "da3", "question": "Tell me about a time your analysis or code was wrong. What happened next?", "tip": "Focus on how you found the error and what you changed afterwards. Honesty about mistakes is a strength." },
+    { "id": "da4", "question": "How do you decide whether data is good enough to use?", "tip": "Mention concrete checks: source, completeness, recency, and whether it fits the question." },
+    { "id": "da5", "question": "Describe a project you built. What would you do differently now?", "tip": "Pick a small project you can explain fully. Name one improvement you would make." },
+    { "id": "da6", "question": "How would you explain the limits of an AI or machine-learning result to a manager?", "tip": "Talk about uncertainty, what the data does not cover, and how a person stays responsible for the decision." },
+    { "id": "da7", "question": "How do you keep personal data safe in your work?", "tip": "Mention examples such as using invented or anonymised data, access rights, and not pasting personal data into public tools." },
+    { "id": "da8", "question": "Which tool in this advert are you still learning, and what is your plan?", "tip": "Be honest about the gap. Give your first concrete step and when you will take it." }
+  ]
+}
