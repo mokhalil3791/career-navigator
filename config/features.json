@@ -1,0 +1,9 @@
+{
+  "$comment": "Turn optional modules on or off. Safety features (review gate, prompt safeguards, name omission, import reset, network guard, preview-and-confirm) are NOT listed here on purpose: they cannot be switched off.",
+  "applications": true,
+  "knowledge": true,
+  "coach": true,
+  "builtinAi": true,
+  "cvImport": true,
+  "voiceAnswers": true
+}

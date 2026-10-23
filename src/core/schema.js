@@ -143,7 +143,7 @@ export function normalizeWorkspace(input) {
       if (STATUSES.indexOf(/** @type {any} */ (status)) === -1) fail('Requirement.status', 'unknown status');
       /** @type {Requirement} */
       const req = { id: rid, text: string(r.text, 'Requirement.text', 2000), status: /** @type {any} */ (status), evidence: string(r.evidence, 'Requirement.evidence', 6000), nextStep: string(r.nextStep, 'Requirement.nextStep', 3000) };
-      if (r.kind !== undefined) req.kind = oneOf(r.kind, 'Requirement.kind', ['', 'must', 'nice'], '');
+      if (r.kind !== undefined) req.kind = /** @type {''|'must'|'nice'} */ (oneOf(r.kind, 'Requirement.kind', ['', 'must', 'nice'], ''));
       return req;
     });
     /** @type {Job} */
