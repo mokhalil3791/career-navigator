@@ -1,0 +1,11 @@
+{
+  "name": "Career Navigator",
+  "short_name": "Career Nav",
+  "description": "A free, private career workspace for newcomers to the Netherlands.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f8f3",
+  "theme_color": "#123e3c",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

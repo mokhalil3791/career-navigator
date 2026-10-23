@@ -30,8 +30,19 @@ export function loadV01() {
   vm.createContext(sandbox);
   vm.runInContext(scripts[0], sandbox);
   vm.runInContext(scripts[1], sandbox);
-  // Copy out of the sandbox realm so deep-equality checks compare plain values.
-  return { core: sandbox.CareerCore, content: JSON.parse(JSON.stringify(sandbox.CareerContent)) };
+  // v0.1 checks "plain object" with Object.prototype, which differs per realm.
+  // So arguments are copied INTO the sandbox realm, and results copied back OUT.
+  const inside = (/** @type {any} */ v) => (v && typeof v === 'object' ? vm.runInContext('JSON.parse', sandbox)(JSON.stringify(v)) : v);
+  const outside = (/** @type {any} */ v) => (v && typeof v === 'object' ? JSON.parse(JSON.stringify(v)) : v);
+  /** @type {any} */
+  const core = {};
+  for (const [name, fn] of Object.entries(sandbox.CareerCore)) {
+    core[name] = (/** @type {any[]} */ ...args) => {
+      try { return outside(/** @type {Function} */ (fn)(...args.map(inside))); }
+      catch (error) { throw new Error(String(/** @type {any} */ (error).message)); }
+    };
+  }
+  return { core, content: JSON.parse(JSON.stringify(sandbox.CareerContent)) };
 }
 
 /**

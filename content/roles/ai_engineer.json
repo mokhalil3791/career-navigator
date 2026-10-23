@@ -1,0 +1,63 @@
+{
+  "order": 40,
+  "id": "ai_engineer",
+  "role": "AI Engineer",
+  "family": "AI Engineer",
+  "starting_point": "Basic software development, Python or JavaScript, and an understanding of APIs. A prompt-only prototype is a useful first milestone, not the full engineering portfolio.",
+  "priorities": [
+    "Reliable model inputs and outputs",
+    "Retrieval from approved information",
+    "Evaluation, privacy and failure handling"
+  ],
+  "roadmaps": [
+    {
+      "title": "AI Engineer",
+      "url": "https://roadmap.sh/ai-engineer",
+      "kind": "direct"
+    },
+    {
+      "title": "Python",
+      "url": "https://roadmap.sh/python",
+      "kind": "supporting"
+    }
+  ],
+  "phase_1": {
+    "days": "1–30",
+    "label": "Define a bounded assistant",
+    "slide": "One use case, approved documents and a test set",
+    "actions": [
+      "Write ten short fictional workshop FAQs and define what the assistant may and may not answer.",
+      "Build a simple interface and define twenty test questions, including missing information and misleading instructions."
+    ],
+    "output": "A prototype specification and a labelled evaluation set."
+  },
+  "phase_2": {
+    "days": "31–60",
+    "label": "Connect evidence to answers",
+    "slide": "Retrieve relevant passages and cite the source",
+    "actions": [
+      "Build basic document retrieval, such as local text search, and pass retrieved passages into the answer prompt.",
+      "Use a local model if your hardware supports it. Otherwise use a clearly labelled stub and manually evaluated free-chat outputs without pretending the stub is a working model."
+    ],
+    "output": "A demonstrable retrieval workflow that separates application code, source text and model responses."
+  },
+  "phase_3": {
+    "days": "61–90",
+    "label": "Measure failure and improve",
+    "slide": "Test unsupported questions, record results and add human review",
+    "actions": [
+      "Score every test answer for source support, correctness and whether the assistant should abstain. Fix one recurring failure.",
+      "Document limits, privacy choices and an approval point before any real-world action. Present the result and a realistic next step."
+    ],
+    "output": "A small assistant demo plus evaluation results and an honest limitations page."
+  },
+  "portfolio": "A workshop FAQ assistant that cites its source passages and says when the supplied information is insufficient.",
+  "tools": "Python, local text search, a small web or command-line interface, and optionally an open local model. Paid APIs are not required.",
+  "acceptance": [
+    "Twenty fixed questions have saved outputs, expected behaviour and human scores.",
+    "Every substantive answer cites a supplied source passage, with unsupported claims logged as failures.",
+    "Five out-of-scope or missing-information cases trigger abstention or human review, and the README identifies any mocked component."
+  ],
+  "first_step": "Write the assistant's one-sentence purpose and five questions it must decline to answer.",
+  "beginner_adjustment": "Begin with the workshop's manual prompt workflow while learning Python. Automated agents and fine-tuning are later topics."
+}

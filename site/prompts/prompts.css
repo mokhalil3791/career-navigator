@@ -33,14 +33,17 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 30px;font-size:.78rem;color:
 /* Printed handout: one A4 page with titles, steps and a QR code. */
 @media print{
   @page{size:A4;margin:14mm}
-  body{background:#fff;font-size:10.5pt}
-  .top,.skip,.actions,.full,.more,.status,.note a{display:none!important}
+  body{background:#fff;font-size:9.5pt;line-height:1.4}
+  .top,.skip,.actions,.full,.more,.status,.note{display:none!important}
   main{padding:0;max-width:none}
-  h1{font-size:20pt;margin:0 0 6px}
-  .how,.prompt{border:1px solid #bbb;break-inside:avoid;padding:8px 10px;margin-top:6px}
+  h1{font-size:17pt;margin:0 0 4px}
+  .how,.prompt{border:1px solid #bbb;break-inside:avoid;padding:5px 9px;margin-top:5px}
+  .prompt header{gap:8px}.num{width:22px;height:22px}h2{font-size:11pt}
+  .lead{margin-bottom:6px}
   .how{padding-left:28px}
   .prompt header p{color:#333}
   .paste{margin:4px 0 0;font-size:9pt}
-  .handout{display:flex;gap:14px;align-items:center;margin-top:10px;break-inside:avoid}
+  .handout{display:flex;gap:14px;align-items:center;margin-top:8px;break-inside:avoid}
+  .handout img{width:92px;height:92px}
   footer{padding:6px 0 0;font-size:8pt}
 }

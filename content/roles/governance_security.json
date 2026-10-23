@@ -1,0 +1,64 @@
+{
+  "order": 80,
+  "id": "governance_security",
+  "role": "Governance & Security",
+  "family": "Governance/Security",
+  "starting_point": "Interest in risk, documentation and how information is used. Compliance, operations or audit experience can support governance work; technical security work needs additional IT foundations.",
+  "priorities": [
+    "Data purpose, ownership and access",
+    "Threats, risks and controls",
+    "Evidence, review and incident handling"
+  ],
+  "roadmaps": [
+    {
+      "title": "Cyber Security",
+      "url": "https://roadmap.sh/cyber-security",
+      "kind": "adapted"
+    },
+    {
+      "title": "DevSecOps",
+      "url": "https://roadmap.sh/devsecops",
+      "kind": "supporting"
+    }
+  ],
+  "mapping_note": "Cyber Security topics support this introductory path. The data/AI governance exercises are workshop additions, not a dedicated roadmap.sh data-governance curriculum.",
+  "phase_1": {
+    "days": "1–30",
+    "label": "Describe the information and its owners",
+    "slide": "A data inventory, flow diagram and access matrix",
+    "actions": [
+      "Use the fictional FAQ assistant from the workshop. List its data sources, owners, purposes, users and retention assumptions.",
+      "Learn basic authentication, authorisation and risk terminology. Separate user-provided instructions from trusted system rules."
+    ],
+    "output": "A data inventory, simple flow diagram and role/access matrix."
+  },
+  "phase_2": {
+    "days": "31–60",
+    "label": "Choose proportionate controls",
+    "slide": "Risks linked to owners, controls and tests",
+    "actions": [
+      "Write five realistic risks, including unauthorised access, disclosure and unsupported AI answers.",
+      "Design controls and test scenarios. Practise only on your own local demo or an explicitly authorised training environment."
+    ],
+    "output": "A risk register, control checklist and five test scenarios."
+  },
+  "phase_3": {
+    "days": "61–90",
+    "label": "Test and record the decisions",
+    "slide": "Evidence from a review and an incident exercise",
+    "actions": [
+      "Run the test scenarios and document failures, remediation and remaining risks.",
+      "Rehearse a fictional disclosure incident and produce a concise review recommendation with named accountable roles."
+    ],
+    "output": "A sample assurance pack with evidence and a short incident playbook."
+  },
+  "portfolio": "A governance and security review of a fictional internal FAQ assistant.",
+  "tools": "A document editor, spreadsheet and optional local demo application. No offensive tooling or paid certification is required.",
+  "acceptance": [
+    "Every listed dataset has an owner, purpose, access rule and retention assumption.",
+    "Five risks each link to a control, accountable role and documented verification result.",
+    "The final recommendation distinguishes verified controls, open issues and assumptions requiring specialist review."
+  ],
+  "first_step": "Draw where information enters, where it is stored and who can see the output.",
+  "beginner_adjustment": "Choose either governance analysis or technical security as the main direction after the introductory month. Neither can be mastered as a single combined 90-day path."
+}

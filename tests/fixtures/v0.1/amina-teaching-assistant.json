@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "demo": false,
+  "profile": {
+    "name": "Amina — fictional",
+    "headline": "Primary school teacher moving into education support",
+    "city": "Utrecht",
+    "availability": "24–32 hours per week",
+    "travel": "Up to 40 minutes by bike or bus",
+    "about": "Teacher with eight years of classroom experience with children aged 6–11. I plan lessons, support children who need extra help and talk with parents.",
+    "experience": "2014–2022 | Primary school teacher | Example Primary School (fictional), Aleppo\nPlanned weekly lessons for classes of up to 30 children. Prepared extra reading material for six children who needed more support.\n\n2023–present | Volunteer homework helper | Example Library (fictional), Utrecht\nHelp four children with homework every Wednesday afternoon.",
+    "education": "Bachelor of Education (original title kept), Example University (fictional), 2013. Diploma evaluation not yet requested.",
+    "skills": "Lesson planning: prepared weekly plans for eight years.\nClassroom management: groups of up to 30 children.\nParent communication: monthly parent meetings.",
+    "languages": "Arabic: native. English: B2 (self-assessed). Dutch: A2 (self-assessed, in an inburgering course).",
+    "cvText": "AMINA (fictional)\nTeacher\n2014–2022 Primary school teacher\nSkills: planning, patience, communication"
+  },
+  "jobs": [
+    {
+      "id": "job-ta-utrecht",
+      "title": "Onderwijsassistent (teaching assistant) — fictional",
+      "company": "Example Basisschool (fictional)",
+      "url": "https://example.org/vacatures/onderwijsassistent",
+      "body": "FICTIONAL ADVERT\nTeaching assistant, 24 hours.\nSupport small groups with reading and maths. Required: experience with children, Dutch B1, a VOG.\nNice to have: an MBO-4 diploma in education.",
+      "reason": "Strong match with my classroom experience. Dutch B1 is required; I am at A2 now.",
+      "requirements": [
+        {
+          "id": "r1",
+          "text": "Experience with children",
+          "status": "supported",
+          "evidence": "Eight years as a primary school teacher; weekly volunteer homework help.",
+          "nextStep": "Prepare one STAR example about the reading group."
+        },
+        {
+          "id": "r2",
+          "text": "Dutch B1",
+          "status": "missing",
+          "evidence": "My Dutch is A2 (self-assessed).",
+          "nextStep": "Ask if B1 is needed at the start; plan the B1 exam."
+        },
+        {
+          "id": "r3",
+          "text": "Certificate of conduct (VOG)",
+          "status": "unknown",
+          "evidence": "",
+          "nextStep": "Ask the school how they arrange the VOG."
+        },
+        {
+          "id": "r4",
+          "text": "MBO-4 diploma in education (nice to have)",
+          "status": "partial",
+          "evidence": "Bachelor of Education from abroad; no Dutch evaluation yet.",
+          "nextStep": "Look up a diploma evaluation."
+        }
+      ]
+    },
+    {
+      "id": "job-library",
+      "title": "Library youth programme assistant — fictional",
+      "company": "Example Library (fictional)",
+      "url": "",
+      "body": "FICTIONAL ADVERT\n16 hours. Help run reading activities for children. English and Dutch.",
+      "reason": "",
+      "requirements": []
+    }
+  ],
+  "selectedJobId": "job-ta-utrecht",
+  "cv": {
+    "headline": "Primary school teacher moving into education support",
+    "summary": "Teacher with eight years of classroom experience with children aged 6–11. I plan lessons, support children who need extra help and talk with parents.",
+    "experience": "2014–2022 | Primary school teacher | Example Primary School (fictional), Aleppo\nPlanned weekly lessons for classes of up to 30 children. Prepared extra reading material for six children who needed more support.\n\n2023–present | Volunteer homework helper | Example Library (fictional), Utrecht\nHelp four children with homework every Wednesday afternoon.",
+    "education": "Bachelor of Education (original title kept), Example University (fictional), 2013. Diploma evaluation not yet requested.",
+    "skills": "Lesson planning: prepared weekly plans for eight years.\nClassroom management: groups of up to 30 children.\nParent communication: monthly parent meetings.",
+    "languages": "Arabic: native. English: B2 (self-assessed). Dutch: A2 (self-assessed, in an inburgering course).",
+    "letter": "",
+    "reviewed": false
+  },
+  "interview": {
+    "questionIndex": 2,
+    "answers": {
+      "q1": "I taught primary school for eight years. I like helping children who find reading hard.",
+      "q2": "Six children were behind in reading. I made a small group and extra material. After three months, five of them could read the class book."
+    },
+    "notes": {
+      "q2": "Say \"I\" more clearly. Explain how I measured progress."
+    }
+  },
+  "plan": {
+    "roleId": "custom",
+    "targetRole": "Teaching assistant",
+    "priorities": [
+      "Dutch to B1",
+      "Learn how Dutch primary schools work",
+      "Diploma evaluation"
+    ],
+    "project": "",
+    "day30": "",
+    "day60": "",
+    "day90": "",
+    "nextAction": "Book a Dutch B1 practice test.",
+    "nextDate": "2026-11-15",
+    "hours": 8
+  },
+  "ai": {
+    "step": "profile",
+    "language": "English",
+    "extra": "",
+    "drafts": {
+      "profile": "",
+      "search": "",
+      "compare": "",
+      "fit": "",
+      "tailor": "",
+      "interview": "",
+      "letter": ""
+    }
+  },
+  "settings": {
+    "remember": false
+  }
+}

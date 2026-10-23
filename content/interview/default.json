@@ -1,0 +1,47 @@
+{
+  "id": "default",
+  "title": "General interview questions",
+  "roles": [],
+  "questions": [
+    {
+      "id": "q1",
+      "question": "Tell me about your experience and why this role interests you.",
+      "tip": "Choose two or three relevant facts. Experience from work, study, volunteering or a personal project can be useful."
+    },
+    {
+      "id": "q2",
+      "question": "Tell me about a problem you helped solve. What did you personally do?",
+      "tip": "Use Situation, Task, Action and Result. Keep the result factual; a number is useful only when you can support it."
+    },
+    {
+      "id": "q3",
+      "question": "Describe a time you worked with another person to complete a task.",
+      "tip": "Explain your contribution, how you communicated and what you learned about working together."
+    },
+    {
+      "id": "q4",
+      "question": "How did you learn something new that you needed for a task?",
+      "tip": "Describe the starting gap, the steps you took and something you can now demonstrate."
+    },
+    {
+      "id": "q5",
+      "question": "How do you check that your work is accurate or complete?",
+      "tip": "Give one concrete example of a check. Explain what you do when you find an error."
+    },
+    {
+      "id": "q6",
+      "question": "Tell me about useful feedback you received and what you changed.",
+      "tip": "Focus on the feedback, your response and the next attempt. You do not need to share private personal circumstances."
+    },
+    {
+      "id": "q7",
+      "question": "Which part of this role would you need to develop, and how would you start?",
+      "tip": "Name an honest gap and a manageable first action. Do not claim a skill you have not yet practised."
+    },
+    {
+      "id": "q8",
+      "question": "What would you like to ask us about the role or team?",
+      "tip": "Ask about responsibilities, support, expectations or a requirement that is unclear in the advert."
+    }
+  ]
+}

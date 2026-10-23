@@ -1,0 +1,63 @@
+{
+  "order": 50,
+  "id": "data_scientist",
+  "role": "Data Scientist",
+  "family": "Data Scientist",
+  "starting_point": "Some Python and basic probability/statistics, or a quantitative research background. A beginner can use the period for exploratory analysis and a baseline model.",
+  "priorities": [
+    "Statistics and exploratory analysis",
+    "Sound model evaluation",
+    "Clear interpretation and limitations"
+  ],
+  "roadmaps": [
+    {
+      "title": "AI and Data Scientist",
+      "url": "https://roadmap.sh/ai-data-scientist",
+      "kind": "direct"
+    },
+    {
+      "title": "Python",
+      "url": "https://roadmap.sh/python",
+      "kind": "supporting"
+    }
+  ],
+  "phase_1": {
+    "days": "1–30",
+    "label": "Understand the question and data",
+    "slide": "A clear target, exploration and a simple baseline",
+    "actions": [
+      "Create synthetic hourly bike-rental demand with documented assumptions, or select a suitably licensed public dataset.",
+      "Inspect distributions and missing values. Choose a business-relevant error measure and a basic baseline."
+    ],
+    "output": "A short analysis notebook with a declared target, evaluation design and baseline result."
+  },
+  "phase_2": {
+    "days": "31–60",
+    "label": "Compare a small number of models",
+    "slide": "Leakage-aware splits and two model comparisons",
+    "actions": [
+      "Use a time-based split for time-dependent data and keep preprocessing within the training workflow.",
+      "Compare the baseline with two simple models, recording parameters and the same evaluation measure."
+    ],
+    "output": "A reproducible experiment table and error analysis."
+  },
+  "phase_3": {
+    "days": "61–90",
+    "label": "Explain what the model can support",
+    "slide": "A held-out evaluation and a short model card",
+    "actions": [
+      "Evaluate once on reserved test data and examine errors by useful non-sensitive segments.",
+      "Write what the data cannot establish, explain why synthetic results do not validate real-world performance, and present the trade-offs."
+    ],
+    "output": "A portfolio notebook or report, model card and five-minute explanation."
+  },
+  "portfolio": "A small bike-demand forecast that compares simple models against an explicit baseline.",
+  "tools": "Python, pandas, scikit-learn and notebook or script. A GPU is unnecessary.",
+  "acceptance": [
+    "The baseline and candidate models use the same declared metric and documented train/validation/test split.",
+    "The project identifies and checks at least three leakage risks or evaluation pitfalls.",
+    "Another person can reproduce the reported scores and explain two limitations from the model card."
+  ],
+  "first_step": "Define the outcome you want to predict and the decision that prediction might support.",
+  "beginner_adjustment": "Build statistical understanding and one honest baseline first. Deep learning can wait."
+}
