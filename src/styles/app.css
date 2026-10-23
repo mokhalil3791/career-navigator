@@ -38,3 +38,20 @@
 .custom-prompt{border:1px solid var(--line);border-radius:10px;padding:10px;margin-block:10px;display:grid;gap:8px}
 progress{inline-size:100%;block-size:10px;accent-color:var(--teal)}
 @media(max-width:720px){.facts-row{grid-template-columns:1fr 1fr}}
+/* Phase 3: languages, welcome, knowledge cards */
+.lang-select{min-height:36px;padding:6px 10px;font-size:.78rem;inline-size:auto;border-radius:8px}
+.welcome{border:2px solid var(--lime)}
+.welcome-steps{list-style:none;display:flex;gap:8px;flex-wrap:wrap;padding:0;margin:0 0 14px;font-size:.76rem;color:var(--muted)}
+.welcome-steps li{border:1px solid var(--line);border-radius:20px;padding:4px 10px}
+.welcome-steps li[aria-current=step]{background:var(--deep);color:#fff;border-color:var(--deep)}
+.welcome-steps li.done{background:var(--mint);color:var(--teal)}
+.privacy-note{background:var(--mint);border-radius:12px;padding:14px 16px}
+.knowledge summary{cursor:pointer;display:grid;gap:4px;min-block-size:44px}
+.knowledge summary small{color:var(--muted);font-size:.8rem}
+.knowledge-body{margin-block-start:12px}
+.knowledge-body .card-sub+.card-sub{margin-block-start:10px}
+.event-list{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:12px}
+/* Simple language (NFR-A11Y-3): fewer helper texts. */
+.simple .source-note,.simple .field-hint,.simple .card-sub+.card-sub{display:none}
+/* WCAG 2.2 target size: every disclosure summary is at least 44px tall. */
+.details summary,.privacy-drawer summary,.connect-card summary{min-block-size:44px;display:flex;align-items:center;gap:6px}
