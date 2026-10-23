@@ -13,7 +13,12 @@ import { safeUrl } from '../core/escape.js';
 
 /** Removes HTML comments, including "TODO verify" notes. @param {string} text */
 export function stripComments(text) {
-  return text.replace(/<!--[\s\S]*?-->/g, '');
+  let out = text, previous;
+  // Repeat until nothing changes, then drop an unclosed "<!--" and everything after it,
+  // so an unfinished TODO note can never be shown.
+  do { previous = out; out = out.replace(/<!--[\s\S]*?-->/g, ''); } while (out !== previous);
+  const open = out.indexOf('<!--');
+  return open === -1 ? out : out.slice(0, open);
 }
 
 /**

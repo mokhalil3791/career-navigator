@@ -33,13 +33,25 @@ describe('knowledge pack (FR-KNW)', () => {
   it('unverified claims are TODO comments and are never rendered (FR-KNW-3)', () => {
     for (const c of cards) {
       expect(stripComments(c.body), c.id).not.toMatch(/TODO/i);
-      // Any sentence with "TODO" in the source must be inside a comment.
-      for (const line of c.body.split('\n')) if (/TODO/.test(line)) expect(line.trim(), c.id).toMatch(/^<!--.*-->$/);
+      // Every "TODO" in the source must lie inside a comment span.
+      const spans = [...c.body.matchAll(/<!--[\s\S]*?-->/g)].map((m) => [m.index || 0, (m.index || 0) + m[0].length]);
+      for (const m of c.body.matchAll(/TODO/g)) expect(spans.some(([a, b]) => (m.index || 0) > a && (m.index || 0) < b), c.id).toBe(true);
     }
+  });
+  it('an unclosed comment hides everything after it', () => {
+    expect(stripComments('Fact.\n<!-- TODO verify: unfinished\nnot a fact')).toBe('Fact.\n');
+    expect(stripComments('a <!-- x --> b <!-- y --> c')).toBe('a  b  c');
   });
   it('cards never give legal, immigration, tax or benefits advice in imperative form (FR-KNW-2)', () => {
     for (const c of cards) expect(stripComments(c.body), c.id).not.toMatch(/\byou (must|should) (apply for asylum|claim benefits|file your tax)/i);
     expect(cards.find((c) => c.id === 'contracts-and-pay')?.body).toMatch(/not legal advice/);
+  });
+  it('an unclosed comment hides everything after it', () => {
+    expect(stripComments('Fact.
+<!-- TODO verify: unfinished
+not a fact')).toBe('Fact.
+');
+    expect(stripComments('a <!-- x --> b <!-- y --> c')).toBe('a  b  c');
   });
   it('a broken card is skipped with a warning, not a crash', () => {
     const r = buildKnowledge({ 'bad.md': '---\nid: Bad Id\n---\nx' });
