@@ -25,6 +25,8 @@ jobs:
         run: npm run coverage
       - name: Build app and Pages site
         run: npm run build:all
+      - name: Build the single-file release (attached to GitHub Releases)
+        run: npm run build:single
       - name: Content checks (knowledge cards age, translation coverage, shell size)
         run: node scripts/check-content.mjs
       - name: Security audit (runtime dependencies)
@@ -32,7 +34,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: site
-          path: _site
+          path: |
+            _site
+            release
           retention-days: 3
 
   e2e:
@@ -53,7 +57,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: site
-          path: _site
+          path: .
       - name: Install browser
         run: npx playwright install --with-deps ${{ (matrix.project == 'mobile-chrome' && 'chromium') || (matrix.project == 'mobile-safari' && 'webkit') || matrix.project }}
       - name: Playwright

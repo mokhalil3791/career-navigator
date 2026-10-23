@@ -18,7 +18,8 @@
     "coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit -p jsconfig.json",
     "e2e": "playwright test",
-    "serve": "node scripts/serve.mjs"
+    "serve": "node scripts/serve.mjs",
+    "build:single": "node scripts/build-single.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",
@@ -28,6 +29,7 @@
     "qrcode": "1.5.4",
     "typescript": "7.0.2",
     "vite": "8.3.5",
+    "vite-plugin-singlefile": "2.3.4",
     "vitest": "5.0.5"
   },
   "dependencies": {
