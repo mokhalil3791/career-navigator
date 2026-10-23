@@ -1,0 +1,27 @@
+{
+  "title": "LinkedIn sections",
+  "type": "object",
+  "required": [
+    "headline",
+    "about",
+    "bullets"
+  ],
+  "properties": {
+    "headline": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "about": {
+      "type": "string",
+      "maxLength": 3000
+    },
+    "bullets": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "string",
+        "maxLength": 1000
+      }
+    }
+  }
+}

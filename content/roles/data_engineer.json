@@ -1,0 +1,68 @@
+{
+  "order": 20,
+  "id": "data_engineer",
+  "role": "Data Engineer",
+  "family": "Data Engineer",
+  "starting_point": "Basic Python and SQL, or prior software/database experience. If both are new, use this period to build foundations and one small pipeline.",
+  "priorities": [
+    "Python and SQL transformations",
+    "Data models and quality checks",
+    "Repeatable pipelines with clear failure handling"
+  ],
+  "roadmaps": [
+    {
+      "title": "Data Engineer",
+      "url": "https://roadmap.sh/data-engineer",
+      "kind": "direct"
+    },
+    {
+      "title": "Python",
+      "url": "https://roadmap.sh/python",
+      "kind": "supporting"
+    },
+    {
+      "title": "SQL",
+      "url": "https://roadmap.sh/sql",
+      "kind": "supporting"
+    }
+  ],
+  "phase_1": {
+    "days": "1–30",
+    "label": "Build one correct transformation",
+    "slide": "Python, SQL, Git and a small data model",
+    "actions": [
+      "Create synthetic order and product files with deliberate missing values and duplicates.",
+      "Write a script that validates the input and loads clean records into SQLite or DuckDB."
+    ],
+    "output": "A versioned script, schema and five checks for input quality."
+  },
+  "phase_2": {
+    "days": "31–60",
+    "label": "Make the pipeline repeatable",
+    "slide": "Raw files to curated tables, with reruns and logging",
+    "actions": [
+      "Separate raw, validated and reporting data. Add a repeatable command to run the complete workflow.",
+      "Handle a second daily file, duplicate arrivals and a missing input. Record counts and errors."
+    ],
+    "output": "A small incremental pipeline with a documented data contract."
+  },
+  "phase_3": {
+    "days": "61–90",
+    "label": "Prove reliability",
+    "slide": "Tests, a failure drill and a clear handover",
+    "actions": [
+      "Test reruns, invalid records and changed columns. Document how to recover from a failed run.",
+      "Ask someone to run the project from the README and explain your design in a mock interview."
+    ],
+    "output": "A reproducible data product with test results, lineage diagram and runbook."
+  },
+  "portfolio": "A daily orders pipeline that produces a trusted sales table from two synthetic sources.",
+  "tools": "Python, SQLite or DuckDB, Git and local automated tests. A scheduler is optional.",
+  "acceptance": [
+    "Rerunning the same input creates no duplicate business records.",
+    "Five explicit data-quality rules flag or quarantine bad records.",
+    "A clean setup reproduces the output and a documented recovery handles one failed run."
+  ],
+  "first_step": "Create a tiny input file and write down its columns, types and five validation rules.",
+  "beginner_adjustment": "Use one source and full refreshes first. Distributed processing and streaming can wait."
+}

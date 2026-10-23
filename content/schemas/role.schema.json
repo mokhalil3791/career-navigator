@@ -1,0 +1,230 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Role template (content/roles/<id>.json)",
+  "description": "A 90-day learning plan starting point. Copy an existing role file to add a new career path.",
+  "type": "object",
+  "required": [
+    "id",
+    "role",
+    "starting_point",
+    "priorities",
+    "roadmaps",
+    "phase_1",
+    "phase_2",
+    "phase_3",
+    "portfolio",
+    "tools",
+    "acceptance",
+    "first_step",
+    "beginner_adjustment"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "order": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 10000
+    },
+    "id": {
+      "type": "string",
+      "maxLength": 64,
+      "pattern": "^[a-z0-9_]{2,64}$"
+    },
+    "role": {
+      "type": "string",
+      "maxLength": 120,
+      "minLength": 2
+    },
+    "family": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "starting_point": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "priorities": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "string",
+        "maxLength": 300
+      }
+    },
+    "roadmaps": {
+      "type": "array",
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "required": [
+          "title",
+          "url"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 500,
+            "pattern": "^https://"
+          },
+          "kind": {
+            "type": "string",
+            "maxLength": 40
+          }
+        }
+      }
+    },
+    "mapping_note": {
+      "type": "string",
+      "maxLength": 1500
+    },
+    "phase_1": {
+      "type": "object",
+      "required": [
+        "days",
+        "label",
+        "slide",
+        "actions",
+        "output"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "days": {
+          "type": "string",
+          "maxLength": 20
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "slide": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "actions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        },
+        "output": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      }
+    },
+    "phase_2": {
+      "type": "object",
+      "required": [
+        "days",
+        "label",
+        "slide",
+        "actions",
+        "output"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "days": {
+          "type": "string",
+          "maxLength": 20
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "slide": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "actions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        },
+        "output": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      }
+    },
+    "phase_3": {
+      "type": "object",
+      "required": [
+        "days",
+        "label",
+        "slide",
+        "actions",
+        "output"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "days": {
+          "type": "string",
+          "maxLength": 20
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "slide": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "actions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        },
+        "output": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      }
+    },
+    "portfolio": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "tools": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "acceptance": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "type": "string",
+        "maxLength": 1000
+      }
+    },
+    "first_step": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "beginner_adjustment": {
+      "type": "string",
+      "maxLength": 1500
+    },
+    "questionPack": {
+      "type": "string",
+      "maxLength": 64
+    }
+  }
+}

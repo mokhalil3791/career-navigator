@@ -1,0 +1,63 @@
+{
+  "order": 10,
+  "id": "data_analyst",
+  "role": "Data Analyst",
+  "family": "Data Analyst",
+  "starting_point": "Comfort with spreadsheets and a business question. Previous finance, operations, research or customer-service experience can provide useful context.",
+  "priorities": [
+    "SQL and clean data",
+    "Useful charts and basic statistics",
+    "Clear business recommendations"
+  ],
+  "roadmaps": [
+    {
+      "title": "Data Analyst",
+      "url": "https://roadmap.sh/data-analyst",
+      "kind": "direct"
+    },
+    {
+      "title": "SQL",
+      "url": "https://roadmap.sh/sql",
+      "kind": "supporting"
+    }
+  ],
+  "phase_1": {
+    "days": "1–30",
+    "label": "Find and explain reliable numbers",
+    "slide": "Spreadsheet checks, SQL basics and one clear question",
+    "actions": [
+      "Practise filtering, aggregation and joins with a small synthetic orders dataset.",
+      "Define three measures, check missing values and duplicates, and document exactly how you calculate each measure."
+    ],
+    "output": "A cleaned dataset, ten saved SQL queries and a one-page data dictionary."
+  },
+  "phase_2": {
+    "days": "31–60",
+    "label": "Build a useful analysis",
+    "slide": "A small dashboard with traceable measures",
+    "actions": [
+      "Create a dashboard or chart report for a fictional shop's weekly sales and returns.",
+      "Compare periods and segments. Explain uncertainty and data limitations without claiming causation from a chart."
+    ],
+    "output": "Three or four purposeful charts and a short recommendation for a named business user."
+  },
+  "phase_3": {
+    "days": "61–90",
+    "label": "Validate and explain",
+    "slide": "Reconcile totals, gather feedback and present the findings",
+    "actions": [
+      "Ask a peer to answer three business questions using your report. Improve unclear labels or calculations.",
+      "Record a three-minute explanation and adapt two truthful CV bullets to one analyst vacancy."
+    ],
+    "output": "A reproducible portfolio report with checks, limitations and a short demonstration."
+  },
+  "portfolio": "Sales and returns decision dashboard using invented order data.",
+  "tools": "SQLite or DuckDB, LibreOffice Calc, and optionally Python charts. Choose one visual tool.",
+  "acceptance": [
+    "Dashboard totals reconcile exactly to the source and saved queries.",
+    "At least three business questions have an answer supported by a labelled chart or table.",
+    "A reviewer can reproduce the calculations and identify two documented limitations."
+  ],
+  "first_step": "Choose one analyst vacancy and write the business question your portfolio will answer.",
+  "beginner_adjustment": "Spend the first month on spreadsheet confidence and SQL. Keep the dashboard small and defer Python until it solves a clear need."
+}

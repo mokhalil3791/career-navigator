@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "demo": true,
+  "profile": {
+    "name": "Sam — fictional example",
+    "headline": "Operations coordinator moving into data analysis",
+    "city": "Den Haag",
+    "availability": "32–40 hours per week",
+    "travel": "Up to 45 minutes; actual journey times have not been checked.",
+    "about": "Operations coordinator with experience preparing weekly sales reports, checking records and explaining findings to colleagues. Developing SQL skills for a first data analyst role. I also helped plan the annual stock count.",
+    "experience": "2020–2024 | Operations coordinator | Example Retail (fictional)\nCleaned weekly order records in Excel, checked missing values and duplicates, and prepared summaries for a six-person operations team.\n\n2018–2020 | Administrative assistant | Example Services (fictional)\nMaintained records, answered internal questions and documented recurring issues.\n\nPersonal learning project\nUsed 200 invented order records to practise cleaning and aggregation. Saved six SQL queries and a short explanation. No live customer data used.",
+    "education": "Bachelor’s degree in Business Administration, completed in 2018. Dutch diploma equivalence has not been established in this fictional example.",
+    "skills": "Excel: filters, pivot tables and lookup formulas.\nSQL: basic SELECT, GROUP BY and JOIN from a personal project.\nGit: introductory practice.\nRecord checking, reporting and explaining findings to colleagues.\nNo production Python, cloud platform, data orchestration, Kubernetes or CI/CD experience demonstrated.",
+    "languages": "English B2; Dutch A2. Both levels are self-reported for this fictional exercise.",
+    "cvText": ""
+  },
+  "jobs": [
+    {
+      "id": "demo-analyst",
+      "title": "Junior Data Analyst — fictional",
+      "company": "Example Insights (fictional)",
+      "url": "",
+      "body": "FICTIONAL PRACTICE ADVERT — NOT A LIVE VACANCY\nJunior Data Analyst | Example Insights | Den Haag\n32–40 hours per week; hybrid working.\nPrepare weekly reports, clean spreadsheet data, write basic SQL queries and explain findings to operations colleagues. Required: confidence in Excel, basic SQL, careful checking and clear English. Dutch is helpful; no formal level is required in this fictional advert. A small portfolio or relevant operational experience is welcome. Actual travel time must be checked by the applicant.",
+      "reason": "A practical first direction to explore: Sam can demonstrate spreadsheet reporting, record checking and basic SQL. Communication needs and travel arrangements still deserve a conversation.",
+      "requirements": [
+        {
+          "id": "da-excel",
+          "text": "Confidence in Excel",
+          "status": "supported",
+          "evidence": "At Example Retail, Sam cleaned weekly records in Excel and prepared reports. Recorded skills include filters, pivot tables and lookup formulas.",
+          "nextStep": "Prepare one example showing a cleaned record and the resulting summary."
+        },
+        {
+          "id": "da-sql",
+          "text": "Basic SQL",
+          "status": "supported",
+          "evidence": "The personal project contains six saved queries using SELECT, GROUP BY and JOIN with 200 invented records.",
+          "nextStep": "Be ready to explain one join and check its result."
+        },
+        {
+          "id": "da-checking",
+          "text": "Careful checking of records",
+          "status": "supported",
+          "evidence": "Sam checked missing values and duplicates in weekly order records.",
+          "nextStep": "Describe the check and how an issue was resolved; do not invent a business impact."
+        },
+        {
+          "id": "da-english",
+          "text": "Clear English communication",
+          "status": "partial",
+          "evidence": "Sam reports English B2 and has experience explaining summaries to colleagues. No independent language assessment or English interview evidence is supplied.",
+          "nextStep": "Practise a short explanation of the project in English."
+        },
+        {
+          "id": "da-location",
+          "text": "Work pattern and practical travel fit",
+          "status": "unknown",
+          "evidence": "Sam prefers 32–40 hours and a journey up to 45 minutes. The advert is in Den Haag, but the exact office location and required office days are not supplied.",
+          "nextStep": "Ask about office days and check the actual journey."
+        }
+      ]
+    },
+    {
+      "id": "demo-data-engineer",
+      "title": "Data Engineer — fictional",
+      "company": "Example Data Services (fictional)",
+      "url": "",
+      "body": "FICTIONAL PRACTICE ADVERT — NOT A LIVE VACANCY\nData Engineer | Example Data Services | Rotterdam\n36–40 hours per week; hybrid working.\nBuild and support scheduled data pipelines. Required: Python, strong SQL, Git, automated tests and two years of relevant engineering experience. Experience with a cloud data platform is expected. English is used in the team. The advert does not state whether Dutch is required. Actual travel time and availability are unknown.",
+      "reason": "An adjacent future direction with substantial engineering gaps. The current facts support some SQL practice, but do not show the required production experience.",
+      "requirements": [
+        {
+          "id": "de-python",
+          "text": "Python for data pipelines",
+          "status": "missing",
+          "evidence": "No production Python experience or Python project is recorded.",
+          "nextStep": "Start with one small script that reads and validates an invented CSV file."
+        },
+        {
+          "id": "de-sql",
+          "text": "Strong SQL",
+          "status": "partial",
+          "evidence": "Sam has basic SELECT, GROUP BY and JOIN from six personal-project queries. That does not establish strong production SQL.",
+          "nextStep": "Practise more complex joins, aggregation and correctness checks; keep the examples."
+        },
+        {
+          "id": "de-git",
+          "text": "Git",
+          "status": "partial",
+          "evidence": "Only introductory Git practice is recorded.",
+          "nextStep": "Save the learning project in Git and practise a small branch and review."
+        },
+        {
+          "id": "de-tests",
+          "text": "Automated tests",
+          "status": "missing",
+          "evidence": "No automated tests are recorded.",
+          "nextStep": "Add tests for missing values, duplicate IDs and invalid types to a small pipeline."
+        },
+        {
+          "id": "de-cloud",
+          "text": "Cloud data platform experience",
+          "status": "missing",
+          "evidence": "No cloud platform experience is recorded.",
+          "nextStep": "Learn local pipeline concepts first; decide later whether a cloud exercise is useful."
+        },
+        {
+          "id": "de-experience",
+          "text": "Two years of relevant engineering experience",
+          "status": "missing",
+          "evidence": "The recorded work is operations and administration; no two-year engineering role is shown.",
+          "nextStep": "Look for a role aligned with current evidence while building targeted experience."
+        },
+        {
+          "id": "de-dutch",
+          "text": "Dutch language requirement",
+          "status": "unknown",
+          "evidence": "The fictional advert uses English but does not state a Dutch requirement.",
+          "nextStep": "Ask the employer; do not infer the answer from the advert language."
+        }
+      ]
+    },
+    {
+      "id": "demo-platform",
+      "title": "Platform / Cloud DevOps Engineer — fictional",
+      "company": "Example Cloud Operations (fictional)",
+      "url": "",
+      "body": "FICTIONAL PRACTICE ADVERT — NOT A LIVE VACANCY\nPlatform / Cloud DevOps Engineer | Example Cloud Operations | Amsterdam\n40 hours per week; some on-call duties.\nMaintain Linux services, automate infrastructure and troubleshoot releases. Required: Linux, networking, scripting, Git, containers, infrastructure as code and experience supporting production systems. Customer conversations require Dutch B2. The advert does not describe on-call compensation or exact office days.",
+      "reason": "A possible long-term interest, with several foundational gaps. This sample comparison does not recommend applying on the assumption that these requirements are already met.",
+      "requirements": [
+        {
+          "id": "pl-linux",
+          "text": "Linux and networking",
+          "status": "missing",
+          "evidence": "No Linux or networking experience is recorded.",
+          "nextStep": "Try a small local Linux learning exercise and explain how a request reaches a service."
+        },
+        {
+          "id": "pl-script",
+          "text": "Scripting and Git",
+          "status": "partial",
+          "evidence": "Introductory Git practice is recorded; no scripting project is recorded.",
+          "nextStep": "Create a small script and keep a clear Git history."
+        },
+        {
+          "id": "pl-containers",
+          "text": "Containers and infrastructure as code",
+          "status": "missing",
+          "evidence": "No container or infrastructure-as-code work is recorded.",
+          "nextStep": "Defer these until basic scripting and systems concepts are comfortable."
+        },
+        {
+          "id": "pl-production",
+          "text": "Production support experience",
+          "status": "missing",
+          "evidence": "Sam has administrative and operational experience, but no production-system support role is shown.",
+          "nextStep": "Identify a foundation role or a project with observable troubleshooting evidence."
+        },
+        {
+          "id": "pl-dutch",
+          "text": "Dutch B2 for customer conversations",
+          "status": "missing",
+          "evidence": "The fictional profile records Dutch A2, not B2.",
+          "nextStep": "Keep the stated level truthful and choose a realistic language-learning goal."
+        },
+        {
+          "id": "pl-oncall",
+          "text": "On-call arrangements",
+          "status": "unknown",
+          "evidence": "The advert mentions on-call duties without compensation or schedule details.",
+          "nextStep": "Ask about the schedule, support arrangements and compensation."
+        }
+      ]
+    }
+  ],
+  "selectedJobId": "demo-analyst",
+  "cv": {
+    "headline": "Operations coordinator moving into data analysis",
+    "summary": "Operations coordinator with experience preparing weekly sales reports, checking records and explaining findings to colleagues. Developing SQL skills for a first data analyst role. I also helped plan the annual stock count.",
+    "experience": "2020–2024 | Operations coordinator | Example Retail (fictional)\nCleaned weekly order records in Excel, checked missing values and duplicates, and prepared summaries for a six-person operations team.\n\n2018–2020 | Administrative assistant | Example Services (fictional)\nMaintained records, answered internal questions and documented recurring issues.\n\nPersonal learning project\nUsed 200 invented order records to practise cleaning and aggregation. Saved six SQL queries and a short explanation. No live customer data used.",
+    "education": "Bachelor’s degree in Business Administration, completed in 2018. Dutch diploma equivalence has not been established in this fictional example.",
+    "skills": "Excel: filters, pivot tables and lookup formulas.\nSQL: basic SELECT, GROUP BY and JOIN from a personal project.\nGit: introductory practice.\nRecord checking, reporting and explaining findings to colleagues.\nNo production Python, cloud platform, data orchestration, Kubernetes or CI/CD experience demonstrated.",
+    "languages": "English B2; Dutch A2. Both levels are self-reported for this fictional exercise.",
+    "letter": "",
+    "reviewed": true
+  },
+  "interview": {
+    "questionIndex": 0,
+    "answers": {},
+    "notes": {}
+  },
+  "plan": {
+    "roleId": "data_analyst",
+    "targetRole": "Data Analyst",
+    "priorities": [
+      "SQL and clean data",
+      "Useful charts and basic statistics",
+      "Clear business recommendations"
+    ],
+    "project": "Sales and returns decision dashboard using invented order data.",
+    "day30": "A cleaned dataset, ten saved SQL queries and a one-page data dictionary.",
+    "day60": "Three or four purposeful charts and a short recommendation for a named business user.",
+    "day90": "A reproducible portfolio report with checks, limitations and a short demonstration.",
+    "nextAction": "Choose one analyst vacancy and write the business question your portfolio will answer.",
+    "nextDate": "",
+    "hours": 6
+  },
+  "ai": {
+    "step": "profile",
+    "language": "English",
+    "extra": "",
+    "drafts": {
+      "profile": "",
+      "search": "",
+      "compare": "",
+      "fit": "",
+      "tailor": "",
+      "interview": "",
+      "letter": ""
+    }
+  },
+  "settings": {
+    "remember": false
+  }
+}

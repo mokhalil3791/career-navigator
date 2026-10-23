@@ -8,10 +8,19 @@ import { parseFrontmatter } from '../../src/content/frontmatter.js';
 export const ROOT = fileURLToPath(new URL('../../', import.meta.url));
 
 /**
- * Reads the improved prompts in content/prompts/*.md, sorted by `order`.
+ * Reads the public library prompts in content/prompts/*.md, sorted by `order`.
+ * Structured app tasks (`library: false`, e.g. extract-requirements) are left out.
  * @returns {import('../../src/core/library.js').PromptFile[]}
  */
 export function readPrompts() {
+  return readAllPrompts().filter((p) => /** @type {any} */ (p).library !== false);
+}
+
+/**
+ * Every prompt file, including structured app tasks.
+ * @returns {import('../../src/core/library.js').PromptFile[]}
+ */
+export function readAllPrompts() {
   const dir = join(ROOT, 'content', 'prompts');
   return readdirSync(dir)
     .filter((name) => name.endsWith('.md'))

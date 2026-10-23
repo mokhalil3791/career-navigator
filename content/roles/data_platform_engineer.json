@@ -1,0 +1,64 @@
+{
+  "order": 30,
+  "id": "data_platform_engineer",
+  "role": "Data Platform Engineer",
+  "family": "Data Engineer",
+  "starting_point": "Some data engineering or infrastructure experience, plus basic Linux, SQL and Git. This is an adjacent transition for many learners.",
+  "priorities": [
+    "Shared data infrastructure",
+    "Access controls and metadata",
+    "Automation, observability and recovery"
+  ],
+  "roadmaps": [
+    {
+      "title": "Data Engineer",
+      "url": "https://roadmap.sh/data-engineer",
+      "kind": "combined"
+    },
+    {
+      "title": "DevOps",
+      "url": "https://roadmap.sh/devops",
+      "kind": "combined"
+    }
+  ],
+  "mapping_note": "A workshop combination of Data Engineer and DevOps topics. No separate Data Platform Engineer roadmap is claimed.",
+  "phase_1": {
+    "days": "1–30",
+    "label": "Define a small shared platform",
+    "slide": "A platform diagram, user needs and access model",
+    "actions": [
+      "Describe two fictional teams that need isolated datasets and a shared onboarding process.",
+      "Design a local PostgreSQL setup, two roles and a simple metadata register. Learn authentication versus authorisation."
+    ],
+    "output": "An architecture sketch, access matrix and repeatable local setup."
+  },
+  "phase_2": {
+    "days": "31–60",
+    "label": "Create a reusable onboarding route",
+    "slide": "Two isolated teams using the same setup template",
+    "actions": [
+      "Automate creation of schemas, read/write roles and one sample dataset per team.",
+      "Add basic health checks and record dataset owner, purpose, schema and refresh expectations."
+    ],
+    "output": "An onboarding template, sample catalog and usage instructions."
+  },
+  "phase_3": {
+    "days": "61–90",
+    "label": "Test operation and handover",
+    "slide": "Access checks, restore evidence and a user guide",
+    "actions": [
+      "Verify allowed and denied access for each role, then run a backup-and-restore exercise.",
+      "Ask another person to onboard a third fictional team using your template and capture friction."
+    ],
+    "output": "A small platform starter with operational evidence and an improvement backlog."
+  },
+  "portfolio": "A local data platform starter for two fictional teams, with separate access and reusable onboarding.",
+  "tools": "PostgreSQL, shell or Python scripts, Git, and optional local containers. Cloud deployment is optional.",
+  "acceptance": [
+    "Two fictional teams can use their own data, and documented tests deny cross-team access.",
+    "One setup command or script reproduces the platform and sample datasets.",
+    "A restore exercise recovers the sample data and the runbook records the steps and measured recovery time."
+  ],
+  "first_step": "Draw who owns each dataset and which role may read or change it.",
+  "beginner_adjustment": "Start with PostgreSQL roles and one schema. Defer cloud networking, Kubernetes and vendor-specific governance tooling."
+}

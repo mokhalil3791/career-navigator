@@ -1,0 +1,20 @@
+{
+  "$comment": "Coaches: add free events here (meetups, job fairs, programmes). Copy an entry, change it, and keep \"cost\": \"free\" (only free events are listed). Past events disappear automatically. Check every detail on the organiser’s own page.",
+  "events": [
+    {
+      "id": "data-ai-career-workshop-2026",
+      "title": "Data & AI career workshop (where Career Navigator was first shared)",
+      "date": "2026-11-02",
+      "organiser": "Workshop organisers",
+      "description": "A one-day workshop with career prompts and roundtables on agentic AI, data analytics and GenAI. Ask your coach for details.",
+      "cost": "free"
+    },
+    {
+      "id": "example-past-event",
+      "title": "Example past event (hidden automatically)",
+      "date": "2025-01-15",
+      "description": "This entry shows that events in the past are hidden.",
+      "cost": "free"
+    }
+  ]
+}

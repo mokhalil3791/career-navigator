@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "demo": false,
+  "profile": {
+    "name": "Olena — fictional",
+    "headline": "Accountant looking for a financial administration role",
+    "city": "Rotterdam",
+    "availability": "32 hours",
+    "travel": "Hybrid preferred",
+    "about": "Accountant with 10 years in a medium-sized company. Monthly closing, invoices and VAT returns under local rules.",
+    "experience": "2012–2022 | Accountant | Example Manufacturing (fictional), Kharkiv\nMonthly closing, accounts payable and receivable for about 400 invoices per month.",
+    "education": "Master in Economics (original title), Example National University (fictional), 2011.",
+    "skills": "1C accounting software; Excel (pivot tables, VLOOKUP); bookkeeping.",
+    "languages": "Ukrainian: native. Russian: fluent. English: C1 (certificate). Dutch: B1 (Staatsexamen NT2 programme I, fictional).",
+    "cvText": ""
+  },
+  "jobs": [
+    {
+      "id": "job-fin",
+      "title": "Financieel administratief medewerker — fictional",
+      "company": "Example Accountants (fictional)",
+      "url": "",
+      "body": "FICTIONAL ADVERT\nProcess invoices in Exact Online. Dutch B2. HBO level.",
+      "reason": "",
+      "requirements": [
+        {
+          "id": "f1",
+          "text": "Invoice processing",
+          "status": "supported",
+          "evidence": "About 400 invoices per month for 10 years.",
+          "nextStep": ""
+        },
+        {
+          "id": "f2",
+          "text": "Exact Online",
+          "status": "missing",
+          "evidence": "I used 1C, not Exact.",
+          "nextStep": "Do the free Exact Online learning modules."
+        },
+        {
+          "id": "f3",
+          "text": "Dutch B2",
+          "status": "partial",
+          "evidence": "Dutch B1 (fictional exam result).",
+          "nextStep": "Ask whether B1 is enough to start."
+        }
+      ]
+    }
+  ],
+  "selectedJobId": "job-fin",
+  "cv": {
+    "headline": "Accountant looking for a financial administration role",
+    "summary": "Accountant with 10 years in a medium-sized company. Monthly closing, invoices and VAT returns under local rules.",
+    "experience": "2012–2022 | Accountant | Example Manufacturing (fictional), Kharkiv\nMonthly closing, accounts payable and receivable for about 400 invoices per month.",
+    "education": "Master in Economics (original title), Example National University (fictional), 2011.",
+    "skills": "1C accounting software; Excel (pivot tables, VLOOKUP); bookkeeping.",
+    "languages": "Ukrainian: native. Russian: fluent. English: C1 (certificate). Dutch: B1 (Staatsexamen NT2 programme I, fictional).",
+    "letter": "Dear hiring team,\n\nI am applying for the financial administration role...",
+    "reviewed": false
+  },
+  "interview": {
+    "questionIndex": 0,
+    "answers": {},
+    "notes": {}
+  },
+  "plan": {
+    "roleId": "custom",
+    "targetRole": "",
+    "priorities": [
+      "",
+      "",
+      ""
+    ],
+    "project": "",
+    "day30": "",
+    "day60": "",
+    "day90": "",
+    "nextAction": "",
+    "nextDate": "",
+    "hours": 10
+  },
+  "ai": {
+    "step": "profile",
+    "language": "English",
+    "extra": "",
+    "drafts": {
+      "profile": "",
+      "search": "",
+      "compare": "",
+      "fit": "",
+      "tailor": "",
+      "interview": "",
+      "letter": ""
+    }
+  },
+  "settings": {
+    "remember": false
+  }
+}

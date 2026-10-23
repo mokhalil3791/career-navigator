@@ -1,0 +1,35 @@
+{
+  "title": "A 90-day plan from my top gaps",
+  "type": "object",
+  "required": [
+    "priorities",
+    "nextAction"
+  ],
+  "properties": {
+    "priorities": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "items": {
+        "type": "string",
+        "maxLength": 4000
+      }
+    },
+    "day30": {
+      "type": "string",
+      "maxLength": 8000
+    },
+    "day60": {
+      "type": "string",
+      "maxLength": 8000
+    },
+    "day90": {
+      "type": "string",
+      "maxLength": 8000
+    },
+    "nextAction": {
+      "type": "string",
+      "maxLength": 8000
+    }
+  }
+}

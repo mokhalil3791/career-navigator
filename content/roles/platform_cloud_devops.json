@@ -1,0 +1,63 @@
+{
+  "order": 70,
+  "id": "platform_cloud_devops",
+  "role": "Platform Engineer / Cloud DevOps",
+  "family": "Platform/MLOps",
+  "starting_point": "Comfort with computers, basic scripting and troubleshooting. IT support, systems administration or software development can provide useful foundations.",
+  "priorities": [
+    "Linux, networking and scripting",
+    "Repeatable setup and delivery",
+    "Observability, security and recovery"
+  ],
+  "roadmaps": [
+    {
+      "title": "DevOps",
+      "url": "https://roadmap.sh/devops",
+      "kind": "direct"
+    },
+    {
+      "title": "DevSecOps",
+      "url": "https://roadmap.sh/devsecops",
+      "kind": "supporting"
+    }
+  ],
+  "phase_1": {
+    "days": "1–30",
+    "label": "Understand the running service",
+    "slide": "Linux, HTTP, Git and a simple application",
+    "actions": [
+      "Run a tiny local web service and explain its process, port, configuration and logs.",
+      "Practise shell commands and write a setup script. Keep secrets outside committed source code."
+    ],
+    "output": "A working local service with a clear setup and troubleshooting guide."
+  },
+  "phase_2": {
+    "days": "31–60",
+    "label": "Automate a dependable delivery route",
+    "slide": "A reusable setup and automated build checks",
+    "actions": [
+      "Package the service and automate build and test steps using local scripts or available CI.",
+      "Add configuration examples, health checks and a developer onboarding document."
+    ],
+    "output": "A small platform template another developer can start and verify."
+  },
+  "phase_3": {
+    "days": "61–90",
+    "label": "Test operations",
+    "slide": "Monitor health and recover from a failed deployment",
+    "actions": [
+      "Simulate a service failure, inspect logs and restore the previous version.",
+      "Create an infrastructure diagram and optional cloud deployment design with explicit security and cost assumptions. No paid deployment is required."
+    ],
+    "output": "A reusable service template, failure drill and operational runbook."
+  },
+  "portfolio": "A local developer platform starter that builds, tests, runs and monitors a small service.",
+  "tools": "Linux or an available local shell, Python or another familiar language, Git and optional local containers.",
+  "acceptance": [
+    "A new user can start and test the service by following the documented setup.",
+    "An intentionally broken build fails the automated check before release.",
+    "A failure drill detects the problem and restores the previous version, with elapsed recovery time recorded."
+  ],
+  "first_step": "Run a simple service locally and explain how a browser request reaches it.",
+  "beginner_adjustment": "Focus on Linux, networking and scripting. Choose one cloud's concepts later instead of studying several platforms at once."
+}

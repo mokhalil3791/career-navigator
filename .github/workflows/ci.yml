@@ -9,7 +9,8 @@ permissions:
   contents: read
 
 jobs:
-  test:
+  unit:
+    name: Type check, unit and guardrail tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -18,9 +19,52 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - name: Unit and guardrail tests
-        run: npm test
-      - name: Build the Pages site
-        run: npm run build:site
+      - name: Type check (tsc --noEmit on JSDoc)
+        run: npm run typecheck
+      - name: Unit, parity and guardrail tests with coverage (90% lines on src/core)
+        run: npm run coverage
+      - name: Build app and Pages site
+        run: npm run build:all
+      - name: Build the single-file release (attached to GitHub Releases)
+        run: npm run build:single
+      - name: Content checks (knowledge cards age, translation coverage, shell size)
+        run: node scripts/check-content.mjs
       - name: Security audit (runtime dependencies)
         run: npm audit --omit=dev --audit-level=high
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: |
+            _site
+            release
+          retention-days: 3
+
+  e2e:
+    name: End-to-end (${{ matrix.project }})
+    needs: unit
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [chromium, firefox, webkit, mobile-chrome, mobile-safari]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: .
+      - name: Install browser
+        run: npx playwright install --with-deps ${{ (matrix.project == 'mobile-chrome' && 'chromium') || (matrix.project == 'mobile-safari' && 'webkit') || matrix.project }}
+      - name: Playwright
+        run: npx playwright test --project=${{ matrix.project }}
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.project }}
+          path: playwright-report
+          retention-days: 7

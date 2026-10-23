@@ -1,0 +1,22 @@
+/* Design tokens: the v0.1 palette and type scale. Change colours here (or via config/brand.json). */
+:root{
+  --ink:#193d3b;
+  --muted:#5c6c68;
+  --deep:#123e3c;
+  --teal:#186961;
+  --mint:#e6f0e9;
+  --lime:#d7eea6;
+  --paper:#f7f8f3;
+  --white:#fff;
+  --line:#d8e0da;
+  --orange:#b85d2d;
+  --sand:#fff1df;
+  --red:#a83738;
+  --shadow:0 12px 40px #1b413b09;
+  --radius:19px;
+  font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--ink);
+  background:var(--paper);
+  font-size:16px;
+  line-height:1.55
+}

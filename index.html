@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--CSP-->
+  <meta name="description" content="A free, private workspace for your next career step in the Netherlands. Prepare your profile, compare jobs and make a learning plan.">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#123e3c">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <title>Career Navigator — Your next step</title>
+  <script type="module" src="./src/main.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to workspace</a>
+  <div id="app"><p class="loading">Opening Career Navigator…</p></div>
+  <div id="notice" class="notice" role="status" aria-live="polite" aria-atomic="true"></div>
+  <input id="import-file" type="file" accept=".json,application/json,.html,text/html" hidden>
+  <noscript><p>Career Navigator needs JavaScript enabled in your browser. It runs on your device and does not require an account.</p></noscript>
+</body>
+</html>

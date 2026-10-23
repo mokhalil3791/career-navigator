@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "demo": false,
+  "profile": {
+    "name": "Karim — fictional",
+    "headline": "Software developer (PHP) moving to Python backend work",
+    "city": "Eindhoven",
+    "availability": "",
+    "travel": "",
+    "about": "Five years building web shops in PHP. Learning Python and SQL.",
+    "experience": "2017–2022 | Web developer | Example Web Agency (fictional), Damascus\nBuilt and maintained six web shops in PHP and MySQL.",
+    "education": "",
+    "skills": "PHP, MySQL, Git, HTML/CSS. Python: personal project (fictional).",
+    "languages": "Arabic: native. English: B2. Dutch: A1.",
+    "cvText": ""
+  },
+  "jobs": [],
+  "selectedJobId": "",
+  "cv": {
+    "headline": "",
+    "summary": "",
+    "experience": "",
+    "education": "",
+    "skills": "",
+    "languages": "",
+    "letter": "",
+    "reviewed": false
+  },
+  "interview": {
+    "questionIndex": 0,
+    "answers": {
+      "q4": "I learned Python with free online courses and built a small API."
+    },
+    "notes": {}
+  },
+  "plan": {
+    "roleId": "ai_engineer",
+    "targetRole": "AI Engineer",
+    "priorities": [
+      "Reliable model inputs and outputs",
+      "Retrieval from approved information",
+      "Evaluation, privacy and failure handling"
+    ],
+    "project": "A workshop FAQ assistant that cites its source passages and says when the supplied information is insufficient.",
+    "day30": "A prototype specification and a labelled evaluation set.",
+    "day60": "A demonstrable retrieval workflow that separates application code, source text and model responses.",
+    "day90": "A small assistant demo plus evaluation results and an honest limitations page.",
+    "nextAction": "Write the assistant's one-sentence purpose and five questions it must decline to answer.",
+    "nextDate": "",
+    "hours": 6
+  },
+  "ai": {
+    "step": "interview",
+    "language": "English",
+    "extra": "Please use simple English.",
+    "drafts": {
+      "profile": "",
+      "search": "",
+      "compare": "",
+      "fit": "",
+      "tailor": "",
+      "interview": "",
+      "letter": ""
+    }
+  },
+  "settings": {
+    "remember": false
+  }
+}
