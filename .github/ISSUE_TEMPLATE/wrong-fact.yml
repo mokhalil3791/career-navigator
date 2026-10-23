@@ -1,0 +1,12 @@
+name: A fact looks wrong or out of date
+description: Report a knowledge card, prompt or text that is wrong, unclear or outdated.
+labels: [content]
+body:
+  - type: input
+    id: where
+    attributes: { label: Where did you see it?, placeholder: "e.g. Knowledge card 'Foreign diplomas'" }
+    validations: { required: true }
+  - type: textarea
+    id: what
+    attributes: { label: What is wrong?, description: "If you can, link the official page that shows the correct information." }
+    validations: { required: true }

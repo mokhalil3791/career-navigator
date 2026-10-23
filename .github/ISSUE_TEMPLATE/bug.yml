@@ -1,0 +1,19 @@
+name: Something does not work
+description: Tell us what went wrong. Please do not include personal details.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Thank you! Please **do not paste your CV, BSN, address or other personal details** here. GitHub issues are public."
+  - type: textarea
+    id: what
+    attributes: { label: What happened?, description: What did you do, and what did you expect? }
+    validations: { required: true }
+  - type: input
+    id: device
+    attributes: { label: Device and browser, placeholder: "e.g. Android phone, Chrome" }
+  - type: dropdown
+    id: part
+    attributes:
+      label: Which part?
+      options: [Prompt library, Profile, Compare jobs, Applications, My application / CV, Interview practice, 90-day plan, AI prompt studio, Built-in AI, Coach view, Other]

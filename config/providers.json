@@ -1,0 +1,13 @@
+{
+  "$comment": "Free AI routes only. Model IDs, endpoints and labels live here, never in code (FR-AI-2). Guardrail G8 fails if a paid-only provider host is added.",
+  "chats": [
+    { "id": "claude", "label": "Claude", "url": "https://claude.ai/new", "prefill": "https://claude.ai/new?q=" },
+    { "id": "gemini", "label": "Gemini", "url": "https://gemini.google.com/app" },
+    { "id": "lechat", "label": "Le Chat (Mistral)", "url": "https://chat.mistral.ai/chat" },
+    { "id": "copilot", "label": "Microsoft Copilot", "url": "https://copilot.microsoft.com/" },
+    { "id": "chatgpt", "label": "ChatGPT", "url": "https://chatgpt.com/", "prefill": "https://chatgpt.com/?q=" },
+    { "id": "duckai", "label": "Duck.ai", "url": "https://duck.ai/" }
+  ],
+  "prefillMaxChars": 6000,
+  "api": []
+}
