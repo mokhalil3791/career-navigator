@@ -33,7 +33,7 @@ ${proposals.map((p) => {
     return html`<article class="proposal" role="listitem"><h3>${t(p.label)}</h3>
 <div class="diff" aria-label=${t('Changes')}>${diffWords(p.before, text).map((part) => part.type === 'same' ? part.text : part.type === 'added' ? html`<ins>${part.text}</ins>` : html`<del>${part.text}</del>`)}</div>
 ${p.note ? html`<p class="source-note">${p.note}</p>` : nothing}
-<details class="details"><summary>${t('Edit before accepting')}</summary><label class="visually-hidden" for="edit-${p.id}">${t('Suggested text')}</label><textarea id="edit-${p.id}" rows="4" .value=${live(text)} @input=${(/** @type {Event} */ e) => { d.text = /** @type {HTMLTextAreaElement} */ (e.target).value; ctx.rerender(); }}></textarea></details>
+${p.editable === false ? nothing : html`<details class="details"><summary>${t('Edit before accepting')}</summary><label class="visually-hidden" for="edit-${p.id}">${t('Suggested text')}</label><textarea id="edit-${p.id}" rows="4" .value=${live(text)} @input=${(/** @type {Event} */ e) => { d.text = /** @type {HTMLTextAreaElement} */ (e.target).value; ctx.rerender(); }}></textarea></details>`}
 <div class="actions mt-10">${button(t('Accept'), accept, { style: 'small' })}${button(t('Reject'), () => { d.status = 'rejected'; ctx.rerender(); }, { style: 'ghost small' })}</div></article>`;
   })}</div>`;
 }
