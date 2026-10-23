@@ -13,3 +13,28 @@
 .step-num{color:#56665f}
 .hero-caption{color:#3d5a3c}
 .footer{color:var(--muted)}
+/* AI panel, proposals and diff (Phase 2) */
+.ai-panel{border-color:#c9dccd;box-shadow:0 0 0 3px #e6f0e9}
+.row-between{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.route-picker{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:10px;margin:0}
+.route-picker legend{font-weight:650;font-size:.84rem;padding:0 6px}
+.route-picker input[type=radio]{inline-size:18px;block-size:18px;margin-block-start:3px;accent-color:var(--teal)}
+.provider-setup{border-inline-start:3px solid var(--lime);padding-inline-start:14px;margin-block-start:12px}
+.proposals{display:grid;gap:12px}
+.proposal{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fafbf8}
+.proposal.done{background:#f0f4ee;color:var(--muted);padding:10px 14px}
+.proposal h3{font-size:.9rem;margin-block-end:8px}
+.diff{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.85rem;line-height:1.6;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;max-block-size:280px;overflow:auto}
+.diff ins{background:#d9f0d0;color:#1d4a17;text-decoration:none;border-block-end:2px solid #6aa45c}
+.diff del{background:#fbe2df;color:#7a2320;text-decoration:line-through}
+.ai-output pre{max-block-size:360px}
+.facts-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.transcript{list-style:none;padding:0;margin:14px 0;display:grid;gap:10px}
+.transcript li{border-radius:12px;padding:10px 12px;max-inline-size:85%}
+.transcript li p{white-space:pre-wrap;margin-block-start:4px;font-size:.88rem}
+.transcript .interviewer{background:var(--mint)}
+.transcript .me{background:#fff;border:1px solid var(--line);margin-inline-start:auto}
+.preserve{white-space:pre-wrap}
+.custom-prompt{border:1px solid var(--line);border-radius:10px;padding:10px;margin-block:10px;display:grid;gap:8px}
+progress{inline-size:100%;block-size:10px;accent-color:var(--teal)}
+@media(max-width:720px){.facts-row{grid-template-columns:1fr 1fr}}

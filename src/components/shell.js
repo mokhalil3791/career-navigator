@@ -29,6 +29,7 @@ export function shell(ctx, nav, view, page) {
 <main id="main" class="content" tabindex="-1">${state.demo ? html`<div class="banner"><span><strong>${t('Fictional example.')}</strong> ${t('This is Sam’s sample workspace. Every employer and advert here is made up.')}</span>${button(t('Start my own'), () => ctx.services.startOwn(), { style: 'small' })}</div>` : nothing}
 ${ctx.content.warnings.length ? html`<div class="banner" role="status"><span><strong>${t('Some content files were skipped:')}</strong> ${ctx.content.warnings.join(' · ')}</span></div>` : nothing}
 ${ctx.services.coachNotesFor ? ctx.services.coachNotesFor(ctx, view) : nothing}
+${ctx.services.aiPanel ? ctx.services.aiPanel(ctx, view) : nothing}
 ${page}${privacyDrawer(ctx)}</main>
 <footer class="footer"><span>${t(brand.footer)}</span><span class="independence">${t(INDEPENDENCE_NOTICE)}</span><span><a href="${brand.repoUrl}/blob/main/docs/PRIVACY.md" target="_blank" rel="noopener noreferrer">${t('Privacy')}</a> · <a href=${brand.repoUrl} target="_blank" rel="noopener noreferrer">${t('Open source')}</a></span></footer></div></div>`;
 }
