@@ -1,7 +1,7 @@
 // @ts-check
 // NFR-A11Y-2: axe-core on every page (empty and demo). FR-LIB: prompt library page.
 import AxeBuilder from '@axe-core/playwright';
-import { test, expect, openApp, loadDemo } from './fixtures.js';
+import { test, expect, openApp, loadDemo, seriousAxe, gotoView, sidebarDiagnostics } from './fixtures.js';
 // Axe measures colours; transitions (toast, hover lift) can give false contrast results mid-animation.
 test.use({ reducedMotion: 'reduce' });
 
@@ -10,7 +10,7 @@ const PAGES = ['home', 'profile', 'jobs', 'cv', 'interview', 'plan', 'prompts'];
 /** @param {import('@playwright/test').Page} page */
 async function seriousViolations(page) {
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze();
-  return results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical').map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).slice(0, 3).join(', ')}`);
+  return seriousAxe(results);
 }
 
 for (const demo of [false, true]) {
@@ -18,9 +18,10 @@ for (const demo of [false, true]) {
     await openApp(page);
     if (demo) await loadDemo(page);
     for (const id of PAGES) {
-      await page.goto('./#/' + id);
+      await gotoView(page, id);
       await expect(page.locator('h1')).toBeVisible();
-      expect(await seriousViolations(page), id).toEqual([]);
+      const found = await seriousViolations(page);
+      expect(found, `${id} (scrollY ${await page.evaluate(() => window.scrollY)}) ${found.length ? await sidebarDiagnostics(page) : ''}`).toEqual([]);
     }
   });
 }

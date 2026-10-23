@@ -78,3 +78,56 @@ export async function loadDemo(page, label = 'Try a fictional example') {
   await expect(page).toHaveURL(/#\/home$/);
   await expect(page.locator('#notice')).toHaveClass(/visible/);
 }
+
+/**
+ * Serious/critical axe violations as readable lines. For colour-contrast it adds the
+ * measured colours and ratio, so an intermittent failure can be diagnosed from the report.
+ * @param {import('axe-core').AxeResults} results
+ */
+export function seriousAxe(results) {
+  return results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical').map((v) => v.id + ': ' + v.nodes.slice(0, 3).map((n) => {
+    const d = /** @type {any} */ (n.any?.[0]?.data);
+    return n.target.join(' ') + (d && d.contrastRatio !== undefined ? ` [fg ${d.fgColor} on bg ${d.bgColor}, ratio ${d.contrastRatio}${d.messageKey ? ', ' + d.messageKey : ''}]` : '');
+  }).join(', '));
+}
+
+/**
+ * In-app navigation by changing the hash, like the app's own links. Unlike page.goto,
+ * this never reloads the page. A reload loses session-only work, and mobile WebKit
+ * reloaded when goto() targeted the URL the page was already on (see docs/KNOWN-ISSUES.md).
+ * @param {import('@playwright/test').Page} page
+ * @param {string} id page id, e.g. "cv"
+ */
+export async function gotoView(page, id) {
+  await page.evaluate((hash) => { if (location.hash !== hash) location.hash = hash; }, '#/' + id);
+  await expect(page).toHaveURL(new RegExp('#/' + id + '$'));
+  await expect(page.locator('h1')).toBeVisible();
+}
+
+/**
+ * What the browser itself reports for the dark sidebar at this moment, to tell a real
+ * styling problem (computed background wrong) from a hit-testing artefact
+ * (elementsFromPoint missing the sidebar, which axe uses to find the background).
+ * @param {import('@playwright/test').Page} page
+ */
+export async function sidebarDiagnostics(page) {
+  const now = await sidebarState(page);
+  await page.waitForTimeout(1000);
+  const later = await sidebarState(page);
+  const shot = test.info().outputPath('sidebar-at-failure.png');
+  await page.screenshot({ path: shot });
+  await test.info().attach('sidebar-at-failure', { path: shot, contentType: 'image/png' });
+  return `${now} || 1 s later: ${later}`;
+}
+
+/** @param {import('@playwright/test').Page} page */
+async function sidebarState(page) {
+  return page.evaluate(() => {
+    const brand = document.querySelector('.brand > span:nth-child(2)');
+    const sidebar = document.querySelector('.sidebar');
+    if (!brand || !sidebar) return 'no sidebar';
+    const r = brand.getBoundingClientRect();
+    const stack = document.elementsFromPoint(r.left + r.width / 2, r.top + r.height / 2).map((e) => e.tagName.toLowerCase() + (e.className && typeof e.className === 'string' ? '.' + e.className.split(' ')[0] : ''));
+    return `sidebar computed bg ${getComputedStyle(sidebar).backgroundColor}; --deep "${getComputedStyle(document.documentElement).getPropertyValue('--deep').trim()}"; brand rect ${Math.round(r.top)},${Math.round(r.left)} ${Math.round(r.width)}x${Math.round(r.height)}; elementsFromPoint: ${stack.join(' > ')}`;
+  });
+}

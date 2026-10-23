@@ -46,6 +46,17 @@ export function profileText(state, omitName) {
 }
 
 /**
+ * The line that asks for CVs and letters in the user's chosen application language
+ * (NFR-I18N-3). Shared by every prompt builder, so all AI routes respect it.
+ * Returns '' for English, which keeps v0.1 prompts unchanged.
+ * @param {any} state
+ */
+export function applicationLanguageLine(state) {
+  const appLanguage = state.settings && state.settings.applicationLanguage;
+  return appLanguage && appLanguage !== 'English' ? 'Application language: I explicitly ask you to write CVs and application letters in ' + appLanguage + '.' : '';
+}
+
+/**
  * @param {any} state
  * @returns {any | null} the selected advert
  */
@@ -74,8 +85,8 @@ export function buildPrompt(step, state, content) {
     FACTUALITY_GUARD,
     '\nTASK\n' + task,
   ];
-  const appLanguage = state.settings && state.settings.applicationLanguage;
-  if (appLanguage && appLanguage !== 'English') lines.splice(3, 0, 'Application language: I explicitly ask you to write CVs and application letters in ' + appLanguage + '.');
+  const appLine = applicationLanguageLine(state);
+  if (appLine) lines.splice(3, 0, appLine);
   /** @type {Record<string, any>} */
   const data = { fictionalExample: state.demo === true, recordedProfile: profileText(state, true) || '(No facts entered yet)' };
   if (step === 'compare' || step === 'search') data.jobAdverts = (state.jobs || []).map(function (/** @type {any} */ j) { return { title: j.title, company: j.company, urlAsEntered: j.url, advertText: j.body, myNotes: j.reason, myRequirementReview: j.requirements }; });

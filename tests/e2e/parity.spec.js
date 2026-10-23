@@ -7,6 +7,8 @@ const AREAS = [['Overview', 'home'], ['My profile', 'profile'], ['Compare jobs',
 
 test('seven areas open, each focuses its heading, with the fixed independence notice (G10)', async ({ page }) => {
   await openApp(page);
+  // The static loading placeholder must be gone once the app has rendered.
+  await expect(page.getByText('Opening Career Navigator…')).toHaveCount(0);
   for (const [label, id] of AREAS) {
     await navigate(page, label, id);
     await expect(page).toHaveURL(new RegExp('#/' + id + '$'));

@@ -1,7 +1,7 @@
 // @ts-check
 // Phase 4: journey 1 (coach round trip), CV import, DOCX export, applications, .ics and check-in.
 import { readFileSync } from 'node:fs';
-import { test, expect, openApp, navigate, loadDemo } from './fixtures.js';
+import { test, expect, openApp, navigate, loadDemo, gotoView } from './fixtures.js';
 
 /** @param {import('@playwright/test').Page} page */
 async function download(page, /** @type {() => Promise<unknown>} */ trigger, /** @type {string} */ path) {
@@ -20,7 +20,7 @@ test('journey 1: example → review adverts → coach pack → coach view → no
     await page.locator('.job-select', { hasText: title }).click();
     await expect(page.locator('#job-title')).toHaveValue(title);
   }
-  await page.goto('./#/plan');
+  await gotoView(page, 'plan');
   await page.getByTestId('coach-pack').click();
   await expect(page.getByText('This file contains personal details').first()).toBeVisible();
   await page.locator('#coach-pass').fill('workshop-2026');
@@ -47,10 +47,10 @@ test('journey 1: example → review adverts → coach pack → coach view → no
   const before = await page.evaluate(() => document.querySelector('#field-plan-targetRole') && /** @type {HTMLInputElement} */ (document.querySelector('#field-plan-targetRole')).value);
   await page.locator('#import-file').setInputFiles(notesPath);
   await expect(page.locator('#notice')).toContainText('1 coach notes added');
-  await page.goto('./#/cv');
+  await gotoView(page, 'cv');
   await expect(page.locator('.coach-notes')).toContainText('Lead with the SQL project');
   await expect(page.locator('.coach-notes')).toContainText('Coach R.');
-  await page.goto('./#/plan');
+  await gotoView(page, 'plan');
   expect(await page.locator('#field-plan-targetRole').inputValue()).toBe(before);
 
   // Delete everything.
@@ -74,7 +74,7 @@ for (const kind of ['pdf', 'docx', 'txt']) {
 test('DOCX export is locked until review, then downloads a Word file (FR-CV-3)', async ({ page }, info) => {
   await openApp(page);
   await loadDemo(page);
-  await page.goto('./#/cv');
+  await gotoView(page, 'cv');
   await expect(page.getByTestId('export-docx')).toBeDisabled();
   await page.locator('#cv-reviewed').check();
   const path = info.outputPath('cv.docx');
@@ -105,7 +105,7 @@ test('applications tracker with weekly view and .ics follow-ups (FR-APP)', async
 test('plan: milestone dates, .ics export and weekly check-in (FR-PLAN-2/3)', async ({ page }, info) => {
   await openApp(page);
   await loadDemo(page);
-  await page.goto('./#/plan');
+  await gotoView(page, 'plan');
   await page.locator('#field-plan-nextDate').fill('2026-11-05');
   await page.locator('#date-day30').fill('2026-12-01');
   const path = info.outputPath('plan.ics');
@@ -130,8 +130,26 @@ test('profile rows: languages with CEFR and basis, education with IDW (FR-PRO-4/
   await page.locator('input[id^=edu-title-]').fill('Bachelor of Accounting');
   await page.locator('select[id^=edu-idw-]').selectOption('applied');
   await page.locator('#target-0').fill('Financial administrator');
-  await page.goto('./#/prompts');
+  await gotoView(page, 'prompts');
   await expect(page.locator('#prompt-preview')).toHaveValue(/Dutch: B1, certified \(Staatsexamen NT2 programme I\)/);
   await expect(page.locator('#prompt-preview')).toHaveValue(/Bachelor of Accounting, IDW evaluation: applied/);
   await expect(page.locator('#prompt-preview')).toHaveValue(/Target roles:\\nFinancial administrator|Target roles:\nFinancial administrator/);
+});
+
+test('a coach pack larger than 1 MiB (a well-filled workspace) still opens in the coach view', async ({ page }, info) => {
+  const { buildCoachPack } = await import('../../src/core/exports/coach-pack.js');
+  const { newWorkspace } = await import('../../src/core/schema.js');
+  const s = newWorkspace();
+  s.profile.headline = 'Large fictional workspace';
+  for (let i = 0; i < 8; i++) s.jobs.push({ id: 'j' + i, title: 'Fictional advert ' + i, company: 'Example', url: '', body: 'Advert text. '.repeat(3000), reason: '', requirements: [] });
+  for (const k of ['summary', 'experience', 'education', 'skills', 'languages']) s.cv[k] = 'CV text. '.repeat(2000);
+  for (const k of ['profile', 'search', 'compare', 'fit', 'tailor', 'interview', 'letter']) s.ai.drafts[k] = 'Draft text. '.repeat(3000);
+  const html = await buildCoachPack(s, { interviewQuestions: [] });
+  expect(html.length).toBeGreaterThan(1048576);
+  const path = info.outputPath('large-coach-pack.html');
+  (await import('node:fs')).writeFileSync(path, html);
+  await page.goto('./#/coach');
+  await page.locator('#import-file').setInputFiles(path);
+  await expect(page.locator('h1')).toHaveText('Review and add notes.');
+  await expect(page.locator('main')).toContainText('Large fictional workspace');
 });

@@ -13,6 +13,7 @@ import { button, field, goButton, pageHeading } from '../components/ui.js';
 import { buildPrompt } from '../core/prompts.js';
 import { safeUrl } from '../core/escape.js';
 import providers from '../../config/providers.json';
+import brand from '../../config/brand.json';
 
 const STEPS = [['profile', '1'], ['search', '2'], ['compare', '+'], ['fit', '3'], ['tailor', '4'], ['interview', '5'], ['letter', '6']];
 const LANGUAGES = ['English', 'Dutch', 'Arabic', 'Ukrainian', 'French', 'Turkish', 'Persian', 'Tigrinya', 'Amharic', 'Somali', 'Kurdish', 'Russian', 'Spanish', 'Pashto'];
@@ -51,7 +52,7 @@ ${field(ctx, t('Anything else to ask'), 'ai.extra', { optional: true, area: true
 <div class="provider-links"><span class="muted">${t('Then open a free AI chat:')}</span>${providers.chats.map((c) => { const url = safeUrl(c.url); return url ? html`<a href=${url} target="_blank" rel="noopener noreferrer">${c.label} ↗</a>` : nothing; })}</div>
 ${canPrefill ? html`<p class="field-hint mt-10">${t('Short prompt: you can also open it pre-filled in')} ${providers.chats.filter((c) => c.prefill).map((c) => html`<a class="prefill-link" href=${safeUrl(c.prefill + encodeURIComponent(prompt))} target="_blank" rel="noopener noreferrer">${c.label} ↗</a> `)} ${t('(the text travels in the web address, so it can appear in your browser history).')}</p>` : nothing}
 <p class="source-note">${t('Each AI service has its own terms, privacy controls and free usage limits. Career Navigator itself never needs an account, a subscription or an API key.')}</p>
-<details class="details"><summary>${t('About this prompt')}</summary><div class="original-text">${t('This prompt adds factuality safeguards and uses evidence categories instead of a score. It treats your profile and adverts as quoted data, so instructions hidden inside an advert are ignored.')}</div><p class="source-note"><a href="../prompts/" target="_blank" rel="noopener">${t('Open the public prompt library')}</a></p></details></section>
+<details class="details"><summary>${t('About this prompt')}</summary><div class="original-text">${t('This prompt adds factuality safeguards and uses evidence categories instead of a score. It treats your profile and adverts as quoted data, so instructions hidden inside an advert are ignored.')}</div><p class="source-note"><a href=${safeUrl(brand.promptLibraryUrl)} target="_blank" rel="noopener noreferrer">${t('Open the public prompt library')}</a></p></details></section>
 ${ctx.ui.aiResponse ? ctx.ui.aiResponse(ctx) : nothing}
 <section class="card"><div class="card-head"><div><h2>${t('Bring back a draft')}</h2><p class="card-sub">${t('Paste a response from your AI chat. Treat it as unverified working text.')}</p></div><span class="pill sand">${t('Unverified draft — needs your review')}</span></div>
 ${field(ctx, t('AI response or working notes'), 'ai.drafts.' + step, { area: true, rows: 8, max: 40000, placeholder: t('Paste the response here. Check facts, missing evidence, assumptions and tone.') })}

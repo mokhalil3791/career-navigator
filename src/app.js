@@ -109,9 +109,7 @@ export function startApp(root, options = {}) {
   function rerender() {
     const c = ctx();
     const page = pages.find((p) => p.id === view) || pages[0];
-    document.documentElement.lang = c.state.settings.uiLanguage;
-    document.documentElement.dir = languageDir(c.state.settings.uiLanguage);
-    document.documentElement.classList.toggle('simple', c.state.settings.simpleLanguage);
+    setRootAttributes(c.state.settings.uiLanguage, c.state.settings.simpleLanguage);
     render(shell(c, pages.filter((p) => !p.hidden), view, page.render(c)), root);
     applyFocus();
   }
@@ -197,7 +195,10 @@ export function startApp(root, options = {}) {
     if (!file) return;
     const t = ctx().t;
     try {
-      if (file.size > 1048576) throw new Error(t('This backup is larger than one MiB. Choose a smaller Career Navigator backup.'));
+      // Coach packs (.html) hold the workspace AND the rendered work pack, so they may be
+      // larger than a backup; readCoachPack() enforces their own 4 MiB limit.
+      const isHtml = /\.html?$/i.test(file.name);
+      if (file.size > (isHtml ? 4 * 1048576 : 1048576)) throw new Error(isHtml ? t('This coach pack is too large.') : t('This backup is larger than one MiB. Choose a smaller Career Navigator backup.'));
       const text = await file.text();
       if (services.importOther && (await services.importOther(file, text))) return;
       const next = parseWorkspace(text);
@@ -225,10 +226,17 @@ export function startApp(root, options = {}) {
   const app = { store, pages, services, ui, ctx, rerender, go, notify };
   for (const extend of options.extensions || []) extend(app);
   view = viewFromHash();
+  // lit-html's render() adds to the container and would leave the static
+  // "Opening Career Navigator…" placeholder from index.html on screen.
+  root.replaceChildren();
   rerender();
 
-  device.loadSaved().then(({ state, message }) => {
-    if (state) { store.dispatch({ type: 'replace', state }); notify(ctx().t(message)); }
+  device.loadSaved().then(({ state, message, error }) => {
+    if (state) {
+      store.dispatch({ type: 'replace', state });
+      if (error) ui.storageError = ctx().t('Device save failed — download a backup');
+      notify(ctx().t(message), Boolean(error));
+    }
     services.afterStart?.();
   }).catch(() => {
     ui.storageError = ctx().t('Saved data unavailable — import a backup if needed');
@@ -237,6 +245,22 @@ export function startApp(root, options = {}) {
     services.afterStart?.();
   });
   return app;
+}
+
+/**
+ * Updates lang, dir and the simple-language class on <html> ONLY when they change.
+ * Rewriting them on every render invalidated the root style each keystroke, and in
+ * WebKit this sometimes left descendants with stale var(--…) values: the dark
+ * sidebar briefly computed as transparent (docs/KNOWN-ISSUES.md).
+ * @param {string} lang
+ * @param {boolean} simple
+ */
+function setRootAttributes(lang, simple) {
+  const html = document.documentElement;
+  const dir = languageDir(lang);
+  if (html.lang !== lang) html.lang = lang;
+  if (html.dir !== dir) html.dir = dir;
+  if (html.classList.contains('simple') !== simple) html.classList.toggle('simple', simple);
 }
 
 function applyBrandColours() {

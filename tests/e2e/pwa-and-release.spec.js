@@ -3,7 +3,7 @@
 import { existsSync, readdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { test, expect, openApp, loadDemo, navigate } from './fixtures.js';
+import { test, expect, openApp, loadDemo, navigate, gotoView } from './fixtures.js';
 
 // These tests need the real service worker (they never call an AI provider).
 test.use({ serviceWorkers: 'allow' });
@@ -58,7 +58,7 @@ test('single-file release opens from the file system with a strict CSP and works
   expect(csp).toMatch(/script-src 'sha256-/);
   expect(csp).not.toContain('unsafe-inline');
   await loadDemo(page);
-  await page.goto(page.url().replace(/#.*$/, '#/cv'));
+  await gotoView(page, 'cv');
   await page.locator('#cv-reviewed').check();
   const download = page.waitForEvent('download');
   await page.getByTestId('export-cv').click();
