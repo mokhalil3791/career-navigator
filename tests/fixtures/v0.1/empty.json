@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "demo": false,
+  "profile": {
+    "name": "",
+    "headline": "",
+    "city": "",
+    "availability": "",
+    "travel": "",
+    "about": "",
+    "experience": "",
+    "education": "",
+    "skills": "",
+    "languages": "",
+    "cvText": ""
+  },
+  "jobs": [],
+  "selectedJobId": "",
+  "cv": {
+    "headline": "",
+    "summary": "",
+    "experience": "",
+    "education": "",
+    "skills": "",
+    "languages": "",
+    "letter": "",
+    "reviewed": false
+  },
+  "interview": {
+    "questionIndex": 0,
+    "answers": {},
+    "notes": {}
+  },
+  "plan": {
+    "roleId": "custom",
+    "targetRole": "",
+    "priorities": [
+      "",
+      "",
+      ""
+    ],
+    "project": "",
+    "day30": "",
+    "day60": "",
+    "day90": "",
+    "nextAction": "",
+    "nextDate": "",
+    "hours": 6
+  },
+  "ai": {
+    "step": "profile",
+    "language": "English",
+    "extra": "",
+    "drafts": {
+      "profile": "",
+      "search": "",
+      "compare": "",
+      "fit": "",
+      "tailor": "",
+      "interview": "",
+      "letter": ""
+    }
+  },
+  "settings": {
+    "remember": false
+  }
+}
