@@ -1,9 +1,9 @@
 # v1 status by requirement
 
-Status on 2026-10-23, at branch `review-fixes` (PR #7, stacked on #1–#6). **v1 is a preview at `/next/`. It is not tagged and not at the root.**
+Baseline: Phases 0–5 and the review fixes are merged into `main` (`e2f4929`, PR #8). **v1 is a preview at `/next/`. It is not tagged and not at the root.** The table records the baseline checks from 2026-10-23; branch changes are described separately below.
 
 Column meanings:
-- **Implemented:** code is in the stack (✔), partly (◐), or not built (✘).
+- **Implemented:** code is in the baseline (✔), partly (◐), or not built (✘).
 - **Automatically tested:** a test in CI checks it. *Unit* = Vitest, *E2E* = Playwright on Chromium, Firefox (CI only), WebKit, Pixel 7 and iPhone 14 viewports, with mocked AI. "—" = no automated test.
 - **Manually verified:** a person checked it on real hardware or software. **Nothing has been verified by the maintainer yet.** "Agent" marks checks the coding agent ran by hand on this Windows PC (not a substitute for the release checklist).
 
@@ -54,3 +54,15 @@ Column meanings:
 
 ## Known issues
 See `docs/KNOWN-ISSUES.md`.
+
+## Primary journey PR A (2026-10-24, branch `primary-journey`)
+
+**Implemented on this branch:** import-first profile with paste/manual alternatives; education/language rows grouped under their free-text fields; populated optional sections expanded; plain next-step navigation; Dutch strings. No schema, review-gate, AI acceptance, or network-policy change. Home/navigation, advert/CV order and AI-route simplification remain for PRs B/C after maintainer merges.
+
+**Automated verification:** 342 unit/parity/guardrail tests, type checking, app/site and single-file builds, and all 41 Chromium E2E tests passed. Selected mobile suites (profile journey, new modules, languages/knowledge and accessibility/library) passed 46 tests across mobile-chrome and mobile-safari; two existing desktop-only print tests were skipped. Translation coverage is 727/727 strings; shell size is approximately 118 KB gzipped. New profile E2E cases cover source-only PDF import, whole-fixture extracted text, manual/no-AI entry, optional rows, EN/NL accessibility, backup preservation and locked exports after navigation.
+
+**Agent visual check:** Chromium at 360 × 732, file input at approximately 464 px from the top (44 px target), visible without scrolling. This is not real-device verification or five-user evidence.
+
+**PDF warning investigated, not fixed:** `UnknownErrorException: Ensure that the standardFontDataUrl API parameter is provided.` The importer does not supply standard font data. The fictional PDF extracts correctly; that does not prove all PDFs are unaffected. No remote fonts added and no warning hidden. A fix needs separate packaging scope for hosted/offline/single-file builds.
+
+**Verified by a person:** none for this change. Dutch review, real-phone use, real CV compatibility, the five-user timing target and all manual release checks remain pending. See `docs/plans/primary-journey-observation.md` for the approved pilot procedure.

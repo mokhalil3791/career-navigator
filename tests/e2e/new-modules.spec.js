@@ -121,14 +121,17 @@ test('plan: milestone dates, .ics export and weekly check-in (FR-PLAN-2/3)', asy
 
 test('profile rows: languages with CEFR and basis, education with IDW (FR-PRO-4/5), target roles (FR-PRO-1)', async ({ page }) => {
   await openApp(page, '#/profile');
+  await page.locator('#profile-languages-details summary').click();
   await page.getByRole('button', { name: 'Add a language' }).click();
   await page.locator('input[id^=lang-]').fill('Dutch');
   await page.locator('select[id^=level-]').selectOption('B1');
   await page.locator('select[id^=basis-]').selectOption('certified');
   await page.locator('input[id^=cert-]').fill('Staatsexamen NT2 programme I');
-  await page.getByRole('button', { name: 'Add education' }).click();
+  await page.locator('#profile-education-details summary').click();
+  await page.getByRole('button', { name: 'Add education', exact: true }).click();
   await page.locator('input[id^=edu-title-]').fill('Bachelor of Accounting');
   await page.locator('select[id^=edu-idw-]').selectOption('applied');
+  await page.getByText('Optional: target roles and work preferences', { exact: true }).click();
   await page.locator('#target-0').fill('Financial administrator');
   await gotoView(page, 'prompts');
   await expect(page.locator('#prompt-preview')).toHaveValue(/Dutch: B1, certified \(Staatsexamen NT2 programme I\)/);

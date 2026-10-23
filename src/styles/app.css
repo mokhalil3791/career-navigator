@@ -63,3 +63,9 @@ progress{inline-size:100%;block-size:10px;accent-color:var(--teal)}
 .coach-notes blockquote{margin:10px 0;padding:10px 14px;background:#fff;border-inline-start:3px solid var(--teal);border-radius:8px}
 .coach-note{margin-block-start:12px}
 .pack-picker{max-inline-size:420px}
+/* Keep the primary CV file picker easy to tap, including its native button. */
+#cv-file{max-inline-size:100%;min-block-size:44px}
+#cv-file::file-selector-button{min-block-size:44px;padding-inline:12px;cursor:pointer}
+
+.profile-source{margin-block-end:24px}
+.profile-source .btn{min-block-size:44px}
