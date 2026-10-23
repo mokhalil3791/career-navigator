@@ -11,7 +11,9 @@ export default defineConfig({
   timeout: 45000,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
-  use: { baseURL: 'http://localhost:4174/next/', trace: 'retain-on-failure' },
+  // Service workers are blocked by default: a page controlled by one bypasses Playwright's
+  // request mocks, which could let a test reach a real AI provider. The PWA spec allows them.
+  use: { baseURL: 'http://localhost:4174/next/', trace: 'retain-on-failure', serviceWorkers: 'block' },
   webServer: { command: 'node scripts/serve.mjs 4174', url: 'http://localhost:4174/next/', reuseExistingServer: !process.env.CI },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
