@@ -1,0 +1,2 @@
+/* Print: hide the app chrome, keep content. Ported from v0.1. */
+@media print{.sidebar,.topbar,.footer,.actions,.privacy-drawer,.notice,.skip-link,.banner button{display:none!important}.app-shell{display:block}.content{padding:0;max-width:none}.card,.step-card,.phase{break-inside:avoid;box-shadow:none}.hero{background:white}.hero-visual{display:none}.hero{grid-template-columns:1fr}button{display:none!important}textarea,input,select{border:0!important}body{background:white}}

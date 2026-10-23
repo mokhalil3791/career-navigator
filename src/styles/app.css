@@ -1,0 +1,15 @@
+/* Styles added in v1.0 (v0.1 styles are in layout.css). Uses logical properties so right-to-left languages work. */
+.progress-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.progress-item{display:flex;gap:10px;align-items:flex-start;inline-size:100%;text-align:start;border:1px solid var(--line);background:#fff;border-radius:13px;padding:12px;min-block-size:44px;color:var(--ink)}
+.progress-item small{display:block;color:var(--muted);font-size:.72rem;margin-block-start:2px}
+.progress-item strong{font-size:.82rem}
+.progress-mark{inline-size:20px;block-size:20px;border-radius:50%;border:1.5px solid #b9c8bf;display:grid;place-items:center;flex-shrink:0;color:#fff}
+.progress-item.done .progress-mark{background:var(--teal);border-color:var(--teal)}
+.independence{font-weight:600}
+.footer{flex-wrap:wrap}
+@media(max-width:950px){.progress-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:500px){.progress-list{grid-template-columns:1fr 1fr}}
+/* Accessibility fixes found by axe (WCAG 2.2 AA contrast ≥ 4.5:1); v0.1 colours were too light. */
+.step-num{color:#56665f}
+.hero-caption{color:#3d5a3c}
+.footer{color:var(--muted)}
