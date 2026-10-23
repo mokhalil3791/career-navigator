@@ -464,3 +464,14 @@ This section records every place where the build differs from, or adds to, the r
 - A shared radio group across two pickers.
 - v0.1 contrast failures, and WCAG 2.2 target sizes on `<summary>`.
 - An unclosed TODO comment could have rendered (CodeQL).
+
+**External review (2026-10-23): five issues fixed, each with a regression test (`tests/unit/review-fixes.test.js`)**
+1. Moving a v0.1 save could delete the only copy if the new storage failed. The old copy is now removed only after a successful save, and a failure is reported as an error.
+2. "Delete everything" cleared the whole origin, which is shared with other projects on github.io. It now removes only this app's database, keys and caches (`career-navigator-*`, `webllm/*`).
+3. Education and language rows did not reach the CV draft. There is now one mapping: the user's text first, then rows not already written there.
+4. "Edit before accepting" was ignored for the advert-facts proposal. Structured proposals are now marked non-editable, with no edit box; the fields can be changed after accepting.
+5. The structured AI tasks ignored the chosen CV language. All three prompt builders now share one application-language line.
+
+**Next priority (from the review): feature expansion paused.** Make one primary journey dominant:
+*Import CV → verify facts → add one advert → review tailored draft → export*. Then observe five intended users completing it
+before adding features. Also consider merging the duplicate text and structured fields for education and languages.
