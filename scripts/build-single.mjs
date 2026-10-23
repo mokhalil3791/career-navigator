@@ -32,8 +32,9 @@ await build({
 let html = readFileSync(join(OUT, 'index.html'), 'utf8');
 /** @param {string} s */
 const hash = (s) => "'sha256-" + createHash('sha256').update(s, 'utf8').digest('base64') + "'";
-const scripts = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].map((m) => hash(m[1]));
-const styles = [...html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/g)].map((m) => hash(m[1]));
+// Case-insensitive, and tolerant of "</script >", so no inline block is missed.
+const scripts = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script\s*>/gi)].map((m) => hash(m[1]));
+const styles = [...html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style\s*>/gi)].map((m) => hash(m[1]));
 const csp = [
   "default-src 'none'",
   `script-src ${scripts.join(' ')}`,
