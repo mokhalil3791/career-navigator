@@ -33,6 +33,11 @@ describe('G11: no raw HTML injection in live UI', () => {
   });
   it('every connect-src host is https or localhost, and belongs to a configured free provider', () => {
     const connect = contentSecurityPolicy().split('; ').find((d) => d.startsWith('connect-src')) || '';
-    for (const host of connect.split(' ').slice(1)) expect(host).toMatch(/^('self'|https:\/\/[a-z0-9.-]+|http:\/\/(localhost|127\.0\.0\.1):\d+)$/);
+    // Wildcards are allowed only for the WebLLM model download hosts, named exactly.
+    const WILDCARDS = ['https://*.huggingface.co', 'https://*.hf.co'];
+    for (const host of connect.split(' ').slice(1)) {
+      if (WILDCARDS.includes(host)) continue;
+      expect(host).toMatch(/^('self'|https:\/\/[a-z0-9.-]+|http:\/\/(localhost|127\.0\.0\.1):\d+)$/);
+    }
   });
 });

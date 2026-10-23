@@ -1,5 +1,5 @@
 {
-  "$comment": "Free AI routes only. Model IDs, endpoints and labels live here, never in code (FR-AI-2). Guardrail G8 fails if a paid-only provider host is added.",
+  "$comment": "Free AI routes only (principle 5). Model IDs, endpoints and labels live here, never in code (FR-AI-2), because free models and limits change often. Guardrail G8 fails if a paid-only host is added. 'connect' hosts are added to the CSP connect-src at build time; the app still contacts a host only after the user enabled it and confirmed the outgoing text.",
   "chats": [
     { "id": "claude", "label": "Claude", "url": "https://claude.ai/new", "prefill": "https://claude.ai/new?q=" },
     { "id": "gemini", "label": "Gemini", "url": "https://gemini.google.com/app" },
@@ -9,5 +9,66 @@
     { "id": "duckai", "label": "Duck.ai", "url": "https://duck.ai/" }
   ],
   "prefillMaxChars": 6000,
-  "api": []
+  "api": [
+    {
+      "id": "gemini",
+      "label": "Gemini API (free tier, your own Google AI Studio key)",
+      "kind": "key",
+      "cost": "free",
+      "endpoint": "https://generativelanguage.googleapis.com/v1beta",
+      "connect": ["https://generativelanguage.googleapis.com"],
+      "defaultModel": "gemini-2.5-flash",
+      "models": [
+        { "id": "gemini-2.5-flash", "label": "Gemini 2.5 Flash" },
+        { "id": "gemini-2.5-flash-lite", "label": "Gemini 2.5 Flash-Lite (higher free limits)" }
+      ],
+      "keyUrl": "https://aistudio.google.com/apikey",
+      "limitsUrl": "https://ai.google.dev/gemini-api/docs/rate-limits",
+      "policyUrl": "https://ai.google.dev/gemini-api/terms",
+      "privacy": "Free-tier requests may be used by Google to improve its products. Use the fictional example, or keep “Redact before sending” on.",
+      "capabilities": { "streaming": true, "json": true, "maxContext": 1000000 }
+    },
+    {
+      "id": "openrouter",
+      "label": "OpenRouter (free models, your own key)",
+      "kind": "key",
+      "cost": "free",
+      "endpoint": "https://openrouter.ai/api/v1",
+      "connect": ["https://openrouter.ai"],
+      "defaultModel": "meta-llama/llama-3.3-70b-instruct:free",
+      "models": [{ "id": "meta-llama/llama-3.3-70b-instruct:free", "label": "Llama 3.3 70B (free)" }],
+      "freeOnly": true,
+      "keyUrl": "https://openrouter.ai/settings/keys",
+      "policyUrl": "https://openrouter.ai/privacy",
+      "privacy": "Each free model is run by a different company with its own data policy; some log prompts or use them for training. Check the model page before sending personal details.",
+      "capabilities": { "streaming": true, "json": true, "maxContext": 32000 }
+    },
+    {
+      "id": "ollama",
+      "label": "Ollama (a free model on your own computer)",
+      "kind": "local",
+      "cost": "free",
+      "endpoint": "http://localhost:11434",
+      "connect": ["http://localhost:11434", "http://127.0.0.1:11434"],
+      "defaultModel": "llama3.2",
+      "setupUrl": "https://github.com/ollama/ollama/blob/main/docs/faq.md",
+      "privacy": "Runs on your own computer. Nothing leaves the device.",
+      "capabilities": { "streaming": true, "json": true, "maxContext": 8000 }
+    },
+    {
+      "id": "webllm",
+      "label": "In-browser model (WebLLM, works offline after one download)",
+      "kind": "device",
+      "cost": "free",
+      "connect": ["https://huggingface.co", "https://*.huggingface.co", "https://*.hf.co", "https://raw.githubusercontent.com"],
+      "defaultModel": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "models": [
+        { "id": "Llama-3.2-1B-Instruct-q4f16_1-MLC", "label": "Llama 3.2 1B (smallest, quickest)", "memoryMB": 879 },
+        { "id": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC", "label": "Qwen 2.5 1.5B (balanced)", "memoryMB": 1630 },
+        { "id": "Llama-3.2-3B-Instruct-q4f16_1-MLC", "label": "Llama 3.2 3B (better answers, slower)", "memoryMB": 2264 }
+      ],
+      "privacy": "Runs inside your browser. After the one-time download, nothing leaves the device.",
+      "capabilities": { "streaming": true, "json": true, "maxContext": 4096 }
+    }
+  ]
 }

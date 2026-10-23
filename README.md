@@ -26,6 +26,36 @@ Claude, Gemini, Le Chat, Copilot, ChatGPT or Duck.ai.
 
 On a phone, the prompt library also has a **Share** button. It sends the prompt straight to an installed AI chat app.
 
+**Structured round trip:** for jobs like *Extract requirements* or *Tailor my CV*, the prompt asks the chat to
+end with a small JSON block. Paste the whole reply back and the app turns it into suggestions. You accept,
+edit or reject each one. Nothing changes until you click **Accept**.
+
+## Built-in free AI (optional)
+
+In **AI prompt studio → Free AI routes** you can also connect a free AI directly. You always see the exact
+text and where it goes before anything is sent, and **Redact before sending** masks emails, phone
+numbers, BSN-like numbers, addresses and your name.
+
+| Route | What you need | Where your text goes |
+| --- | --- | --- |
+| Gemini API (free tier) | A free key from [Google AI Studio](https://aistudio.google.com/apikey) | Google. Free-tier requests may be used to improve Google's products. |
+| OpenRouter (free models) | A free key from [openrouter.ai](https://openrouter.ai/settings/keys). Only models ending in `:free` can be used. | The company that runs the chosen model |
+| In-browser model (WebLLM) | A browser with WebGPU (recent Chrome or Edge on a laptop) and a one-time download of up to about 2 GB on Wi-Fi | Nowhere. It runs on your device. |
+| Ollama | [Ollama](https://ollama.com) on your own computer | Nowhere. It runs on your computer. |
+
+Keys stay in the browser's memory and disappear when you close the tab, unless you tick
+**Save key on this device**. **Forget key** removes a key at once.
+
+### Use Ollama with Career Navigator
+
+Ollama only answers websites you allow. Allow this site once, then restart Ollama:
+
+- **Windows (PowerShell):** `setx OLLAMA_ORIGINS "https://mokhalil3791.github.io"`, then quit Ollama from the tray and start it again.
+- **macOS:** `launchctl setenv OLLAMA_ORIGINS "https://mokhalil3791.github.io"`, then restart the Ollama app.
+- **Linux:** `sudo systemctl edit ollama`, add `Environment="OLLAMA_ORIGINS=https://mokhalil3791.github.io"`, then `sudo systemctl restart ollama`.
+
+Then run `ollama pull llama3.2` and choose **Ollama** in Free AI routes. If you run your own fork, use your own site address instead.
+
 ## Your privacy
 
 - Your work stays in this browser. Saving on the device is off until you switch it on.

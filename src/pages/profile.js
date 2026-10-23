@@ -23,6 +23,7 @@ ${field(ctx, t('Languages'), 'profile.languages', { area: true, full: true, plac
 ${ctx.services.profileExtras ? ctx.services.profileExtras(ctx) : ''}
 ${field(ctx, t('Paste an existing CV'), 'profile.cvText', { optional: true, area: true, full: true, rows: 5, max: 30000, hint: t('Optional source text for AI prompts. Remove contact details you do not want to share. Nothing is uploaded.'), placeholder: t('Paste plain text here. Facts you want in the built-in CV must also be entered in the fields above.') })}
 ${ctx.services.cvImport ? ctx.services.cvImport(ctx) : ''}
+${ctx.services.profileAi ? ctx.services.profileAi(ctx) : ''}
 </div>
 <div class="form-footer"><span class="muted small">${t('Only you decide what belongs in your story.')}</span>${goButton(ctx, html`${t('Compare job options')} ${icon('arrow', 16)}`, 'jobs', '')}</div></section>
 <aside class="grid"><section class="card soft"><p class="eyebrow">${t('Make your experience visible')}</p><h3 class="mt-11">${t('Specific beats impressive.')}</h3><ul class="tip-list"><li>${t('Describe an action you took.')}</li><li>${t('Name tools only when you used them.')}</li><li>${t('Use numbers when you can support them.')}</li><li>${t('Include volunteering, study and personal projects if relevant.')}</li></ul></section>

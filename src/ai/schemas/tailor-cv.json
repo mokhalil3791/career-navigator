@@ -1,0 +1,46 @@
+{
+  "title": "CV changes for one advert, with a change log",
+  "type": "object",
+  "required": [
+    "changes"
+  ],
+  "properties": {
+    "changes": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "required": [
+          "field",
+          "after",
+          "reason"
+        ],
+        "properties": {
+          "field": {
+            "type": "string",
+            "enum": [
+              "headline",
+              "summary",
+              "experience",
+              "education",
+              "skills",
+              "languages"
+            ]
+          },
+          "after": {
+            "type": "string",
+            "maxLength": 20000
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "source": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        }
+      }
+    }
+  }
+}
