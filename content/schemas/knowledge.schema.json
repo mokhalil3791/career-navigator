@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Knowledge card frontmatter (content/knowledge/<lang>/<id>.md)",
+  "description": "FR-KNW: every card cites at least one official or primary source and shows lastReviewed. Unverified sentences are written as <!-- TODO verify: … --> comments and are never shown.",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "summary",
+    "appearsOn",
+    "lastReviewed",
+    "sources",
+    "lang"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "maxLength": 64,
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 140
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "appearsOn": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "type": "string",
+        "enum": [
+          "home",
+          "profile",
+          "jobs",
+          "applications",
+          "cv",
+          "interview",
+          "plan",
+          "prompts",
+          "learn"
+        ]
+      }
+    },
+    "lastReviewed": {
+      "type": "string",
+      "maxLength": 10,
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "lang": {
+      "type": "string",
+      "maxLength": 12
+    },
+    "reviewedBy": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "required": [
+          "title",
+          "url"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 500,
+            "pattern": "^https://"
+          }
+        }
+      }
+    }
+  }
+}
