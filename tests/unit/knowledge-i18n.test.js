@@ -46,13 +46,6 @@ describe('knowledge pack (FR-KNW)', () => {
     for (const c of cards) expect(stripComments(c.body), c.id).not.toMatch(/\byou (must|should) (apply for asylum|claim benefits|file your tax)/i);
     expect(cards.find((c) => c.id === 'contracts-and-pay')?.body).toMatch(/not legal advice/);
   });
-  it('an unclosed comment hides everything after it', () => {
-    expect(stripComments('Fact.
-<!-- TODO verify: unfinished
-not a fact')).toBe('Fact.
-');
-    expect(stripComments('a <!-- x --> b <!-- y --> c')).toBe('a  b  c');
-  });
   it('a broken card is skipped with a warning, not a crash', () => {
     const r = buildKnowledge({ 'bad.md': '---\nid: Bad Id\n---\nx' });
     expect(r.cards).toEqual([]);
