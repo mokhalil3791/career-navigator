@@ -1,0 +1,11 @@
+name: Feedback or idea
+description: Tell us what helped, what was hard, or what you would add. This is how we learn; the app has no analytics.
+labels: [feedback]
+body:
+  - type: textarea
+    id: feedback
+    attributes: { label: Your feedback }
+    validations: { required: true }
+  - type: dropdown
+    id: role
+    attributes: { label: I am a…, options: [Job seeker, Coach or volunteer, Developer / customiser, Other] }
