@@ -63,7 +63,7 @@ test('manual and pasted sources remain available without AI or duplicate entry',
   await expect(page.locator('#field-profile-languages')).toHaveValue('Dutch A2, self-assessed');
   await expect(page.locator('#field-profile-cvText')).toBeVisible();
   await navigate(page, 'My application', 'cv');
-  await page.getByRole('button', { name: 'Copy my profile into CV' }).click();
+  await page.getByRole('button', { name: 'Create draft from my profile' }).click();
   await expect(page.locator('#field-cv-education')).toHaveValue('Original diploma, Example college, 2020');
   await expect(page.locator('#field-cv-languages')).toHaveValue('Dutch A2, self-assessed');
 });

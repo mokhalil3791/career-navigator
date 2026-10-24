@@ -118,6 +118,7 @@ test('jobs: add adverts and requirements, evidence warning, reorder', async ({ p
   await page.getByRole('button', { name: 'Add my first advert' }).click();
   await expect(page.locator('#job-title')).toBeFocused();
   await page.locator('#job-title').fill('Analyst A');
+  await page.getByRole('link', { name: "Check this advert's requirements" }).click();
   await page.getByRole('button', { name: 'Add a requirement' }).click();
   const req = page.locator('.requirement').first();
   await req.locator('input[type=text]').first().fill('SQL');

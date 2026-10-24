@@ -1,6 +1,6 @@
 # Primary CV journey
 
-Status: approved by Mo on 2026-10-24; PR A implemented on `primary-journey`, local checks passed; awaiting PR CI. PRs B and C wait for A to be merged by Mo.
+Status: approved by Mo on 2026-10-24; PR A merged as #9 with green CI. PR B implemented on `primary-journey-cv`, based on updated main at `e395eab`; PR C waits for Mo to merge B.
 Plan date: 2026-10-24; walkthrough performed 2026-10-23 (Europe/Amsterdam).
 Branch: `primary-journey`, created from `main` at `e2f4929`.
 
@@ -199,3 +199,13 @@ Mo approved the revised three-PR sequence and success criteria on 2026-10-24. PR
 - Initial new-test failures were test synchronization/selectors: the Dutch navigation landmark is translated, and import navigation must wait for asynchronous storage cleanup. Both test issues were corrected without modifying the shared fixture or application behavior.
 - First CI run: Chromium/mobile Chrome passed; Firefox failed the immediate post-resize overflow assertion. Its trace captured an intermediate viewport with desktop layout. The test now waits for visible mobile navigation and polls the same strict no-overflow condition; no viewport or overflow assertion was loosened. Firefox validation remains in CI because the local install reports missing `mozglue.dll`.
 - Follow-up CI diagnostics exposed real Dutch header overflow on Linux WebKit after settling: at 360 px the backup button extended to about 372 px. Narrow header controls now wrap and the header grows to fit; all controls remain visible. This small responsive fix is included in A because the new profile test exposed it; navigation reorganisation remains in C.
+
+
+## PR B implementation record (2026-10-24)
+
+- Empty jobs has one add action. Advert fields lead directly to Continue to my CV draft, with a visible optional evidence-review link that opens and focuses its disclosure. Populated evidence sections open on return; target cards remain visible and comparison is secondary. Missing advert text explains the general-CV alternative.
+- Empty CVs offer explicit Create draft from my profile. Existing drafts retain replacement confirmation. Application language and structured tailoring sit together; the generic tailoring prompt is in Other prompt tools. AI panel presentation and per-proposal decisions are unchanged. Return to my CV draft moves focus without discarding pending proposals.
+- Review and preview follow CV content and any existing letter. Empty letter and LinkedIn tools follow exports. Opening the letter tool moves focus to its editor above review; it remains there while editing, including after clearing the text. Existing letters are never hidden behind a closed disclosure. Exports are labelled HTML and Word (DOCX).
+- New `cv-journey.spec.js` covers one-advert navigation, explicit drafting, pasted accept/edit/reject, pending proposals retained on return, actual HTML and DOCX XML contents, profile/advert/CV/letter review invalidation, returning drafts and replacement cancellation, general CV without AI/advert, EN/NL expanded accessibility and 360 px layout. Existing tests only gain the required disclosure clicks or updated creation label; assertions, guardrails and G5 remain intact.
+- The new touch-target assertion found the inherited button minimum was 43 px. Advert/CV controls now have a scoped 44 px minimum. No dependency, schema, reducer, exporter, deployment or provider changes.
+- Agent inspected the review/export area at 360 × 732. Human observation, real-device checks and Word/LibreOffice rendering remain pending. Full import-to-export journey and home/navigation/AI-route changes remain PR C.

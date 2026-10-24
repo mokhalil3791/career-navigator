@@ -71,3 +71,6 @@ progress{inline-size:100%;block-size:10px;accent-color:var(--teal)}
 .profile-source .btn{min-block-size:44px}
 /* Dutch header labels need another row on narrow screens with wider system fonts. */
 @media(max-width:500px){.topbar{height:auto;min-block-size:60px;padding-block:8px}.top-actions{flex-wrap:wrap}}
+
+/* Keep the advert-to-export controls usable by touch, including secondary actions. */
+.journey-controls .btn{min-block-size:44px}

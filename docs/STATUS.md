@@ -57,7 +57,7 @@ See `docs/KNOWN-ISSUES.md`.
 
 ## Primary journey PR A (2026-10-24, branch `primary-journey`)
 
-**Implemented on this branch:** import-first profile with paste/manual alternatives; education/language rows grouped under their free-text fields; populated optional sections expanded; plain next-step navigation; Dutch strings. No schema, review-gate, AI acceptance, or network-policy change. Home/navigation, advert/CV order and AI-route simplification remain for PRs B/C after maintainer merges.
+**Merged in PR #9 (green CI):** import-first profile with paste/manual alternatives; education/language rows grouped under their free-text fields; populated optional sections expanded; plain next-step navigation; Dutch strings. No schema, review-gate, AI acceptance, or network-policy change. Home/navigation, advert/CV order and AI-route simplification remain for PRs B/C after maintainer merges.
 
 **Automated verification:** 342 unit/parity/guardrail tests, type checking, app/site and single-file builds, and all 41 Chromium E2E tests passed. Selected mobile suites (profile journey, new modules, languages/knowledge and accessibility/library) passed 46 tests across mobile-chrome and mobile-safari; two existing desktop-only print tests were skipped. Translation coverage is 727/727 strings; shell size is approximately 118 KB gzipped. New profile E2E cases cover source-only PDF import, whole-fixture extracted text, manual/no-AI entry, optional rows, EN/NL accessibility, backup preservation and locked exports after navigation.
 
@@ -68,3 +68,14 @@ See `docs/KNOWN-ISSUES.md`.
 **PDF warning investigated, not fixed:** `UnknownErrorException: Ensure that the standardFontDataUrl API parameter is provided.` The importer does not supply standard font data. The fictional PDF extracts correctly; that does not prove all PDFs are unaffected. No remote fonts added and no warning hidden. A fix needs separate packaging scope for hosted/offline/single-file builds.
 
 **Verified by a person:** none for this change. Dutch review, real-phone use, real CV compatibility, the five-user timing target and all manual release checks remain pending. See `docs/plans/primary-journey-observation.md` for the approved pilot procedure.
+
+
+## Primary journey PR B (2026-10-24, branch `primary-journey-cv`)
+
+**Implemented on this branch:** one-advert continuation with visible optional evidence review; explicit draft creation and unchanged replacement confirmation; language/structured tailoring together; review and preview before empty optional writing tools; existing letter visible before review; clearly labelled HTML and Word exports. AI panel presentation is reserved for C. No schema, reducer, export implementation, review-gate or network-policy changes.
+
+**Automated verification:** new E2E tests walk advert → draft → pasted AI proposals → review → both downloads, reading HTML and DOCX `word/document.xml` to check accepted/edited content and exclude rejected content. They check both formats re-lock after profile, advert, CV or letter edits, letter inclusion, returning draft preservation and replacement cancellation, a general CV without AI or an advert, and expanded English/Dutch accessibility at phone sizes. Required local checks and mobile suites are recorded on the PR; CI must pass before merge. Translation coverage: 744/744 strings; shell approximately 119 KB gzip.
+
+**Agent visual check:** review and exports inspected in Chromium at 360 × 732. Empty optional writing no longer precedes the review gate. This verifies presentation in emulation, not usability or human timing.
+
+**Verified by a person:** none for B. No release-checklist items completed; real devices, Dutch review, Word/LibreOffice rendering and the five-user test remain pending. PR C waits for the maintainer to merge B and will add the continuous import-to-export test and simplify entry points/AI-route display.
