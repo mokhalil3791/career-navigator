@@ -1,4 +1,4 @@
-import { navigate, loadDemo, openTask } from './navigation.js';
+import { chooseLanguage, navigate, loadDemo, openTask } from './navigation.js';
 // @ts-check
 // Phase 3: journey 4 (Dutch interface), onboarding, knowledge cards, axe in English and Dutch.
 import AxeBuilder from '@axe-core/playwright';
@@ -11,7 +11,7 @@ test('one-screen welcome explains privacy before data entry and keeps language c
  await openApp(page); const welcome = page.locator('.welcome');
  await expect(welcome.locator('li')).toHaveCount(3);
  await expect(welcome.getByRole('link')).toHaveAttribute('href', /PRIVACY\.md$/);
- await page.locator('#ui-language').selectOption('nl');
+ await chooseLanguage(page, 'nl');
  await expect(welcome.getByRole('heading')).toHaveText('Welkom');
  await expect(page.locator('html')).toHaveAttribute('lang','nl');
  await welcome.getByRole('button', { name: /Begin met mijn eigen|Begin met een lege/ }).click();
@@ -21,7 +21,7 @@ test('one-screen welcome explains privacy before data entry and keeps language c
 
 test('journey 4: Dutch interface, profile and plan in Dutch, CV stays in the chosen application language', async ({ page }, info) => {
   await openApp(page);
-  await page.locator('#ui-language').selectOption('nl');
+  await chooseLanguage(page, 'nl');
   await gotoView(page, 'profile');
   await expect(page.locator('h1')).toHaveText('1. Mijn verhaal');
   await page.locator('#field-profile-headline').fill('Data-analist in opleiding');
@@ -68,7 +68,7 @@ test('knowledge cards show sources and review dates, never TODO notes; past even
 for (const lang of ['en', 'nl']) {
   test(`axe: no serious issues on every page in ${lang === 'en' ? 'English' : 'Dutch'} (NFR-A11Y-2)`, async ({ page }) => {
     await openApp(page);
-    await page.locator('#ui-language').selectOption(lang);
+    await chooseLanguage(page, lang);
     await loadDemo(page, lang === 'en' ? 'Try a fictional example' : 'Probeer een fictief voorbeeld');
     for (const id of ['home', 'profile', 'jobs', 'cv', 'interview', 'plan', 'prompts', 'learn']) {
       await gotoView(page, id);

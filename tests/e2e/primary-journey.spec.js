@@ -1,4 +1,4 @@
-import { navigate, loadDemo, openTask } from './navigation.js';
+import { chooseLanguage, navigate, loadDemo, openTask } from './navigation.js';
 // Complete primary journey using visible controls and fictional pasted AI replies only.
 import { readFileSync } from 'node:fs';
 import AxeBuilder from '@axe-core/playwright';
@@ -147,12 +147,12 @@ test('manual pasted-CV path exports both formats without AI', async ({ page }, i
 
 for (const language of ['en', 'nl']) {
  test('four-step navigation keeps every tool reachable (' + language + ')', async ({ page }) => {
-  await openApp(page); await page.locator('#ui-language').selectOption(language);
+  await openApp(page); await chooseLanguage(page, language);
   expect(seriousAxe(await new AxeBuilder({ page }).analyze())).toEqual([]);
   for (const id of ['profile','jobs','cv','interview','plan','applications','learn','coach','prompts','home']) {
     await navigate(page, '', id); await expect(page.locator('h1')).toBeFocused();
   }
-  await page.locator('.primary-journey .actions button').first().click();
+  await page.locator('.welcome .actions button').first().click();
   await expect(page).toHaveURL(/#\/profile$/); await expect(page.locator('#cv-file')).toBeVisible();
  });
 }
@@ -175,9 +175,9 @@ test('route disclosure preserves built-in preview, confirmation and copy-paste f
   await expect(page.getByTestId('ai-send')).toBeDisabled();
   expect(calls).toHaveLength(0);
   expect(seriousAxe(await new AxeBuilder({ page }).analyze())).toEqual([]);
-  await page.locator('#ui-language').selectOption('nl');
+  await chooseLanguage(page, 'nl');
   expect(seriousAxe(await new AxeBuilder({ page }).analyze())).toEqual([]);
-  await page.locator('#ui-language').selectOption('en');
+  await chooseLanguage(page, 'en');
   await page.locator('#ai-host-tick').check();
   await page.getByTestId('ai-send').click();
   await expect(page.locator('.proposal')).not.toHaveCount(0);

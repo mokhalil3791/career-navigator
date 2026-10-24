@@ -1,4 +1,4 @@
-import { navigate, loadDemo, openTask } from './navigation.js';
+import { chooseLanguage, navigate, loadDemo, openTask } from './navigation.js';
 // PR B: one advert through reviewed HTML/Word exports; no real provider calls.
 import { readFileSync } from 'node:fs';
 import AxeBuilder from '@axe-core/playwright';
@@ -112,7 +112,7 @@ test('one advert, explicit draft, accept/edit/reject, review and inspect both ex
   await expect(page.locator('#field-cv-summary')).toHaveValue('I checked weekly records using Excel.');
 });
 
-test('returning CV and letter stay visible and replacement still needs confirmation', async ({ page }, info) => {
+test('returning CV and letter stay visible without a profile replacement shortcut', async ({ page }, info) => {
   await openApp(page, '#/cv');
   await page.locator('#field-cv-summary').fill('My returning draft.');
   await page.getByRole('tab', { name: 'Letter', exact: true }).click();
@@ -127,14 +127,9 @@ test('returning CV and letter stay visible and replacement still needs confirmat
   await expect(page.locator('#cv-review')).toContainText('My existing letter has claims to check.');
   await before(page, '#cv-review pre', '#cv-reviewed');
   await exportsLocked(page);
-  // Exercise cancellation, then approval, without changing the app's confirm behavior.
-  page.removeAllListeners('dialog');
-  page.once('dialog', async (dialog) => { expect(dialog.message()).toContain('Your motivation letter will be kept'); await dialog.dismiss(); });
-  await page.getByRole('button', { name: 'Copy my profile into CV' }).click();
+  await expect(page.getByRole('button', { name: 'Copy my profile into CV' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Start from empty', exact: true })).toHaveCount(0);
   await expect(page.locator('#field-cv-summary')).toHaveValue('My returning draft.');
-  page.once('dialog', (dialog) => dialog.accept());
-  await page.getByRole('button', { name: 'Copy my profile into CV' }).click();
-  await expect(page.locator('#field-cv-summary')).toHaveValue('Replacement profile.');
   await expect(page.locator('#cv-review')).toContainText('My existing letter has claims to check.');
   await expect(page.locator('#cv-review pre')).toBeVisible();
   await page.locator('#cv-reviewed').check();
@@ -178,7 +173,7 @@ test('general CV without AI or advert remains exportable, optional tools follow 
 test('Dutch narrow layout keeps evidence review and letter review accessible', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 732 });
   await openApp(page, '#/jobs');
-  await page.locator('#ui-language').selectOption('nl');
+  await chooseLanguage(page, 'nl');
   await page.getByRole('button', { name: 'Plak een vacature' }).click();
   await page.locator('#job-title').fill('Fictieve vacature');
   await page.locator('#job-body').fill('Excel gebruiken voor wekelijkse rapporten.');

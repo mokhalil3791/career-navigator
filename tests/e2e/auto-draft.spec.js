@@ -1,6 +1,6 @@
+import { saveBackup, loadDemo, navigate } from './navigation.js';
 import { readFileSync } from 'node:fs';
 import { test, expect, openApp, gotoView } from './fixtures.js';
-import { loadDemo, navigate } from './navigation.js';
 import { newWorkspace } from '../../src/core/schema.js';
 import { draftCvFromProfile } from '../../src/core/cv.js';
 
@@ -11,7 +11,7 @@ async function restore(page, state) {
 }
 async function backup(page, info) {
   const pending = page.waitForEvent('download');
-  await page.locator('.topbar').getByRole('button', { name: 'Save backup' }).click();
+  await saveBackup(page);
   const file = await pending, path = info.outputPath('auto-draft.json'); await file.saveAs(path);
   return JSON.parse(readFileSync(path, 'utf8'));
 }
@@ -34,7 +34,7 @@ for (const width of [390, 1366]) test(`first draft, undo, persistence and backup
   await restore(page, saved); await navigate(page, '', 'cv');
   await expect(page.locator('#cv-reviewed')).not.toBeChecked();
   await expect(page.getByTestId('export-cv')).toBeDisabled(); await expect(page.getByTestId('export-docx')).toBeDisabled();
-  await page.getByRole('button', { name: 'Start from empty', exact: true }).click();
+  for (const key of ['headline','summary','experience','education','skills','languages']) await page.locator('#field-cv-' + key).fill('');
   await navigate(page, '', 'profile'); await navigate(page, '', 'cv');
   await expect(page.locator('#field-cv-experience')).toHaveValue('');
   saved = await backup(page, info); expect(saved.cv.autoDrafted).toBe(true);

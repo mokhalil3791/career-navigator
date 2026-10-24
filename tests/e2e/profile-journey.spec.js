@@ -1,4 +1,4 @@
-import { navigate, loadDemo, openTask } from './navigation.js';
+import { saveBackup, navigate, loadDemo, openTask } from './navigation.js';
 // PR A: import first, optional details, and navigation without a verification claim.
 import { readFileSync } from 'node:fs';
 import AxeBuilder from '@axe-core/playwright';
@@ -91,7 +91,7 @@ for (const language of ['en', 'nl']) {
     const results = await new AxeBuilder({ page }).analyze();
     expect(seriousAxe(results)).toEqual([]);
     const download = page.waitForEvent('download');
-    await page.getByRole('button', { name: language === 'en' ? 'Save backup' : 'Back-up opslaan', exact: true }).click();
+    await saveBackup(page);
     const file = await download;
     const path = info.outputPath('profile.json');
     await file.saveAs(path);

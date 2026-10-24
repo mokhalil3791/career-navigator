@@ -1,4 +1,4 @@
-import { navigate, loadDemo, openTask } from './navigation.js';
+import { saveBackup, navigate, loadDemo, openTask } from './navigation.js';
 // @ts-check
 // End-to-end parity with v0.1 ("Keep from v0.1") plus guardrails G3, G6, G10.
 import { readFileSync } from 'node:fs';
@@ -60,7 +60,7 @@ test('backup round trip: export, then import resets saving and review (G6)', asy
   if (await page.getByText('More details (optional)', { exact: true }).locator('..').getAttribute('open') === null) await page.getByText('More details (optional)', { exact: true }).click();
   await page.locator('#field-profile-city').fill('Zwolle');
   const downloading = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Save backup' }).click();
+  await saveBackup(page);
   const path = info.outputPath('backup.json');
   await (await downloading).saveAs(path);
   const json = JSON.parse(readFileSync(path, 'utf8'));
@@ -117,7 +117,8 @@ test('device saving is opt-in: off loses work on reload, on keeps it, off again 
   await page.locator('#remember').uncheck();
   await expect(page.locator('#notice')).toContainText('Device saving is off');
   await navigate(page, '', 'profile');
-  await expect(page.locator('.storage-status')).toHaveText('Not saved — download a backup');
+  // A fresh session has no unsaved warning until its first content edit.
+  await expect(page.locator('.storage-status')).toHaveCount(0);
   await page.reload();
   await expect(page.locator('#field-profile-city')).toHaveValue('');
 });

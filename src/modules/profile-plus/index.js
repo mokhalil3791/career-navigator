@@ -63,7 +63,7 @@ ${button(html`${icon('plus', 16)}${t('Add education')}`, () => { const id = uid(
       ctx.ui.cvDownloaded = true; ctx.rerender();
       ctx.notify(ctx.t('Word file downloaded. It opens in Word, LibreOffice and Google Docs.'));
     } catch (error) { ctx.notify(ctx.t(/** @type {Error} */ (error).message), true); }
-  }, { style: 'secondary', disabled: !ctx.state.cv.reviewed, testid: 'export-docx' });
+  }, { style: '', disabled: !ctx.state.cv.reviewed, testid: 'export-docx' });
 
   s.milestoneDate = (/** @type {any} */ ctx, /** @type {string} */ key) => html`<label for="date-${key}">${ctx.t('Target date')}</label><input id="date-${key}" type="date" .value=${live(ctx.state.plan.milestoneDates[key])} @input=${(/** @type {Event} */ e) => ctx.update('plan.milestoneDates.' + key, /** @type {HTMLInputElement} */ (e.target).value)}>`;
 
