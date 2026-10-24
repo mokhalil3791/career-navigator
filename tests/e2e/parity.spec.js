@@ -1,8 +1,9 @@
+import { navigate, loadDemo, openTask } from './navigation.js';
 // @ts-check
 // End-to-end parity with v0.1 ("Keep from v0.1") plus guardrails G3, G6, G10.
 import { readFileSync } from 'node:fs';
-import { test, expect, openApp, loadDemo } from './fixtures.js';
-import { navigate } from './navigation.js';
+import { test, expect, openApp} from './fixtures.js';
+
 
 const AREAS = [['Overview', 'home'], ['My profile', 'profile'], ['Compare jobs', 'jobs'], ['My application', 'cv'], ['Interview practice', 'interview'], ['My 90-day plan', 'plan'], ['AI prompt studio', 'prompts']];
 
@@ -21,11 +22,11 @@ test('seven areas open, each focuses its heading, with the fixed independence no
 test('fictional example: three adverts, banner, and "Start my own"', async ({ page }) => {
   await openApp(page);
   await loadDemo(page);
-  await expect(page.locator('.banner').first()).toContainText('Fictional example.');
+  await expect(page.locator('.banner').first()).toContainText("You're exploring Sam's example. Nothing here is real.");
   await navigate(page, 'Compare jobs', 'jobs');
   await expect(page.locator('.job-card')).toHaveCount(3);
   await page.getByRole('button', { name: 'Start my own' }).click();
-  await expect(page.locator('h1')).toHaveText('Start with your experience.');
+  await expect(page.locator('h1')).toHaveText('1. My story');
   await expect(page.locator('.banner')).toHaveCount(0);
 });
 
@@ -56,6 +57,7 @@ test('backup round trip: export, then import resets saving and review (G6)', asy
   await openApp(page);
   await loadDemo(page);
   await navigate(page, 'My profile', 'profile');
+  if (await page.getByText('More details (optional)', { exact: true }).locator('..').getAttribute('open') === null) await page.getByText('More details (optional)', { exact: true }).click();
   await page.locator('#field-profile-city').fill('Zwolle');
   const downloading = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Save backup' }).click();
@@ -87,6 +89,7 @@ test('a fictional v0.1 backup imports into v1 without data loss (journey 6)', as
 test('bad backups are refused and current work is kept', async ({ page }) => {
   await openApp(page);
   await navigate(page, 'My profile', 'profile');
+  if (await page.getByText('More details (optional)', { exact: true }).locator('..').getAttribute('open') === null) await page.getByText('More details (optional)', { exact: true }).click();
   await page.locator('#field-profile-city').fill('Delft');
   await page.locator('#import-file').setInputFiles({ name: 'bad.json', mimeType: 'application/json', buffer: Buffer.from('{"schemaVersion":1,"jobs":"nope"}') });
   await expect(page.locator('#notice')).toContainText('Import could not be completed. Jobs: expected a list');
@@ -95,28 +98,33 @@ test('bad backups are refused and current work is kept', async ({ page }) => {
 
 test('device saving is opt-in: off loses work on reload, on keeps it, off again forgets it', async ({ page }) => {
   await openApp(page, '#/profile');
+  if (await page.getByText('More details (optional)', { exact: true }).locator('..').getAttribute('open') === null) await page.getByText('More details (optional)', { exact: true }).click();
   await page.locator('#field-profile-city').fill('Arnhem');
   await page.reload();
   await expect(page.locator('#field-profile-city')).toHaveValue('');
+  if (await page.getByText('More details (optional)', { exact: true }).locator('..').getAttribute('open') === null) await page.getByText('More details (optional)', { exact: true }).click();
   await page.locator('#field-profile-city').fill('Arnhem');
-  await page.locator('.privacy-drawer summary').click();
+  await navigate(page, 'Settings', 'settings');
   await page.locator('#remember').check();
   await expect(page.locator('.storage-status')).toHaveText('Saved on this device');
+  await navigate(page, 'My story', 'profile');
+  if (await page.getByText('More details (optional)', { exact: true }).locator('..').getAttribute('open') === null) await page.getByText('More details (optional)', { exact: true }).click();
   await page.locator('#field-profile-city').fill('Arnhem-Zuid');
   await page.waitForTimeout(300);
   await page.reload();
   await expect(page.locator('#field-profile-city')).toHaveValue('Arnhem-Zuid');
-  await page.locator('.privacy-drawer summary').click();
+  await navigate(page, 'Settings', 'settings');
   await page.locator('#remember').uncheck();
   await expect(page.locator('#notice')).toContainText('Device saving is off');
-  await expect(page.locator('.storage-status')).toHaveText('Session only');
+  await navigate(page, '', 'profile');
+  await expect(page.locator('.storage-status')).toHaveText('Not saved — download a backup');
   await page.reload();
   await expect(page.locator('#field-profile-city')).toHaveValue('');
 });
 
 test('jobs: add adverts and requirements, evidence warning, reorder', async ({ page }) => {
   await openApp(page, '#/jobs');
-  await page.getByRole('button', { name: 'Add my first advert' }).click();
+  await page.getByRole('button', { name: 'Paste a job advert' }).click();
   await expect(page.locator('#job-title')).toBeFocused();
   await page.locator('#job-title').fill('Analyst A');
   await page.getByRole('link', { name: "Check this advert's requirements" }).click();
