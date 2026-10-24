@@ -20,7 +20,7 @@ import { safeUrl } from '../../core/escape.js';
 import { uid } from '../../lib/uid.js';
 import * as ai from '../../ai/session.js';
 import providers from '../../../config/providers.json';
-import { connectRoute } from './connect.js';
+import { currentRoute } from './connect.js';
 
 /**
  * @typedef {object} AiRun
@@ -34,6 +34,7 @@ import { connectRoute } from './connect.js';
  * @property {'ready' | 'running' | 'done' | 'error'} status
  * @property {string} output
  * @property {string} pasted
+ * @property {string} sourceContext
  * @property {string} error
  * @property {import('../../ai/tasks.js').Proposal[] | null} proposals
  * @property {Record<string, any>} decisions
@@ -46,9 +47,20 @@ import { connectRoute } from './connect.js';
  * @param {{ kind: AiRun['kind'], id: string, title: string, page: string, jobId?: string }} opts
  */
 export function openAi(ctx, opts) {
-  ctx.ui.ai = { ...opts, redactOn: true, hostTicked: false, status: 'ready', output: '', pasted: '', error: '', proposals: null, decisions: {}, controller: null };
+  ctx.ui.ai = { ...opts, sourceContext: reviewContext(ctx, opts), redactOn: true, hostTicked: false, status: 'ready', output: '', pasted: '', error: '', proposals: null, decisions: {}, controller: null };
   ctx.focusAfterRender('ai-panel-title');
   ctx.rerender();
+}
+
+/** Detect changed sources when returning to a primary-journey task, without losing pending decisions.
+ * CV proposal acceptance changes the draft, not these profile/advert sources.
+ * @param {import('../../app-context.js').Ctx} ctx
+ * @param {{ id: string }} run
+ */
+function reviewContext(ctx, run) {
+  if (run.id === 'suggest-fields') return ctx.state.profile.cvText;
+  if (run.id === 'tailor-cv') return JSON.stringify({ profile: ctx.state.profile, job: ctx.state.jobs.find((j) => j.id === ctx.state.selectedJobId) || ctx.state.jobs[0], language: ctx.state.settings.applicationLanguage });
+  return '';
 }
 
 /** The raw (unredacted) outgoing text for the current run. @param {import('../../app-context.js').Ctx} ctx @param {AiRun} run */
@@ -113,12 +125,15 @@ export function aiPanel(ctx, view) {
   const run = ctx.ui.ai;
   if (!run || run.page !== view) return nothing;
   const { t } = ctx;
+  const close = () => { run.controller?.abort(); ctx.ui.ai = null; ctx.rerender(); };
+  if (run.sourceContext !== reviewContext(ctx, run)) return html`<section class="card ai-panel section-space" aria-labelledby="ai-panel-title"><h2 id="ai-panel-title" tabindex="-1">${t(run.title)}</h2><p role="alert">${t('Your source facts or target advert changed. These suggestions belong to the earlier context. Start again before applying more changes.')}</p>
+${run.output ? html`<details class="details"><summary>${t('Earlier unverified reply')}</summary><pre class="original-text">${run.output}</pre></details>` : nothing}
+<div class="actions mt-18">${button(t('Start again with current facts'), () => { run.controller?.abort(); openAi(ctx, { kind: run.kind, id: run.id, title: run.title, page: run.page, jobId: run.jobId }); }, { style: '' })}${button(t('Close'), close, { style: 'secondary' })}</div></section>`;
   const route = ai.getRoute();
   const config = ai.providerConfig(route);
   const { text, counts } = outgoing(ctx, run);
   const host = config && config.kind !== 'device' ? new URL(config.endpoint).host : '';
   const masked = Object.entries(counts).map(([k, n]) => `${n} ${t(k)}`).join(', ');
-  const close = () => { run.controller?.abort(); ctx.ui.ai = null; ctx.rerender(); };
   const copy = async () => {
     try { await navigator.clipboard.writeText(text); ctx.notify(t('Prompt copied. Open your AI chat and paste it when you are ready.')); }
     catch (_) { const el = /** @type {HTMLTextAreaElement} */ (document.getElementById('ai-outgoing')); el.focus(); el.select(); ctx.notify(t('Automatic copying is unavailable. Text is selected: use Copy, Ctrl+C or ⌘C.')); }
@@ -127,7 +142,9 @@ export function aiPanel(ctx, view) {
   const ready = config && (config.kind !== 'key' || ai.getKey(route)) && (config.kind !== 'device' || ctx.services.webllmReady?.());
   return html`<section class="card ai-panel section-space" aria-labelledby="ai-panel-title">
 <div class="card-head"><div><p class="eyebrow">${t('AI help · unverified until you accept')}</p><h2 id="ai-panel-title" tabindex="-1">${t(run.title)}</h2></div>${button(t('Close'), close, { style: 'ghost small' })}</div>
-${connectRoute(ctx)}
+${currentRoute(ctx)}
+${!config ? html`<ol class="tip-list copy-steps"><li>${t('Read the exact prompt below and check what you will share.')}</li><li>${t('Copy it into your chosen free AI chat and ask for a reply.')}</li><li>${t('Paste the whole reply back here, then choose Read the reply.')}</li><li>${t('Check each suggestion. Accept, edit or reject it yourself.')}</li></ol>
+${!ctx.state.settings.remember ? html`<div class="session-reminder"><p class="field-hint">${t('This workspace is session only. Switching apps can close this tab; save a backup before leaving.')}</p>${button(t('Save backup'), () => ctx.services.exportBackup(), { style: 'secondary' })}</div>` : nothing}` : nothing}
 <div class="field mt-15"><div class="row-between"><label for="ai-outgoing">${config ? t('Exact text that will be sent to {host}', { host: host || t('the model on this device') }) : t('Exact text to copy into a free AI chat')}</label>
 <label class="check-row small"><input type="checkbox" .checked=${run.redactOn} @change=${(/** @type {Event} */ e) => { run.redactOn = /** @type {HTMLInputElement} */ (e.target).checked; ctx.rerender(); }}><span>${t('Redact before sending')}</span></label></div>
 <textarea id="ai-outgoing" class="prompt-preview" readonly rows="9" spellcheck="false" .value=${text}></textarea>
@@ -142,5 +159,6 @@ ${needsTick ? html`<label class="check-row mt-10"><input id="ai-host-tick" type=
 ${run.status === 'running' || (run.output && run.kind !== 'task') || run.status === 'error' ? html`<div class="ai-output mt-15" aria-live="polite"><p class="pill sand">${t('Unverified draft — needs your review')}</p>${run.error ? html`<p class="evidence-warning" role="alert">${run.error}</p>` : nothing}<pre class="original-text">${run.output}</pre>
 ${run.status === 'done' && run.kind === 'step' ? html`<div class="actions">${button(t('Keep as a draft in the prompt studio'), () => { if (ctx.update('ai.drafts.' + run.id, run.output)) ctx.notify(t('Saved as an unverified draft. It was not applied to your CV.')); })}</div>` : nothing}</div>` : nothing}
 ${run.proposals ? html`<div class="mt-15">${proposalReview(ctx, run.proposals, run.decisions)}</div>` : nothing}
+${run.page === 'profile' ? html`<div class="actions mt-18">${button(t('Return to my profile facts'), () => ctx.focusAfterRender('field-profile-headline'), { style: '' })}</div>` : nothing}
 </section>`;
 }

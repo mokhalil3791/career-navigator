@@ -1,30 +1,36 @@
 // @ts-check
-/** Overview page. Ported from v0.1 renderHome. */
-import { html } from 'lit-html';
-import { icon } from '../components/icon.js';
-import { button, goButton } from '../components/ui.js';
+/** The primary CV journey, with the wider workspace kept within reach. */
+import { html, nothing } from 'lit-html';
+import { button, goButton, pageHeading } from '../components/ui.js';
 import { progressOverview } from '../components/progress.js';
+import { CV_CONTENT_KEYS } from '../core/cv.js';
 
 /** @param {import('../app-context.js').Ctx} ctx */
 export function renderHome(ctx) {
   const { state, t } = ctx;
-  const profileStarted = Boolean(state.profile.experience || state.profile.about || state.profile.skills);
+  const heading = pageHeading(t('Your workspace'), t('Build a CV you have reviewed.'), t('Import your CV, check the facts, add one advert, review a draft and export. AI is optional.'));
+  const example = button(t('Try a fictional example'), () => ctx.services.loadDemo(), { style: 'secondary' });
+  // The welcome keeps privacy before entry without a second dashboard competing beneath it.
+  if (!state.settings.onboarded && ctx.services.welcome) return html`${heading}${ctx.services.welcome(ctx)}<div class="actions section-space">${example}</div>`;
+  const facts = Boolean(state.profile.headline || state.profile.about || state.profile.experience || state.profile.skills || state.profile.education || state.profile.languages || state.profile.educationRows.length || state.profile.languageRows.length);
+  const draft = CV_CONTENT_KEYS.some((key) => state.cv[key].trim());
+  const started = facts || state.profile.cvText || state.jobs.length || draft;
+  const next = draft ? 'cv' : facts ? (state.jobs.length ? 'cv' : 'jobs') : 'profile';
   const steps = [
-    ['profile', 'person', '01', t('Tell your story'), t('Bring your skills, experience and goals together.'), profileStarted ? t('Profile started') : t('Start with what you know')],
-    ['jobs', 'briefcase', '02', t('Explore your options'), t('Compare real job requirements with your evidence.'), state.jobs.length ? (state.jobs.length === 1 ? t('1 advert in your workspace') : t('{n} adverts in your workspace', { n: state.jobs.length })) : t('Add your first advert')],
-    ['cv', 'document', '03', t('Prepare with purpose'), t('Build your application and practise your interview.'), state.cv.reviewed ? t('CV reviewed') : state.cv.summary ? t('CV draft started') : t('Create a truthful draft')],
-    ['plan', 'path', '04', t('Make your next move'), t('Turn one learning gap into a 90-day plan.'), state.plan.nextAction ? t('Next action recorded') : t('Choose one small step')],
+    ['profile', t('Import or enter your CV')],
+    ['profile', t('Check your profile facts')],
+    ['jobs', t('Add one job advert')],
+    ['cv', t('Review a tailored draft')],
+    ['cv', t('Export HTML and Word')],
   ];
-  return html`${ctx.services.welcome ? ctx.services.welcome(ctx) : ''}
-<section class="hero"><div class="hero-copy"><p class="eyebrow">${t('A fresh start, on your terms')}</p><h1 tabindex="-1" class="focus-heading">${t('Your experience.')}<br><em>${t('Your next step.')}</em></h1><p class="lead">${t('Build a clear profile, explore jobs in the Netherlands and prepare an application you can stand behind.')}</p><div class="actions">${goButton(ctx, profileStarted ? t('Continue my profile') : t('Start my journey'), 'profile', '')}${button(t('Try a fictional example'), () => ctx.services.loadDemo(), { style: 'secondary' })}</div></div>${heroVisual(t)}</section>
-${progressOverview(ctx)}
-<section class="section-space"><div class="section-head"><h2>${t('Your journey, made practical')}</h2><span class="muted">${t('Start anywhere. Come back anytime.')}</span></div><div class="grid four">${steps.map((s) => html`<button type="button" class="step-card" @click=${() => ctx.go(s[0])}><div class="step-top"><span class="step-icon">${icon(s[1], 20)}</span><span class="step-num">${s[2]}</span></div><h3>${s[3]}</h3><p>${s[4]}</p><span class="step-status"><span class="dot"></span>${s[5]}</span></button>`)}</div></section>
-<section class="strip section-space"><div class="inline"><span class="icon-badge">${icon('spark', 24)}</span><div><h3>${t('A little help from AI. You stay in control.')}</h3><p>${t('Six career prompts, ready for your preferred AI chat. Review what you share and what comes back.')}</p></div></div>${goButton(ctx, html`${t('Open prompt studio')} ${icon('arrow', 16)}`, 'prompts', 'secondary')}</section>
-${ctx.services.knowledgeFor ? html`<div class="grid two section-space">${ctx.services.knowledgeFor(ctx, 'home')}</div>` : ''}
-<div class="home-mini section-space">${icon('shield', 18)}<span><strong>${t('No sign-up or payment.')}</strong> ${t('The app works on your device. AI help is optional and free.')}</span></div>`;
-}
-
-/** @param {(s: string) => string} t */
-function heroVisual(t) {
-  return html`<div class="hero-visual" aria-hidden="true"><svg viewBox="0 0 260 280" fill="none"><path d="M40 251c0-87 176-45 176-126 0-35-38-49-65-30-35 25-10 68-51 68-26 0-38-21-29-38" stroke="#a9bda0" stroke-width="25"/><path d="M40 251c0-87 176-45 176-126 0-35-38-49-65-30-35 25-10 68-51 68-26 0-38-21-29-38" stroke="#e9f0e1" stroke-width="2" stroke-dasharray="5 7"/><circle cx="72" cy="120" r="16" fill="#123e3c"/><path d="m66 120 4 4 8-9" stroke="#d7eea6" stroke-width="2"/><circle cx="170" cy="57" r="43" fill="#f7f8f3"/><circle cx="170" cy="57" r="34" stroke="#c8d3c2"/><path d="m186 38-10 25-22 15 10-25Z" fill="#b85d2d"/><path d="m170 57-16 21 10-25Z" fill="#123e3c"/><circle cx="40" cy="249" r="7" fill="#b85d2d"/></svg><p class="hero-caption">${t('One useful step at a time')}</p></div>`;
+  return html`${heading}<section class="card primary-journey" aria-label=${t('Your CV journey')}>
+<div class="actions">${goButton(ctx, started ? t('Continue my CV') : t('Build my CV'), next, '')}</div>
+<p class="card-sub mt-15">${state.cv.reviewed ? t('Reviewed by you') : draft ? t('Needs your review') : facts ? t('Facts recorded') : t('Start with a file, pasted text or your own words.')}</p>
+<ol class="journey-steps">${steps.map(([view, label]) => html`<li>${goButton(ctx, label, view, 'ghost')}</li>`)}</ol>
+<p class="field-hint">${t('These steps show where to work. Recorded facts still need your own check.')}</p></section>
+<p class="source-note section-space">${t('Workshop tools: AI prompt studio is in the main navigation. Find My 90-day plan under More tools.')}</p>
+<details class="details card section-space"><summary>${t('My wider workspace')}</summary>${progressOverview(ctx)}
+<div class="actions mt-18">${goButton(ctx, t('Open prompt studio'), 'prompts', 'secondary')}${example}</div>
+${ctx.services.knowledgeFor ? html`<div class="section-space">${ctx.services.knowledgeFor(ctx, 'home')}</div>` : nothing}</details>
+<p class="source-note section-space">${t('No sign-up or payment.')} ${t('The app works on your device. AI help is optional and free.')}</p>`;
 }

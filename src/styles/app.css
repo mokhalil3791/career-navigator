@@ -74,3 +74,12 @@ progress{inline-size:100%;block-size:10px;accent-color:var(--teal)}
 
 /* Keep the advert-to-export controls usable by touch, including secondary actions. */
 .journey-controls .btn{min-block-size:44px}
+
+/* Secondary destinations remain keyboard-accessible without crowding the CV route. */
+.nav-more summary{cursor:pointer;min-block-size:44px;padding:12px 13px;color:#c6dbd4;font-size:.88rem}
+.nav-list .nav-button,.mobile-navigation select{min-block-size:44px}
+.journey-steps{padding-inline-start:24px;margin-block:18px}
+.journey-steps li{padding-block:3px}
+.primary-journey .btn,.ai-panel .btn{min-block-size:44px}
+.session-reminder{margin-block:15px}
+@media(min-width:601px) and (max-width:950px){.nav-list{flex-wrap:wrap;overflow:visible}.nav-more[open]{flex-basis:100%}}

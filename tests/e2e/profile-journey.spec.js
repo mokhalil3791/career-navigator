@@ -1,7 +1,8 @@
 // PR A: import first, optional details, and navigation without a verification claim.
 import { readFileSync } from 'node:fs';
 import AxeBuilder from '@axe-core/playwright';
-import { test, expect, openApp, navigate, seriousAxe } from './fixtures.js';
+import { test, expect, openApp, seriousAxe } from './fixtures.js';
+import { navigate } from './navigation.js';
 import { newWorkspace } from '../../src/core/schema.js';
 
 test.use({ reducedMotion: 'reduce' });

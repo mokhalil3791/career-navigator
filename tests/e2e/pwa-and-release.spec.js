@@ -3,7 +3,8 @@
 import { existsSync, readdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { test, expect, openApp, loadDemo, navigate, gotoView } from './fixtures.js';
+import { test, expect, openApp, loadDemo, gotoView } from './fixtures.js';
+import { navigate } from './navigation.js';
 
 // These tests need the real service worker (they never call an AI provider).
 test.use({ serviceWorkers: 'allow' });

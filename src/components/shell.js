@@ -20,10 +20,16 @@ export const INDEPENDENCE_NOTICE = 'Independent tool. No employer or partner end
 export function shell(ctx, nav, view, page) {
   const { state, t } = ctx;
   const current = nav.find((n) => n.id === view) || nav[0];
+  const primaryIds = ['home', 'profile', 'jobs', 'cv', 'prompts'];
+  const primary = nav.filter((n) => primaryIds.includes(n.id));
+  const more = nav.filter((n) => !primaryIds.includes(n.id));
+  const navButton = (/** @type {{ id: string, label: string, icon: string }} */ n) => html`<button type="button" class="nav-button" aria-current=${view === n.id ? 'page' : nothing} @click=${() => ctx.go(n.id)}>${icon(n.icon, 18)}<span>${t(n.label)}</span></button>`;
+  const navOption = (/** @type {{ id: string, label: string }} */ n) => html`<option value=${n.id} ?selected=${view === n.id}>${t(n.label)}</option>`;
   const status = ctx.ui.storageError || (state.settings.remember ? t('Saved on this device') : t('Session only'));
   return html`<div class="app-shell"><aside class="sidebar"><a class="brand" href="#/home" @click=${(/** @type {Event} */ e) => { e.preventDefault(); ctx.go('home'); }}><span class="brand-mark">${icon('compass', 26)}</span><span>${brand.name}<small>${t(brand.tagline)}</small></span></a>
-<div><p class="nav-label">${t('Your workspace')}</p><nav class="nav-list" aria-label=${t('Main navigation')}>${nav.map((n) => html`<button type="button" class="nav-button" aria-current=${view === n.id ? 'page' : nothing} @click=${() => ctx.go(n.id)}>${icon(n.icon, 18)}<span>${t(n.label)}</span></button>`)}</nav>
-<div class="mobile-navigation"><label for="mobile-view">${t('Go to section')}</label><select id="mobile-view" @change=${(/** @type {Event} */ e) => ctx.go(/** @type {HTMLSelectElement} */ (e.target).value)}>${nav.map((n) => html`<option value=${n.id} ?selected=${view === n.id}>${t(n.label)}</option>`)}</select></div></div>
+<div><p class="nav-label">${t('Your workspace')}</p><nav class="nav-list" aria-label=${t('Main navigation')}>
+${primary.map(navButton)}${more.length ? html`<details class="nav-more" ?open=${more.some((n) => n.id === view)}><summary>${t('More tools')}</summary>${more.map(navButton)}</details>` : nothing}</nav>
+<div class="mobile-navigation"><label for="mobile-view">${t('Go to section')}</label><select id="mobile-view" @change=${(/** @type {Event} */ e) => ctx.go(/** @type {HTMLSelectElement} */ (e.target).value)}><optgroup label=${t('CV journey and prompt studio')}>${primary.map(navOption)}</optgroup>${more.length ? html`<optgroup label=${t('More tools')}>${more.map(navOption)}</optgroup>` : nothing}</select></div></div>
 <div class="sidebar-bottom"><strong><span class="dot"></span> ${t('Built around your choices')}</strong>${t('Start small. Keep your experience truthful. Take the next useful step.')}<p class="tiny mt-15">${t('Independent community tool · v{version}', { version: ctx.services.version })}</p></div></aside>
 <div class="main-wrap"><header class="topbar"><p class="crumb">${t('My journey')} <span class="crumb-sep">/</span><strong>${t(current.label)}</strong></p><div class="top-actions">${ctx.services.languageSwitch ? ctx.services.languageSwitch(ctx) : nothing}<span class="storage-status"><span class="dot"></span>${status}</span>${button(html`${icon('download', 15)}${t('Save backup')}`, () => ctx.services.exportBackup(), { style: 'secondary small' })}</div></header>
 <main id="main" class="content" tabindex="-1">${state.demo ? html`<div class="banner"><span><strong>${t('Fictional example.')}</strong> ${t('This is Sam’s sample workspace. Every employer and advert here is made up.')}</span>${button(t('Start my own'), () => ctx.services.startOwn(), { style: 'small' })}</div>` : nothing}

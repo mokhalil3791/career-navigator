@@ -1,7 +1,8 @@
 // @ts-check
 // Phase 4: journey 1 (coach round trip), CV import, DOCX export, applications, .ics and check-in.
 import { readFileSync } from 'node:fs';
-import { test, expect, openApp, navigate, loadDemo, gotoView } from './fixtures.js';
+import { test, expect, openApp, loadDemo, gotoView } from './fixtures.js';
+import { navigate } from './navigation.js';
 
 /** @param {import('@playwright/test').Page} page */
 async function download(page, /** @type {() => Promise<unknown>} */ trigger, /** @type {string} */ path) {
