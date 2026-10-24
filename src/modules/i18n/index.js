@@ -28,10 +28,11 @@ export function i18nModule(app) {
     if (state.settings.onboarded) return nothing;
     const step = ui.welcomeStep || 1;
     const go = (/** @type {number} */ n) => { ui.welcomeStep = n; ctx.focusAfterRender('welcome-title'); ctx.rerender(); };
-    const finish = () => { ctx.update('settings.onboarded', true); ui.welcomeStep = 1; };
+    const finish = () => { ctx.update('settings.onboarded', true); ui.welcomeStep = 1; ctx.focusAfterRender('h1'); };
     const lang = state.settings.uiLanguage;
     const steps = [t('Language'), t('Example or my own'), t('AI help')];
     return html`<section class="card welcome section-space" aria-labelledby="welcome-title"><ol class="welcome-steps" aria-label=${t('Welcome steps')}>${steps.map((label, i) => html`<li aria-current=${step === i + 1 ? 'step' : nothing} class=${step > i + 1 ? 'done' : ''}>${i + 1}. ${label}</li>`)}</ol>
+<p class="field-hint">${t('Workshop tools: AI prompt studio is in the main navigation. Find My 90-day plan under More tools.')}</p>
 ${step === 1 ? html`<h2 id="welcome-title" tabindex="-1">${t('Welcome. Which language do you prefer?')}</h2>
 <fieldset class="route-picker mt-15"><legend>${t('Interface language')}</legend>${Object.entries(LANGUAGES).map(([code, l]) => html`<label class="check-row"><input type="radio" name="welcome-lang" value=${code} .checked=${lang === code} @change=${() => ctx.update('settings.uiLanguage', code)}><span lang=${code}><strong>${l.name}</strong>${l.machineTranslated ? html`<small>${t('Machine-assisted translation, not yet reviewed by a fluent speaker.')}</small>` : nothing}</span></label>`)}</fieldset>
 <label class="check-row mt-15"><input type="checkbox" .checked=${state.settings.simpleLanguage} @change=${(/** @type {Event} */ e) => ctx.update('settings.simpleLanguage', /** @type {HTMLInputElement} */ (e.target).checked)}><span>${t('Simple language: show less helper text')}</span></label>

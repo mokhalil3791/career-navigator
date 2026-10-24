@@ -106,3 +106,16 @@ export function connectCard(ctx) {
   return html`<details class="card section-space connect-card" ?open=${ai.getRoute() !== 'copy'}><summary><strong>${t('Free AI routes')}</strong> — ${ai.getRoute() === 'copy' ? t('copy-paste (default)') : t(ai.providerConfig(ai.getRoute())?.label || '')}</summary><div class="mt-15">${connectRoute(ctx, 'studio')}</div>
 <p class="source-note">${t('Every route is free. Career Navigator has no server and never asks you to pay. Copy-paste always works as a fallback.')}</p></details>`;
 }
+
+
+/** Current route stays visible; alternative providers and their setup are optional.
+ * @param {import('../../app-context.js').Ctx} ctx
+ */
+export function currentRoute(ctx) {
+  const { t } = ctx;
+  const route = ai.getRoute();
+  const provider = ai.providerConfig(route);
+  return html`<div class="current-route"><p><strong>${t('Current AI route: {route}', { route: provider ? t(provider.label) : t('Copy-paste into any free AI chat') })}</strong></p>
+${provider ? html`<p class="field-hint">${statusLine(ctx, provider)}</p>` : nothing}
+<details class="details ai-route-options"><summary>${t('Change AI route')}</summary>${connectRoute(ctx)}</details></div>`;
+}

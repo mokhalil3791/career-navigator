@@ -1,6 +1,7 @@
 // @ts-check
 // Phase 2 journeys: free AI via copy-paste (journey 2, AI parts) and Gemini mocked (journey 3).
-import { test, expect, openApp, navigate, loadDemo } from './fixtures.js';
+import { test, expect, openApp, loadDemo } from './fixtures.js';
+import { navigate } from './navigation.js';
 import { mockGemini, PASTED_EXTRACT_REPLY, PASTED_TAILOR_REPLY } from './mock-ai.js';
 
 test('journey 2 (copy-paste): extract requirements from a pasted reply, accept one by one, tailor CV, review, export', async ({ page }) => {
@@ -109,6 +110,7 @@ test('a wrong Gemini key gives a plain-language message, and copy-paste still wo
   await page.locator('#ai-host-tick').check();
   await page.getByTestId('ai-send').click();
   await expect(page.locator('.ai-output [role=alert]')).toContainText('did not accept the key');
+  await page.locator('.ai-route-options summary').click();
   await page.locator('.ai-panel input[name^=ai-route][value=copy]').check();
   await expect(page.getByRole('button', { name: 'Read the reply' })).toBeVisible();
 });

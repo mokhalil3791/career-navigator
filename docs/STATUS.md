@@ -50,7 +50,7 @@ Column meanings:
 | 4 Dutch interface, CV stays in chosen language | ✔ E2E | — fluent review |
 | 5 Phone: journey 1 by touch, install, offline | ◐ E2E on phone viewports + offline reload; touch-only and install are manual | — |
 | 6 v0.1 backup → v1 without loss | ✔ Unit (9 fictional backups) + E2E | — |
-| Primary CV journey (import → verify → one advert → tailored draft → export) | ◐ covered by the parts above | — added to both real-phone checks in `RELEASE-CHECKLIST.md` |
+| Primary CV journey (import → verify → one advert → tailored draft → export) | ✔ continuous E2E added in PR C, including both file contents; copy-paste replies are fictional | — added to both real-phone checks in `RELEASE-CHECKLIST.md` |
 
 ## Known issues
 See `docs/KNOWN-ISSUES.md`.
@@ -72,10 +72,23 @@ See `docs/KNOWN-ISSUES.md`.
 
 ## Primary journey PR B (2026-10-24, branch `primary-journey-cv`)
 
-**Implemented on this branch:** one-advert continuation with visible optional evidence review; explicit draft creation and unchanged replacement confirmation; language/structured tailoring together; review and preview before empty optional writing tools; existing letter visible before review; clearly labelled HTML and Word exports. AI panel presentation is reserved for C. No schema, reducer, export implementation, review-gate or network-policy changes.
+**Merged in PR #10 (green CI):** one-advert continuation with visible optional evidence review; explicit draft creation and unchanged replacement confirmation; language/structured tailoring together; review and preview before empty optional writing tools; existing letter visible before review; clearly labelled HTML and Word exports. AI panel presentation is reserved for C. No schema, reducer, export implementation, review-gate or network-policy changes.
 
 **Automated verification:** new E2E tests walk advert → draft → pasted AI proposals → review → both downloads, reading HTML and DOCX `word/document.xml` to check accepted/edited content and exclude rejected content. They check both formats re-lock after profile, advert, CV or letter edits, letter inclusion, returning draft preservation and replacement cancellation, a general CV without AI or an advert, and expanded English/Dutch accessibility at phone sizes. Required local checks and mobile suites are recorded on the PR; CI must pass before merge. Translation coverage: 744/744 strings; shell approximately 119 KB gzip.
 
 **Agent visual check:** review and exports inspected in Chromium at 360 × 732. Empty optional writing no longer precedes the review gate. This verifies presentation in emulation, not usability or human timing.
 
-**Verified by a person:** none for B. No release-checklist items completed; real devices, Dutch review, Word/LibreOffice rendering and the five-user test remain pending. PR C waits for the maintainer to merge B and will add the continuous import-to-export test and simplify entry points/AI-route display.
+**Verified by a person:** none for B. No release-checklist items completed; real devices, Dutch review, Word/LibreOffice rendering and the five-user test remain pending. PR C adds the continuous import-to-export test and simplifies entry points/AI-route display; see the branch record below.
+
+
+## Primary journey PR C (2026-10-24, branch `primary-journey-entry`)
+
+**Implemented on this branch:** a primary five-step CV route and recorded-state continuation; simpler welcome; primary AI prompt studio navigation and secondary More tools; grouped mobile selector; current AI route with optional provider setup; four copy-paste instructions and session-only backup reminder. Existing CV/profile content is never filled or verified by navigation. Changed source/advert context blocks previous primary-task proposals until an explicit restart. No schema, core reducer, exporter, provider or guardrail changes.
+
+**Automated verification:** full PDF-to-reviewed-export journey and focused cases passed on Chromium/mobile-chrome/mobile-safari; both HTML and DOCX XML are inspected for accepted/edited text and absence of rejected text. The malformed reply, no-AI path, returning draft, EN/NL navigation/axe, mocked provider confirmation/fallback and changed-context behavior are checked. The broader mobile suites passed 52 tests. Unit/parity/guardrail count remains 342. Exact final Chromium and CI results are recorded on the PR. Translation coverage: 743/743; shell approximately 120 KB gzip.
+
+**Optional modules:** a temporary local build with built-in AI, applications, knowledge and coach modules disabled passed the manual journey and both exports on all three local browser projects. Configuration was restored; this alternate build is not a CI matrix entry.
+
+**Agent visual check:** at 360 × 732, the home CV action begins around 409 px with a 44 px target; desktop expanded More tools was also inspected. No real provider was used. The prior pdf.js standard-font warning remains documented and unresolved.
+
+**Verified by a person:** none for C. Human timing, comprehension, real devices, fluent Dutch and Word/LibreOffice rendering remain pending. After merge, use `docs/plans/primary-journey-observation.md` with five intended users; report each result against the under-45-minute target. No manual release item was ticked and v1 remains at `/next/` without a release tag.

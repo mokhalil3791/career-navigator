@@ -1,6 +1,6 @@
 # Primary CV journey
 
-Status: approved by Mo on 2026-10-24; PR A merged as #9 with green CI. PR B implemented on `primary-journey-cv`, based on updated main at `e395eab`; PR C waits for Mo to merge B.
+Status: approved by Mo on 2026-10-24; PR A merged as #9 with green CI. PR B merged as #10 with green CI. PR C implemented on `primary-journey-entry`, based on updated main at `b4bc6cd`; awaiting maintainer review after CI.
 Plan date: 2026-10-24; walkthrough performed 2026-10-23 (Europe/Amsterdam).
 Branch: `primary-journey`, created from `main` at `e2f4929`.
 
@@ -209,3 +209,15 @@ Mo approved the revised three-PR sequence and success criteria on 2026-10-24. PR
 - New `cv-journey.spec.js` covers one-advert navigation, explicit drafting, pasted accept/edit/reject, pending proposals retained on return, actual HTML and DOCX XML contents, profile/advert/CV/letter review invalidation, returning drafts and replacement cancellation, general CV without AI/advert, EN/NL expanded accessibility and 360 px layout. Existing tests only gain the required disclosure clicks or updated creation label; assertions, guardrails and G5 remain intact.
 - The new touch-target assertion found the inherited button minimum was 43 px. Advert/CV controls now have a scoped 44 px minimum. No dependency, schema, reducer, exporter, deployment or provider changes.
 - Agent inspected the review/export area at 360 × 732. Human observation, real-device checks and Word/LibreOffice rendering remain pending. Full import-to-export journey and home/navigation/AI-route changes remain PR C.
+
+
+## PR C implementation record (2026-10-24)
+
+- Home now leads with Build my CV / Continue my CV and five steps. Continuation uses recorded state only: an existing draft opens the editor without replacement; source text alone returns to the profile. The wider progress/workspace tools remain in a disclosure. Unfinished onboarding shows its privacy and three choices without a competing dashboard. Skipping welcome focuses the home heading; an agent visual check found the prior scroll position could otherwise hide the main action.
+- Primary navigation retains Overview, My profile, Compare jobs, My application and AI prompt studio. More tools contains the other enabled destinations; it opens for the current secondary page. Phones retain a native selector with two labelled groups. Workshop copy names the studio and locates My 90-day plan. All route IDs and direct links remain unchanged.
+- AI panels show the current route and setup status. Change AI route reveals the existing picker/setup; preview, redaction, provider host confirmation and Send remain outside it. Copy-paste has four instructions plus a session-only backup reminder. Return to my profile facts preserves pending proposals and focuses the editor; the CV return added in B is retained.
+- For the primary suggest-fields/tailor-cv tasks, a changed CV source or profile/selected advert context blocks the old proposal controls and offers an explicit restart. Earlier raw output remains readable as unverified. Accepting CV proposals does not invalidate the profile/advert context. No reducer, provider, schema, prompt safeguard, proposal acceptance or network-guard changes.
+- New `primary-journey.spec.js` walks onboarding → PDF source → per-field accept/edit/reject → one advert → explicit draft → per-change accept/edit/reject → review → HTML and Word. It inspects both files, exercises a malformed reply, and checks returning CV continuation. Additional cases cover manual pasted text without AI, EN/NL navigation and expanded accessibility, built-in preview/confirmation with a mock, copy-paste fallback, and changed-source/advert restart.
+- Existing E2E specs use a small UI navigation wrapper to open More tools on desktop. The original `tests/e2e/fixtures.js`, including G5, is unchanged; no assertions or axe rules were removed. The initial full-journey test selected a proposal by position and edited the wrong field; it now targets the labelled fields. All three browser projects then passed.
+- Local optional-module check: temporarily disabled builtinAi/applications/knowledge/coach in the existing flags, rebuilt, and passed the manual pasted-CV → both exports test on Chromium/mobile-chrome/mobile-safari. Flags were restored byte-for-byte and the normal build regenerated. This is additional local verification, not a separate CI configuration.
+- Agent inspected mobile home and desktop expanded navigation. At 360 × 732, Build my CV starts at about 409 px and has a 44 px target. This is not human usability evidence. The next step after merge is the approved five-user observation script; no features, tags, main-address switch or manual release checks are added here.

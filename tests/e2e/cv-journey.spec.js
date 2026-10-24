@@ -1,7 +1,8 @@
 // PR B: one advert through reviewed HTML/Word exports; no real provider calls.
 import { readFileSync } from 'node:fs';
 import AxeBuilder from '@axe-core/playwright';
-import { test, expect, openApp, navigate, seriousAxe } from './fixtures.js';
+import { test, expect, openApp, seriousAxe } from './fixtures.js';
+import { navigate } from './navigation.js';
 import { readZipEntry } from '../../src/core/exports/zip.js';
 
 test.use({ reducedMotion: 'reduce' });

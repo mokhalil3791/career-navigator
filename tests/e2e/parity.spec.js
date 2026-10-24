@@ -1,7 +1,8 @@
 // @ts-check
 // End-to-end parity with v0.1 ("Keep from v0.1") plus guardrails G3, G6, G10.
 import { readFileSync } from 'node:fs';
-import { test, expect, openApp, navigate, loadDemo } from './fixtures.js';
+import { test, expect, openApp, loadDemo } from './fixtures.js';
+import { navigate } from './navigation.js';
 
 const AREAS = [['Overview', 'home'], ['My profile', 'profile'], ['Compare jobs', 'jobs'], ['My application', 'cv'], ['Interview practice', 'interview'], ['My 90-day plan', 'plan'], ['AI prompt studio', 'prompts']];
 
