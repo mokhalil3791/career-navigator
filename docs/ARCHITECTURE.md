@@ -1,8 +1,9 @@
 # Architecture
 
 A static, client-only web app: plain ES modules with JSDoc types, `lit-html` for safe templates, and Vite at
-build time only. There is no server and no account. The only traffic that leaves the device is an AI call the user
-has previewed and confirmed, or a model download the user started.
+build time only. There is no server and no account. Direct AI calls require preview and confirmation;
+downloads require consent. Connecting OpenRouter also fetches its public catalogue without credentials or
+workspace content. Copy/open launches a fixed chat homepage; the user pastes the text there themselves.
 
 ```
  Browser
@@ -32,6 +33,12 @@ has previewed and confirmed, or a model download the user started.
 | 7 Forkable | content as data + JSON Schemas, modules, `docs/CUSTOMISING.md` | G12, schema tests |
 
 ## Data flow
+- **AI handoff:** `src/ai/chats.js` only generates HTTPS homepages. Workspace prompts never enter URLs (G14).
+  The public, static `/prompts/` library alone generates prefilled links from its public prompt text.
+- **Optional browser AI:** local `LanguageModel.availability()` detection never downloads. Explicit review and
+  download consent precede `create()`; the browser runs the text locally. WebLLM stays in Advanced.
+- **Chat preference:** additive normalized `settings.aiChat` / `aiChatUrl` fields migrate old workspaces to an
+  unchosen chat. Device persistence still requires the existing opt-in; importing never restores CV review.
 - **In:** `normalizeWorkspace(migrate(json))` is the only way outside data enters (backups, device storage, coach packs). Unknown keys are dropped.
 - **Change:** `store.dispatch(action)` → `reduce()` (pure) → size and schema check → subscribers (render, device saving).
 - **Out:**

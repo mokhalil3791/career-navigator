@@ -10,6 +10,14 @@ import { AiError } from './provider.js';
 /** Origins the user confirmed in this session (cleared on reload). @type {Set<string>} */
 const confirmed = new Set();
 
+/** Explicit Advanced → OpenRouter selection may fetch this public catalogue only.
+ * It grants no permission to send prompts and sends no credentials or workspace data.
+ * @param {typeof fetch} [fetchImpl]
+ */
+export function publicOpenRouterModels(fetchImpl = fetch) {
+  return fetchImpl('https://openrouter.ai/api/v1/models', { credentials: 'omit', referrerPolicy: 'no-referrer', cache: 'no-store' });
+}
+
 /**
  * Records that the user saw the outgoing text and the destination host, and pressed Send.
  * @param {string[]} origins

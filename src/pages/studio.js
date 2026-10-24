@@ -3,16 +3,17 @@
  * AI prompt studio (FR-PS). Copy-paste is the universal, free fallback: it works
  * with the free plan of any AI chat. Ported from v0.1 renderPrompts, with:
  *  - the original workshop prompt panel removed (decision D4),
- *  - free chat links from config/providers.json (decision D7),
- *  - "Share" for phones (sends the prompt to an installed AI app) and, for short
- *    prompts, "Open in <chat>" which pre-fills the chat box.
+ *  - a remembered chat homepage, never a workspace-prefilled URL,
+ *  - optional phone sharing and manual text selection.
  */
 import { html, nothing } from 'lit-html';
 import { icon } from '../components/icon.js';
 import { button, field, goButton, pageHeading } from '../components/ui.js';
 import { buildPrompt } from '../core/prompts.js';
 import { safeUrl } from '../core/escape.js';
-import providers from '../../config/providers.json';
+import { chosenChat } from '../ai/chats.js';
+import { redact } from '../ai/redact.js';
+import * as ai from '../ai/session.js';
 import brand from '../../config/brand.json';
 
 const STEPS = [['profile', '1'], ['search', '2'], ['compare', '+'], ['fit', '3'], ['tailor', '4'], ['interview', '5'], ['letter', '6']];
@@ -23,20 +24,10 @@ export function renderStudio(ctx) {
   const { state, t, content } = ctx;
   const step = state.ai.step;
   const meta = content.prompts.find((p) => p.id === step) || content.prompts[0];
-  const prompt = buildPrompt(step, state, content);
+  const prompt = redact(buildPrompt(step, state, content), { name: state.profile.name }).text;
   const preview = () => /** @type {HTMLTextAreaElement} */ (document.getElementById('prompt-preview'));
-  const copy = async () => {
-    try {
-      if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
-      await navigator.clipboard.writeText(prompt);
-      ctx.notify(t('Prompt copied. Open your AI chat and paste it when you are ready.'));
-    } catch (_) {
-      preview().focus(); preview().select();
-      ctx.notify(t('Automatic copying is unavailable. Text is selected: use Copy, Ctrl+C or ⌘C.'));
-    }
-  };
-  const share = () => navigator.share({ text: prompt }).catch(() => { /* the user closed the share sheet */ });
-  const canPrefill = prompt.length <= providers.prefillMaxChars;
+  const chat = chosenChat(state.settings);
+  const share = () => navigator.share({ text: prompt }).catch(() => {});
   const context = ['compare', 'search'].includes(step) ? t('Your profile and saved adverts') : ['fit', 'tailor', 'interview', 'letter'].includes(step) ? t('Your profile and selected advert') : t('Your profile');
   const back = step === 'compare' || step === 'fit' || step === 'search' ? ['jobs', t('Review my job evidence')] : step === 'interview' ? ['interview', t('Return to interview practice')] : ['cv', t('Edit my application')];
   return html`${pageHeading('', t('Prompt library'), t('Prepare a prompt here, run it in a free AI chat, then bring back a draft to review.'))}
@@ -48,10 +39,8 @@ ${ctx.services.planFromGaps ? ctx.services.planFromGaps(ctx) : nothing}
 <div class="field"><label>${t('Context included')}</label><p class="field-hint py-10">${context}. ${t('Review the exact text below. The name field is omitted; free text may still include personal details.')}</p></div>
 ${field(ctx, t('Anything else to ask'), 'ai.extra', { optional: true, area: true, rows: 2, full: true, max: 6000, placeholder: t('e.g. Use plain language. Help me explain a career change.') })}</div>
 <div class="field mt-20"><label for="prompt-preview">${t('Exact prompt to copy')}</label><textarea id="prompt-preview" class="prompt-preview" readonly rows="13" spellcheck="false" .value=${prompt}></textarea><span class="field-hint">${t('Read this before sharing. Remove private details from your source fields if needed. Nothing is sent to an AI until you copy it yourself or confirm a built-in AI request.')}</span></div>
-<div class="actions mt-15">${button(html`${icon('copy', 16)}${t('Copy this prompt')}`, copy, { style: '' })}${'share' in navigator ? button(t('Share to an AI app'), share) : nothing}${button(t('Select text manually'), () => { preview().focus(); preview().select(); ctx.notify(t('Text selected. Use your browser’s Copy command, Ctrl+C or ⌘C.')); })}${ctx.services.sendButton ? ctx.services.sendButton(ctx, prompt) : nothing}</div>
-<div class="provider-links"><span class="muted">${t('Then open a free AI chat:')}</span>${providers.chats.map((c) => { const url = safeUrl(c.url); return url ? html`<a href=${url} target="_blank" rel="noopener noreferrer">${c.label} ↗</a>` : nothing; })}</div>
-${canPrefill ? html`<p class="field-hint mt-10">${t('Short prompt: you can also open it pre-filled in')} ${providers.chats.filter((c) => c.prefill).map((c) => html`<a class="prefill-link" href=${safeUrl(c.prefill + encodeURIComponent(prompt))} target="_blank" rel="noopener noreferrer">${c.label} ↗</a> `)} ${t('(the text travels in the web address, so it can appear in your browser history).')}</p>` : nothing}
-<p class="source-note">${t('Each AI service has its own terms, privacy controls and free usage limits. Career Navigator itself never needs an account, a subscription or an API key.')}</p>
+<div class="actions mt-15">${button(ai.getRoute() === 'copy' ? t('Copy and open {chat}', { chat: chat.label }) : t('Send'), () => ctx.services.openPrompt?.(ctx, step), { style: '', testid: 'studio-copy-open' })}<details class="details"><summary>${t('More: share, select text')}</summary><div class="actions">${typeof navigator.share === 'function' ? button(t('Share to app'), share) : nothing}${button(t('Select text manually'), () => { preview().focus(); preview().select(); ctx.notify(t('Text selected. Use your browser’s Copy command, Ctrl+C or ⌘C.')); })}</div></details></div>
+<p class="source-note">${t('Each AI chat has its own privacy controls and free usage limits. Career Navigator never asks you to pay.')}</p>
 <details class="details"><summary>${t('About this prompt')}</summary><div class="original-text">${t('This prompt adds factuality safeguards and uses evidence categories instead of a score. It treats your profile and adverts as quoted data, so instructions hidden inside an advert are ignored.')}</div><p class="source-note"><a href=${safeUrl(brand.promptLibraryUrl)} target="_blank" rel="noopener noreferrer">${t('Open the public prompt library')}</a></p></details></section>
 ${ctx.ui.aiResponse ? ctx.ui.aiResponse(ctx) : nothing}
 <section class="card"><div class="card-head"><div><h2>${t('Bring back a draft')}</h2><p class="card-sub">${t('Paste a response from your AI chat. Treat it as unverified working text.')}</p></div><span class="pill sand">${t('Unverified draft — needs your review')}</span></div>

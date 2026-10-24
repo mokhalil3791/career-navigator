@@ -42,6 +42,7 @@ test('journey 2 (copy-paste): extract requirements from a pasted reply, accept o
   await expect(page.locator('#field-cv-skills')).toHaveValue(/^SQL: basic SELECT/);
   // Accepting an AI change re-locks the review (G3).
   await expect(page.getByTestId('export-cv')).toBeDisabled();
+  await page.locator('.ai-sheet').getByRole('button', { name: 'Close', exact: true }).click();
   await page.locator('#cv-reviewed').check();
   const download = page.waitForEvent('download');
   await page.getByTestId('export-cv').click();
@@ -73,7 +74,7 @@ test('journey 3 (Gemini, mocked): connect key, preview, redact, confirm, mock in
   await page.locator('input[name^=ai-route][value=gemini]').check();
   await page.locator('#key-gemini').fill('test-free-key');
   await page.getByRole('button', { name: 'Use this key' }).click();
-  await expect(page.locator('.route-picker')).toContainText('Key added for this session');
+  await expect(page.locator('.connect-card .route-picker')).toContainText('Key added for this session');
 
   await navigate(page, 'Interview practice', 'interview');
   await openTask(page);
@@ -110,12 +111,14 @@ test('a wrong Gemini key gives a plain-language message, and copy-paste still wo
   await page.locator('#key-gemini').fill('wrong-key');
   await page.getByRole('button', { name: 'Use this key' }).click();
   await navigate(page, '', 'prompts');
-  await page.getByTestId('run-builtin').click();
+  await page.getByTestId('studio-copy-open').click();
+  await page.getByText('See the exact text', { exact: true }).click();
   await page.locator('#ai-host-tick').check();
   await page.getByTestId('ai-send').click();
   await expect(page.locator('.ai-output [role=alert]')).toContainText('did not accept the key');
-  await page.locator('.ai-route-options summary').click();
-  await page.locator('.ai-panel input[name^=ai-route][value=copy]').check();
+  await navigate(page, '', 'settings');
+  await page.getByRole('button', { name: 'Use this chat' }).click();
+  await navigate(page, '', 'cv'); await openTask(page);
   await expect(page.getByRole('button', { name: 'Read the reply' })).toBeVisible();
 });
 

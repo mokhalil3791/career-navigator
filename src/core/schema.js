@@ -42,7 +42,7 @@ export function newWorkspace() {
     applications: [],
     ai: { step: 'profile', language: 'English', extra: '', drafts: { profile: '', search: '', compare: '', fit: '', tailor: '', interview: '', letter: '' }, customPrompts: [] },
     coachNotes: [],
-    settings: { remember: false, uiLanguage: 'en', applicationLanguage: 'English', simpleLanguage: false, onboarded: false, aiMode: 'copy', aiRouteChosen: false, aiRoute: 'copy' },
+    settings: { remember: false, uiLanguage: 'en', applicationLanguage: 'English', simpleLanguage: false, onboarded: false, aiMode: 'copy', aiRouteChosen: false, aiRoute: 'copy', aiChat: '', aiChatUrl: '' },
   };
 }
 
@@ -218,7 +218,10 @@ export function normalizeWorkspace(input) {
     onboarded: boolean(s.onboarded, 'Settings.onboarded'),
     aiMode: oneOf(s.aiMode, 'Settings.aiMode', ['none', 'copy', 'builtin'], 'copy'),
     aiRouteChosen: boolean(s.aiRouteChosen, 'Settings.aiRouteChosen'),
-    aiRoute: oneOf(s.aiRoute, 'Settings.aiRoute', ['copy', 'gemini', 'webllm', 'openrouter', 'ollama'], 'copy'),
+    aiRoute: oneOf(s.aiRoute, 'Settings.aiRoute', ['copy', 'browser', 'gemini', 'webllm', 'openrouter', 'ollama'], 'copy'),
+    // Additive defaults migrate older workspaces without enabling saving or choosing a chat for them.
+    aiChat: oneOf(s.aiChat, 'Settings.aiChat', ['', 'chatgpt', 'gemini', 'claude', 'copilot', 'lechat', 'other'], ''),
+    aiChatUrl: string(s.aiChatUrl, 'Settings.aiChatUrl', 2000),
   };
   return out;
 }

@@ -10,18 +10,17 @@
 import { html, nothing } from 'lit-html';
 import { live } from 'lit-html/directives/live.js';
 import { button } from '../../components/ui.js';
-import { icon } from '../../components/icon.js';
 import { proposalReview } from '../../components/proposal-review.js';
 import { redact } from '../../ai/redact.js';
 import { parseStructured } from '../../ai/parse.js';
 import { buildTaskPrompt, buildCustomPrompt, toProposals, SCHEMAS } from '../../ai/tasks.js';
 import { buildPrompt } from '../../core/prompts.js';
-import { safeUrl } from '../../core/escape.js';
 import { uid } from '../../lib/uid.js';
 import * as ai from '../../ai/session.js';
-import providers from '../../../config/providers.json';
-import { currentRoute } from './connect.js';
-import { firstRoute } from './connect.js';
+import { refreshOpenRouter } from './connect.js';
+import { chatChoice, checkComputer, usingLabel } from './choice.js';
+import { chosenChat } from '../../ai/chats.js';
+import { sendOnComputer } from '../../ai/browser-ai.js';
 
 /**
  * @typedef {object} AiRun
@@ -36,6 +35,13 @@ import { firstRoute } from './connect.js';
  * @property {string} output
  * @property {string} pasted
  * @property {string} sourceContext
+ * @property {boolean} [previewSeen]
+ * @property {boolean} [hidden]
+ * @property {boolean} [previewOpen]
+ * @property {boolean} [downloadAgreed]
+ * @property {boolean} [awaitingReturn]
+ * @property {boolean} [pasteReady]
+ * @property {number} [downloadProgress]
  * @property {string} error
  * @property {import('../../ai/tasks.js').Proposal[] | null} proposals
  * @property {Record<string, any>} decisions
@@ -48,9 +54,15 @@ import { firstRoute } from './connect.js';
  * @param {{ kind: AiRun['kind'], id: string, title: string, page: string, jobId?: string }} opts
  */
 export function openAi(ctx, opts) {
-  ctx.ui.ai = { ...opts, sourceContext: reviewContext(ctx, opts), redactOn: true, hostTicked: false, status: 'ready', output: '', pasted: '', error: '', proposals: null, decisions: {}, controller: null };
+  ctx.ui.aiReturnFocus = ctx.ui.lastClickedButton?.isConnected ? ctx.ui.lastClickedButton : document.activeElement;
+  checkComputer(ctx);
+  const previous = ctx.ui.ai;
+  ctx.ui.ai = previous?.id === opts.id && previous?.page === opts.page && previous?.kind === opts.kind && previous?.jobId === opts.jobId && previous.output
+    ? { ...previous, hidden: false }
+    : { ...opts, sourceContext: reviewContext(ctx, opts), redactOn: true, hostTicked: false, status: 'ready', output: '', pasted: '', error: '', proposals: null, decisions: {}, controller: null };
   ctx.focusAfterRender('ai-panel-title');
   ctx.rerender();
+  if (ai.getRoute() === 'copy' && ctx.state.settings.aiChat && ctx.ui.ai.sourceContext === reviewContext(ctx, opts)) handoff(ctx, ctx.ui.ai);
 }
 
 /** Detect changed sources when returning to a primary-journey task, without losing pending decisions.
@@ -83,6 +95,7 @@ function outgoing(ctx, run) {
 
 /** Handles a complete reply (pasted or streamed). @param {import('../../app-context.js').Ctx} ctx @param {AiRun} run @param {string} reply */
 function finish(ctx, run, reply) {
+  run.decisions = {}; run.proposals = null; run.error = '';
   run.output = reply;
   if (run.kind !== 'task') { run.status = 'done'; ctx.rerender(); return; }
   const parsed = parseStructured(reply, SCHEMAS[run.id]);
@@ -107,61 +120,128 @@ async function sendBuiltIn(ctx, run) {
   ctx.rerender();
   const request = { messages: [{ role: /** @type {'user'} */ ('user'), content: text }], jsonSchema: run.kind === 'task' ? SCHEMAS[run.id] : undefined, signal: run.controller.signal };
   try {
-    let reply = await ai.send(route, request, (soFar) => { run.output = soFar; ctx.rerender(); });
+    const call = () => route === 'browser' ? sendOnComputer(text, request.signal, value => { run.output = value; ctx.rerender(); }, value => { run.downloadProgress = value; ctx.rerender(); }) : ai.send(route, request, (soFar) => { run.output = soFar; ctx.rerender(); });
+    let reply = await call();
+    if (route === 'browser') ctx.ui.browserAvailability = 'available';
     if (run.kind === 'task' && !parseStructured(reply, SCHEMAS[run.id]).ok) {
       run.output = ''; ctx.notify(ctx.t('The answer was not in the expected format. Asking once more…'));
-      reply = await ai.send(route, request, (soFar) => { run.output = soFar; ctx.rerender(); });
+      reply = await call();
     }
     finish(ctx, run, reply);
   } catch (error) {
     run.status = 'error';
-    run.error = ctx.t(/** @type {Error} */ (error).message);
+    if (route === 'openrouter' && /** @type {any} */ (error).kind === 'unsupported') {
+      await refreshOpenRouter(ctx); ctx.ui.modelUnavailable = true;
+      run.error = ctx.t('This choice is unavailable. Choose another in Settings → Advanced.');
+    } else run.error = route === 'browser' ? ctx.t('AI on this computer could not answer. Try your free AI chat.') : ctx.t(/** @type {Error} */ (error).message);
     ctx.rerender();
   } finally { run.controller = null; }
 }
 
-/** @param {import('../../app-context.js').Ctx} ctx @param {string} view */
-export function aiPanel(ctx, view) {
-  /** @type {AiRun | undefined} */
-  const run = ctx.ui.ai;
-  if (!run || run.page !== view) return nothing;
+/** @param {import('../../app-context.js').Ctx} ctx */
+function closePanel(ctx) {
+  ctx.ui.ai?.controller?.abort(); if (ctx.ui.ai) ctx.ui.ai.hidden = true; ctx.rerender();
+  if (ctx.ui.aiReturnFocus?.isConnected) ctx.ui.aiReturnFocus.focus();
+}
+
+/** Copy and launch happen in the same user gesture; only a fixed homepage reaches the new tab.
+ * @param {import('../../app-context.js').Ctx} ctx @param {AiRun} run @param {boolean} [share]
+ */
+async function handoff(ctx, run, share = run.page !== 'prompts' && typeof navigator.share === 'function' && matchMedia('(max-width:720px)').matches) {
+  const { t } = ctx, text = outgoing(ctx, run).text, chat = chosenChat(ctx.state.settings);
+  try {
+    if (share) await navigator.share({ text });
+    else {
+      const copied = navigator.clipboard.writeText(text);
+      if (chat.url) window.open(chat.url, '_blank', 'noopener,noreferrer');
+      await copied;
+      ctx.notify(t('Copied. Paste it in {chat} and send. Come back here when you have the answer.', { chat: chat.label }));
+    }
+    run.awaitingReturn = true;
+  } catch (error) {
+    if (/** @type {Error} */ (error).name === 'AbortError') return;
+    run.previewOpen = true; ctx.rerender();
+    const el = /** @type {HTMLTextAreaElement | null} */ (document.getElementById('ai-outgoing'));
+    el?.focus(); el?.select();
+    ctx.notify(t('Automatic copying is unavailable. Text is selected: use Copy, Ctrl+C or ⌘C.'));
+  }
+}
+
+/** Read permission is requested only after a click; typing/pasting always remains possible.
+ * @param {import('../../app-context.js').Ctx} ctx @param {AiRun} run
+ */
+async function pasteAnswer(ctx, run) {
+  try {
+    const reply = await navigator.clipboard.readText();
+    if (!reply.trim()) throw new Error('Empty clipboard');
+    run.pasted = reply.slice(0, 40000); finish(ctx, run, run.pasted);
+  } catch { ctx.focusAfterRender('ai-pasted'); ctx.notify(ctx.t('Paste your answer in the box below.')); }
+}
+
+/** @param {import('../../app-context.js').Ctx} ctx @param {AiRun} run */
+function sharedSummary(ctx, run) {
   const { t } = ctx;
-  const close = () => { run.controller?.abort(); ctx.ui.ai = null; ctx.rerender(); };
-  if (!ctx.state.settings.aiRouteChosen) return html`<section class="card ai-panel"><h2 id="ai-panel-title" tabindex="-1">${t('How do you want to use AI?')}</h2>${firstRoute(ctx)}${button(t('Close'), close)}</section>`;
-  if (run.sourceContext !== reviewContext(ctx, run)) return html`<section class="card ai-panel section-space" aria-labelledby="ai-panel-title"><h2 id="ai-panel-title" tabindex="-1">${t(run.title)}</h2><p role="alert">${t('Your source facts or target advert changed. These suggestions belong to the earlier context. Start again before applying more changes.')}</p>
+  const job = ctx.state.jobs.find(j => j.id === (run.jobId || ctx.state.selectedJobId));
+  let summary = t('Shared: your recorded profile facts.');
+  if (run.id === 'suggest-fields') summary = t('Shared: the CV text you imported.');
+  else if (run.id === 'extract-requirements') summary = t('Shared: the “{job}” advert.', { job: job?.title || t('Untitled advert') });
+  else if (run.id === 'suggest-evidence') summary = t('Shared: your profile and the advert’s requirements.');
+  else if (run.id === 'plan-from-gaps') summary = t('Shared: your target role, weekly hours and recorded gaps.');
+  else if (run.id === 'linkedin') summary = t('Shared: your profile and CV draft.');
+  else if (['compare', 'search'].includes(run.id)) summary = t('Shared: your profile and saved adverts.');
+  else if (['tailor-cv', 'tailor', 'letter'].includes(run.id)) summary = t('Shared: your profile, CV draft and the “{job}” advert.', { job: job?.title || t('Untitled advert') });
+  else if (run.id === 'interview') summary = t('Shared: your profile, target advert and saved interview practice.');
+  else if (run.id === 'fit' && job) summary = t('Shared: your profile and the “{job}” advert.', { job: job.title });
+  else if (run.kind === 'custom') {
+    const from = ctx.state.ai.customPrompts.find(c => c.id === run.id)?.dataFrom;
+    if (from === 'cv') summary = t('Shared: your profile and CV draft.');
+    if (from === 'job') summary = t('Shared: your profile and the “{job}” advert.', { job: job?.title || t('Untitled advert') });
+  }
+  return summary + ' ' + (run.redactOn ? t('Your name is hidden.') : t('Redaction is off. Check for personal details.'));
+}
+
+/** @param {import('../../app-context.js').Ctx} ctx @param {AiRun} run */
+function panelBody(ctx, run) {
+  const { t } = ctx, route = ai.getRoute();
+  if (route === 'copy' && !ctx.state.settings.aiChat || ctx.ui.changeChat) return chatChoice(ctx);
+  if (run.sourceContext !== reviewContext(ctx, run)) return html`<p role="alert">${t('Your source facts or target advert changed. These suggestions belong to the earlier context. Start again before applying more changes.')}</p>
 ${run.output ? html`<details class="details"><summary>${t('Earlier unverified reply')}</summary><pre class="original-text">${run.output}</pre></details>` : nothing}
-<div class="actions mt-18">${button(t('Start again with current facts'), () => { run.controller?.abort(); openAi(ctx, { kind: run.kind, id: run.id, title: run.title, page: run.page, jobId: run.jobId }); }, { style: '' })}${button(t('Close'), close, { style: 'secondary' })}</div></section>`;
-  const route = ai.getRoute();
-  const config = ai.providerConfig(route);
-  if (run.id === 'interview' && config && ctx.services.mockInterview) return html`<section class="ai-panel"><h2 id="ai-panel-title" tabindex="-1">${t('AI: practise an interview')}</h2>${button(t('Close'), close)}${ctx.services.mockInterview(ctx)}</section>`;
-  const { text, counts } = outgoing(ctx, run);
-  const host = config && config.kind !== 'device' ? new URL(config.endpoint).host : '';
-  const masked = Object.entries(counts).map(([k, n]) => `${n} ${t(k)}`).join(', ');
-  const copy = async () => {
-    try { await navigator.clipboard.writeText(text); ctx.notify(t('Prompt copied. Open your AI chat and paste it when you are ready.')); }
-    catch (_) { const el = /** @type {HTMLTextAreaElement} */ (document.getElementById('ai-outgoing')); el.focus(); el.select(); ctx.notify(t('Automatic copying is unavailable. Text is selected: use Copy, Ctrl+C or ⌘C.')); }
-  };
-  const needsTick = config && ai.needsHostConfirmation(route);
-  const ready = config && (config.kind !== 'key' || ai.getKey(route)) && (config.kind !== 'device' || ctx.services.webllmReady?.());
-  return html`<section class="card ai-panel section-space" aria-labelledby="ai-panel-title">
-<div class="card-head"><div><p class="eyebrow">${t('AI help · unverified until you accept')}</p><h2 id="ai-panel-title" tabindex="-1">${t(run.title)}</h2></div>${button(t('Close'), close, { style: 'ghost small' })}</div>
-${currentRoute(ctx)}
-${!config ? html`<ol class="tip-list copy-steps"><li>${t('Read the exact prompt below and check what you will share.')}</li><li>${t('Copy it into your chosen free AI chat and ask for a reply.')}</li><li>${t('Paste the whole reply back here, then choose Read the reply.')}</li><li>${t('Check each suggestion. Accept, edit or reject it yourself.')}</li></ol>
-${!ctx.state.settings.remember ? html`<div class="session-reminder"><p class="field-hint">${t('This workspace is session only. Switching apps can close this tab; save a backup before leaving.')}</p>${button(t('Save backup'), () => ctx.services.exportBackup(), { style: 'secondary' })}</div>` : nothing}` : nothing}
-<div class="field mt-15"><div class="row-between"><label for="ai-outgoing">${config ? t('Exact text that will be sent to {host}', { host: host || t('the model on this device') }) : t('Exact text to copy into a free AI chat')}</label>
-<label class="check-row small"><input type="checkbox" .checked=${run.redactOn} @change=${(/** @type {Event} */ e) => { run.redactOn = /** @type {HTMLInputElement} */ (e.target).checked; ctx.rerender(); }}><span>${t('Redact before sending')}</span></label></div>
-<textarea id="ai-outgoing" class="prompt-preview" readonly rows="9" spellcheck="false" .value=${text}></textarea>
-<span class="field-hint">${run.redactOn ? (masked ? t('Masked: {list}.', { list: masked }) + ' ' : '') + t('Redaction catches common patterns only. Read the text before sending.') : t('Redaction is off: the text is sent exactly as shown.')}</span></div>
-${!config ? html`<div class="actions mt-10">${button(html`${icon('copy', 16)}${t('Copy this prompt')}`, copy, { style: '' })}${'share' in navigator ? button(t('Share to an AI app'), () => navigator.share({ text }).catch(() => {})) : nothing}
-${text.length <= providers.prefillMaxChars ? providers.chats.filter((c) => c.prefill).map((c) => html`<a class="btn secondary small" href=${safeUrl(c.prefill + encodeURIComponent(text))} target="_blank" rel="noopener noreferrer">${t('Open in {chat}', { chat: c.label })} ↗</a>`) : nothing}</div>
-<div class="field mt-15"><label for="ai-pasted">${t('Paste the AI’s whole reply here')}</label><textarea id="ai-pasted" rows="6" maxlength="40000" .value=${live(run.pasted)} @input=${(/** @type {Event} */ e) => { run.pasted = /** @type {HTMLTextAreaElement} */ (e.target).value; }}></textarea></div>
-<div class="actions mt-10">${button(t('Read the reply'), () => finish(ctx, run, run.pasted), { style: '' })}</div>`
-    : html`<p class="source-note">${t(config.privacy)} ${config.policyUrl ? html`<a href=${safeUrl(config.policyUrl)} target="_blank" rel="noopener noreferrer">${t('Data policy')} ↗</a>` : nothing}</p>
-${needsTick ? html`<label class="check-row mt-10"><input id="ai-host-tick" type="checkbox" .checked=${run.hostTicked} @change=${(/** @type {Event} */ e) => { run.hostTicked = /** @type {HTMLInputElement} */ (e.target).checked; ctx.rerender(); }}><span>${t('I have read the text above and want to send it to {host}.', { host })}<small>${t('Asked once per provider in each session.')}</small></span></label>` : nothing}
-<div class="actions mt-10">${run.status === 'running' ? button(html`${icon('stop', 16)}${t('Stop')}`, () => run.controller?.abort(), { style: 'danger' }) : button(html`${icon('spark', 16)}${t('Send')}`, () => sendBuiltIn(ctx, run), { style: '', disabled: !ready || (needsTick && !run.hostTicked), testid: 'ai-send' })}</div>`}
+${button(t('Start again with current facts'), () => { ctx.ui.ai = null; openAi(ctx, { kind: run.kind, id: run.id, title: run.title, page: run.page, jobId: run.jobId }); }, { style: '' })}`;
+  const config = ai.providerConfig(route), local = route === 'browser', direct = local || !!config;
+  if (run.id === 'interview' && config && ctx.services.mockInterview) return ctx.services.mockInterview(ctx);
+  const chat = chosenChat(ctx.state.settings), { text, counts } = outgoing(ctx, run);
+  const host = local || config?.kind === 'device' ? t('this computer') : config ? new URL(config.endpoint).host : '';
+  const needsTick = direct && !ctx.ui.aiTextConfirmed?.[route];
+  const downloadNeeded = local && ctx.ui.browserAvailability !== 'available';
+  const ready = local ? ['available', 'downloadable', 'downloading'].includes(ctx.ui.browserAvailability) && (!downloadNeeded || run.downloadAgreed) : config && (route !== 'openrouter' || !!ai.getModel(route)) && (config.kind !== 'key' || ai.getKey(route)) && (config.kind !== 'device' || ctx.services.webllmReady?.());
+  const share = run.page !== 'prompts' && typeof navigator.share === 'function' && matchMedia('(max-width:720px)').matches;
+  const send = () => { (ctx.ui.aiTextConfirmed ||= {})[route] = true; sendBuiltIn(ctx, run); };
+  return html`<p class="shared-summary">${sharedSummary(ctx, run)}</p>
+<p class="field-hint">${t('Using: {chat}', { chat: usingLabel(ctx) })} · ${button(t('change'), () => { closePanel(ctx); ctx.go('settings'); }, { style: 'ghost small' })}</p>
+<div class="actions ai-primary">${direct ? run.status === 'running' ? button(t('Stop'), () => run.controller?.abort(), { style: 'danger' }) : button(t('Send'), send, { style: '', testid: 'ai-send', disabled: !ready || !!(needsTick && (!run.hostTicked || !run.previewSeen)) }) : button(share ? t('Share to app') : t('Copy and open {chat}', { chat: chat.label }), () => handoff(ctx, run), { style: '', testid: 'copy-open' })}
+${share && !direct ? button(t('Copy and open {chat}', { chat: chat.label }), () => handoff(ctx, run, false)) : nothing}</div>
+${direct && !ready && !downloadNeeded ? html`<p>${t('Finish connecting in Settings → Advanced, or use your free AI chat.')}</p>` : nothing}
+<details class="details ai-exact" ?open=${!!run.previewOpen}><summary @click=${(/** @type {Event} */ e) => { e.preventDefault(); run.previewOpen = !run.previewOpen; if (run.previewOpen) run.previewSeen = true; ctx.rerender(); }}>${t('See the exact text')}</summary>
+<label class="visually-hidden" for="ai-outgoing">${t('Exact outgoing text')}</label><textarea id="ai-outgoing" class="prompt-preview" readonly rows="9" spellcheck="false" .value=${text}></textarea>
+<label class="check-row"><input type="checkbox" .checked=${run.redactOn} @change=${(/** @type {Event} */ e) => { run.redactOn = /** @type {HTMLInputElement} */ (e.target).checked; run.hostTicked = false; ctx.rerender(); }}><span>${t('Redact before sending')}</span></label>
+<p class="field-hint">${run.redactOn ? t('Redaction catches common patterns only. Read the text before sending.') : t('Redaction is off: the text is sent exactly as shown.')}${Object.keys(counts).length ? ' ' + t('Common contact details were hidden.') : ''}</p></details>
+${needsTick ? html`<label class="check-row mt-10"><input id="ai-host-tick" type="checkbox" ?disabled=${!run.previewSeen} .checked=${run.hostTicked} @change=${(/** @type {Event} */ e) => { run.hostTicked = /** @type {HTMLInputElement} */ (e.target).checked; ctx.rerender(); }}><span>${t('I have read the text above and want to send it to {host}.', { host })}</span></label>` : nothing}
+${downloadNeeded ? html`<div class="banner mt-10"><p>${t('Large download: this may need several GB. Your browser does not report the exact size. Use Wi-Fi and check that you have enough space. Your text stays on this computer.')}</p><label class="check-row"><input type="checkbox" .checked=${!!run.downloadAgreed} @change=${(/** @type {Event} */ e) => { run.downloadAgreed = /** @type {HTMLInputElement} */ (e.target).checked; ctx.rerender(); }}><span>${t('I understand. I am on Wi-Fi or have enough data.')}</span></label></div>` : nothing}
+${run.downloadProgress !== undefined ? html`<label for="browser-download">${t('Preparing AI on this computer…')}</label><progress id="browser-download" max="1" .value=${run.downloadProgress}></progress>` : nothing}
+${!direct ? html`<div class="paste-answer mt-18">${button(t('Paste the answer'), () => pasteAnswer(ctx, run), { style: '', testid: 'paste-answer' })}
+<div class="field mt-10"><label for="ai-pasted">${t('Or paste the answer here')}</label><textarea id="ai-pasted" rows="4" maxlength="40000" .value=${live(run.pasted)} @input=${(/** @type {Event} */ e) => { run.pasted = /** @type {HTMLTextAreaElement} */ (e.target).value; }}></textarea></div>${button(t('Read the reply'), () => finish(ctx, run, run.pasted))}</div>` : nothing}
 ${run.status === 'running' || (run.output && run.kind !== 'task') || run.status === 'error' ? html`<div class="ai-output mt-15" aria-live="polite"><p class="pill sand">${t('Unverified draft — needs your review')}</p>${run.error ? html`<p class="evidence-warning" role="alert">${run.error}</p>` : nothing}<pre class="original-text">${run.output}</pre>
-${run.status === 'done' && run.kind === 'step' ? html`<div class="actions">${button(t('Keep as a draft in the prompt studio'), () => { if (ctx.update('ai.drafts.' + run.id, run.output)) ctx.notify(t('Saved as an unverified draft. It was not applied to your CV.')); })}</div>` : nothing}</div>` : nothing}
+${run.status === 'done' && run.kind === 'step' ? button(t('Keep as a draft in the prompt studio'), () => { if (ctx.update('ai.drafts.' + run.id, run.output)) ctx.notify(t('Saved as an unverified draft. It was not applied to your CV.')); }) : nothing}</div>` : nothing}
 ${run.proposals ? html`<div class="mt-15">${proposalReview(ctx, run.proposals, run.decisions)}</div>` : nothing}
-${run.page === 'profile' ? html`<div class="actions mt-18">${button(t('Return to my profile facts'), () => ctx.focusAfterRender('field-profile-headline'), { style: '' })}</div>` : nothing}
-</section>`;
+${run.page === 'profile' ? button(t('Return to my profile facts'), () => { closePanel(ctx); ctx.focusAfterRender('field-profile-headline'); }) : nothing}
+${run.page === 'cv' ? button(t('Return to my CV draft'), () => { closePanel(ctx); ctx.focusAfterRender('field-cv-headline'); }) : nothing}`;
+}
+
+/** Native dialog supplies focus trapping and keeps the underlying step layout unchanged.
+ * @param {import('../../app-context.js').Ctx} ctx @param {string} view
+ */
+export function aiPanel(ctx, view) {
+  const run = /** @type {AiRun | undefined} */ (ctx.ui.ai);
+  if (!run || run.hidden || run.page !== view) return nothing;
+  return html`<dialog class="ai-sheet" aria-labelledby="ai-panel-title" @cancel=${(/** @type {Event} */ e) => { e.preventDefault(); closePanel(ctx); }}><section class="ai-panel"><header class="ai-sheet-header"><h2 id="ai-panel-title" tabindex="-1">${ctx.t(run.title)}</h2>${button(ctx.t('Close'), () => closePanel(ctx), { style: 'secondary' })}</header><div class="ai-sheet-body">${panelBody(ctx, run)}</div></section></dialog>`;
 }

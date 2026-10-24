@@ -1,3 +1,4 @@
+import { navigate } from './navigation.js';
 import AxeBuilder from '@axe-core/playwright';
 import { readFileSync } from 'node:fs';
 import { test, expect, openApp, gotoView, seriousAxe } from './fixtures.js';
@@ -15,13 +16,16 @@ for (const [width, height] of [[390,844],[1366,900]]) {
     await page.locator('#cv-file').setInputFiles('tests/fixtures/cv/fictional-cv.pdf');
     await expect(page.locator('#field-profile-cvText')).toHaveValue(/Planned routes for 15 drivers/);
     await page.getByTestId('journey-ai').click();
-    await expect(page.locator('#ai-panel-title')).toHaveText('How do you want to use AI?');
+    await expect(page.getByRole('group', { name: 'Which free AI chat do you use?' })).toBeVisible();
     expect(calls).toHaveLength(0);
-    await page.locator('input[name=first-ai-route][value=gemini]').check();
-    await page.getByRole('button', { name: 'Use this AI route' }).click();
+    await navigate(page, '', 'settings');
+    await page.locator('.connect-card summary').click();
+    await page.locator('input[name^=ai-route][value=gemini]').check();
     await page.locator('#key-gemini').fill('test-free-key');
     await page.getByRole('button', { name: 'Use this key' }).click();
+    await navigate(page, '', 'profile'); await page.getByTestId('journey-ai').click();
     await expect(page.getByTestId('ai-send')).toBeDisabled();
+    await page.getByText('See the exact text', { exact: true }).click();
     await page.locator('#ai-host-tick').check();
     await page.getByTestId('ai-send').click();
     await expect(page.locator('.proposal')).toHaveCount(4);

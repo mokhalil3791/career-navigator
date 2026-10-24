@@ -62,6 +62,11 @@ export function startApp(root, options = {}) {
   const importInput = /** @type {HTMLInputElement} */ (document.getElementById('import-file'));
   /** @type {Record<string, any>} */
   const ui = { cvPreview: false, storageError: '' };
+  // Safari does not focus buttons on pointer clicks. Remember the actual trigger
+  // before its handler opens a dialog so Close can restore keyboard focus.
+  root.addEventListener('click', (event) => {
+    ui.lastClickedButton = event.target instanceof Element ? event.target.closest('button') : null;
+  }, true);
   /** @type {Record<string, any>} */
   const services = { version: pkg.version, features };
   const pages = [...PAGES];
@@ -123,6 +128,11 @@ export function startApp(root, options = {}) {
     const page = pages.find((p) => p.id === view) || pages[0];
     setRootAttributes(c.state.settings.uiLanguage, c.state.settings.simpleLanguage);
     render(shell(c, pages.filter((p) => !p.hidden), view, page.render(c)), root);
+    const sheet = /** @type {HTMLDialogElement | null} */ (root.querySelector('.ai-sheet'));
+    if (sheet && !sheet.open) sheet.showModal();
+    document.body.classList.toggle('ai-sheet-open', !!sheet);
+    // A native dialog is above ordinary z-index layers, including the global toast.
+    (sheet || document.body).appendChild(notice);
     const nextBar = /** @type {HTMLElement | null} */ (root.querySelector('.journey-footer'));
     if (nextBar !== journeyBar) {
       barObserver.disconnect(); journeyBar = nextBar;
@@ -284,6 +294,9 @@ export function startApp(root, options = {}) {
     }
   });
   window.addEventListener('hashchange', () => { const next = viewFromHash(); if (next !== view) go(next); });
+  window.addEventListener('focus', () => {
+    if (ui.ai?.awaitingReturn) { ui.ai.awaitingReturn = false; ui.ai.pasteReady = true; rerender(); root.querySelector('[data-testid=paste-answer]')?.scrollIntoView({ block: 'center' }); }
+  });
   window.addEventListener('beforeinstallprompt', (event) => { event.preventDefault(); ui.installEvent = event; rerender(); });
   window.addEventListener('appinstalled', () => { ui.installEvent = null; rerender(); });
 

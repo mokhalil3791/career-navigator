@@ -8,7 +8,7 @@ import { sseJson } from '../stream.js';
 
 /** @param {any} m an OpenRouter model entry */
 export function isFreeModel(m) {
-  return String(m.id || '').endsWith(':free') || (m.pricing && Number(m.pricing.prompt) === 0 && Number(m.pricing.completion) === 0);
+  return typeof m.id === 'string' && m.id.endsWith(':free');
 }
 
 registerProvider('openrouter', (config, settings) => {
@@ -17,7 +17,7 @@ registerProvider('openrouter', (config, settings) => {
     id: 'openrouter', label: config.label, config, capabilities: config.capabilities,
     async *generate({ system, messages, jsonSchema, signal, model }) {
       if (!settings.getKey()) throw new AiError('auth', 'Add your free OpenRouter key first.');
-      const chosen = model || settings.getModel() || config.defaultModel;
+      const chosen = model ?? settings.getModel() ?? config.defaultModel;
       // Free forever: refuse any model that is not explicitly free.
       if (config.freeOnly && !chosen.endsWith(':free')) throw new AiError('other', 'Only free models (ending in ":free") can be used here.');
       const body = {
@@ -26,8 +26,10 @@ registerProvider('openrouter', (config, settings) => {
         ...(jsonSchema ? { response_format: { type: 'json_object' } } : {}),
       };
       const response = await settings.fetch(`${config.endpoint}/chat/completions`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + settings.getKey(), 'X-Title': 'Career Navigator' }, body: JSON.stringify(body), signal });
+      if ([400, 404].includes(response.status)) throw new AiError('unsupported', 'Model not available — choose another');
       if (!response.ok) throw errorForStatus(response.status, label);
       for await (const event of sseJson(response, signal)) {
+        if (event.error && [400, 404].includes(Number(event.error.code))) throw new AiError('unsupported', 'Model not available — choose another');
         if (event.error) throw errorForStatus(event.error.code || 500, label);
         const text = event.choices?.[0]?.delta?.content;
         if (text) yield text;
