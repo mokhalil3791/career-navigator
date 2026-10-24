@@ -63,3 +63,5 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 30px;font-size:.78rem;color:
   .handout img{width:92px;height:92px}
   footer{padding:6px 0 0;font-size:8pt}
 }
+
+@media print{main>.btn,.prompt>.source-note{display:none!important}}

@@ -33,6 +33,7 @@ for (const p of prompts) {
 }
 
 cpSync(join(ROOT, 'assets', 'qr'), join(OUT, 'qr'), { recursive: true });
+cpSync(join(ROOT, 'site', 'handout'), join(OUT, 'handout'), { recursive: true });
 
 mkdirSync(join(OUT, 'next'), { recursive: true });
 writeFileSync(join(OUT, 'next', 'index.html'), legacyRedirect());
