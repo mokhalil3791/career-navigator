@@ -747,5 +747,12 @@
   "My wider workspace": "Mijn overige werkruimte",
   "Your source facts or target advert changed. These suggestions belong to the earlier context. Start again before applying more changes.": "Je brongegevens of gekozen vacature zijn gewijzigd. Deze voorstellen horen bij de eerdere situatie. Begin opnieuw voordat je meer wijzigingen toepast.",
   "Earlier unverified reply": "Eerder ongecontroleerd antwoord",
-  "Start again with current facts": "Opnieuw beginnen met de huidige gegevens"
+  "Start again with current facts": "Opnieuw beginnen met de huidige gegevens",
+  "Earlier saved work": "Eerder opgeslagen werk",
+  "We found work saved by the earlier version. Bring it in?": "We hebben werk gevonden dat in de eerdere versie is opgeslagen. Wil je het importeren?",
+  "Bring it in": "Importeren",
+  "Not now": "Niet nu",
+  "Device saving": "Opslaan op dit apparaat",
+  "Keep your work on this device? Only say yes on your own phone or computer.": "Je werk op dit apparaat bewaren? Kies alleen ja op je eigen telefoon of computer.",
+  "Yes, keep it": "Ja, bewaren"
 }

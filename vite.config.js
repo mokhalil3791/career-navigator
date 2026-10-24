@@ -8,7 +8,7 @@ import { cspPlugin } from './scripts/lib/csp-plugin.mjs';
 import { swPlugin } from './scripts/lib/sw-plugin.mjs';
 
 export default defineConfig({
-  // Relative paths: the same build works at /next/, at the root, or from a USB stick.
+  // Relative paths: the same build works at the project root or from a USB stick.
   base: './',
   plugins: [cspPlugin(), swPlugin()],
   build: {

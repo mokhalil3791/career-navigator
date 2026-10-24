@@ -13,8 +13,8 @@ export default defineConfig({
   reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
   // Service workers are blocked by default: a page controlled by one bypasses Playwright's
   // request mocks, which could let a test reach a real AI provider. The PWA spec allows them.
-  use: { baseURL: 'http://localhost:4174/next/', trace: 'retain-on-failure', serviceWorkers: 'block' },
-  webServer: { command: 'node scripts/serve.mjs 4174', url: 'http://localhost:4174/next/', reuseExistingServer: !process.env.CI },
+  use: { baseURL: 'http://localhost:4176/', trace: 'retain-on-failure', serviceWorkers: 'block' },
+  webServer: { command: 'node scripts/serve.mjs 4176', url: 'http://localhost:4176/', reuseExistingServer: !process.env.CI },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
     { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
@@ -23,3 +23,4 @@ export default defineConfig({
     { name: 'mobile-safari', use: { ...devices['iPhone 14'] } },
   ],
 });
+

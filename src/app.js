@@ -174,6 +174,17 @@ export function startApp(root, options = {}) {
       } catch (error) { notify(/** @type {Error} */ (error).message, true); }
     },
     importBackup() { importInput.click(); },
+    bringLegacy() {
+      const text = device.legacyBackup();
+      if (!text) return;
+      const t = ctx().t;
+      if (hasWork(store.getState()) && !window.confirm(t('Import this backup and replace your current workspace? Download your current work first if you want to keep it.'))) return;
+      // Keep the original localStorage copy until the person decides how to save.
+      store.dispatch({ type: 'replace', state: parseWorkspace(text) });
+      ui.legacyOffer = false;
+      ui.askToSave = true;
+      rerender();
+    },
     async setRemember(/** @type {boolean} */ on) {
       const t = ctx().t;
       store.update('settings.remember', on);
@@ -231,18 +242,22 @@ export function startApp(root, options = {}) {
   root.replaceChildren();
   rerender();
 
-  device.loadSaved().then(({ state, message, error }) => {
+  device.loadSaved({ offerLegacy: true }).then(({ state, message, error }) => {
     if (state) {
       store.dispatch({ type: 'replace', state });
       if (error) ui.storageError = ctx().t('Device save failed — download a backup');
       notify(ctx().t(message), Boolean(error));
     }
     services.afterStart?.();
+    ui.legacyOffer = Boolean(device.legacyBackup());
+    rerender();
   }).catch(() => {
     ui.storageError = ctx().t('Saved data unavailable — import a backup if needed');
     rerender();
     notify(ctx().t('Saved data could not be opened. You can work here and download a backup; your saved copy has not been overwritten.'), true);
     services.afterStart?.();
+    ui.legacyOffer = Boolean(device.legacyBackup());
+    rerender();
   });
   return app;
 }
