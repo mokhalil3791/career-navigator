@@ -21,12 +21,14 @@ export function renderPromptsPage(prompts, providers) {
     .join('');
   const cards = prompts.map((p, i) => {
     const text = buildLibraryPrompt(p);
+    const openLinks = [['ChatGPT', 'chatgpt'], ['Claude', 'claude'], ['Gemini', 'gemini']].map(([label, id]) => `<a class="link" data-open-chat="${id}" data-prompt="text-${E(p.slug)}" target="_blank" rel="noopener noreferrer" hidden>Open in ${label}</a>`).join(' ');
     return `<article class="prompt" id="${E(p.slug)}">
   <header><span class="num">${i + 1}</span><div><h2>${E(p.title)}</h2><p>${E(p.summary)}</p></div></header>
   <p class="source-note">Works best inside Career Navigator, which adds your facts for you.</p>
   <p class="paste"><strong>Paste with it:</strong> ${p.pasteWith.map(E).join(' · ')}</p>
   <details class="full"><summary>Show the full prompt</summary><pre id="text-${E(p.slug)}" tabindex="0" aria-label="Full prompt: ${E(p.title)}">${E(text)}</pre></details>
   <div class="actions"><button type="button" class="btn" data-copy="text-${E(p.slug)}">Copy prompt</button><button type="button" class="btn secondary" data-share="text-${E(p.slug)}" hidden>Share to an app</button><a class="link" href="#${E(p.slug)}">Link to this prompt</a></div>
+<div class="actions">${openLinks}</div><p class="source-note">The prompt is filled in; you press send.</p>
 </article>`;
   }).join('\n');
   return `<!doctype html>

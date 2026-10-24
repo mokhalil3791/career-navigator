@@ -64,6 +64,7 @@ test('one advert, explicit draft, accept/edit/reject, review and inspect both ex
   await expect(page.locator('#field-cv-summary')).toHaveValue('I checked weekly records.');
   await page.getByRole('button', { name: 'Return to my CV draft' }).click();
   await expect(page.locator('#field-cv-headline')).toBeFocused();
+  await openTask(page);
   await expect(page.locator('.proposal:not(.done)')).toHaveCount(3);
   await page.locator('.proposal').nth(0).getByRole('button', { name: 'Accept', exact: true }).click();
   const edited = page.locator('.proposal').nth(1);

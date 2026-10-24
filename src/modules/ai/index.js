@@ -24,6 +24,7 @@ export function aiModule(app) {
   const aiBtn = (/** @type {any} */ ctx, /** @type {string} */ label, /** @type {() => void} */ run, testid = '') => on(ctx) ? button(html`${icon('spark', 16)}${label}`, run, { style: 'secondary small', testid }) : nothing;
 
   s.aiPanel = aiPanel;
+  s.openPrompt = (/** @type {any} */ ctx, /** @type {string} */ id) => openAi(ctx, { kind: 'step', id, title: ctx.content.prompts.find((/** @type {any} */ p) => p.id === id)?.title || 'AI help', page: location.hash.replace('#/', '') || 'home' });
   s.evidenceHelper = (/** @type {any} */ ctx) => button(ctx.t('Suggest evidence'), () => openAi(ctx, { kind: 'task', id: 'suggest-evidence', title: 'Suggest evidence from my profile', page: 'jobs', jobId: ctx.state.selectedJobId }), { style: 'secondary small' });
   s.journeyAi = (/** @type {any} */ ctx, /** @type {string} */ view) => {
     const t = ctx.t;
@@ -66,7 +67,7 @@ ${f.dutch ? html`<p class="pill ${f.dutch === 'required' ? 'alert' : f.dutch ===
     return html`<section class="card section-space"><div class="card-head"><div><h2>${ctx.t('Generate a plan from my top gaps')}</h2><p class="card-sub">${ctx.t('{n} requirements across your adverts are Not shown or Partly supported. AI can suggest priorities; you accept each one.', { n: gaps.length })}</p></div>${aiBtn(ctx, ctx.t('Suggest a plan'), () => openAi(ctx, { kind: 'task', id: 'plan-from-gaps', title: 'Plan from my top gaps', page: 'plan' }))}</div></section>`;
   };
 
-  s.sendButton = (/** @type {any} */ ctx) => on(ctx) ? button(html`${icon('spark', 16)}${ctx.t('Run with built-in AI')}`, () => openAi(ctx, { kind: 'step', id: ctx.state.ai.step, title: ctx.content.prompts.find((/** @type {any} */ p) => p.id === ctx.state.ai.step)?.title || 'AI prompt', page: 'prompts' }), { style: 'secondary', testid: 'run-builtin' }) : nothing;
+  s.sendButton = (/** @type {any} */ ctx) => on(ctx) ? button(ctx.t('Send'), () => s.openPrompt(ctx, ctx.state.ai.step), { style: '', testid: 'run-builtin' }) : nothing;
 
   // FR-PS-3: the user's own prompt templates, stored in the workspace and exported with it.
   s.customPrompts = (/** @type {any} */ ctx) => {

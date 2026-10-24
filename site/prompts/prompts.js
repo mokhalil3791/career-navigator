@@ -40,6 +40,14 @@
     }
   });
 
+  // Only static public prompts can use prefilled links. The workspace never loads this script.
+  var publicChats = { chatgpt: 'https://chatgpt.com/?q=', claude: 'https://claude.ai/new?q=', gemini: 'https://gemini.google.com/guided-learning?query=' };
+  document.querySelectorAll('[data-open-chat]').forEach(function (link) {
+    var base = publicChats[link.getAttribute('data-open-chat')];
+    var pre = document.getElementById(link.getAttribute('data-prompt'));
+    if (base && pre) { link.href = base + encodeURIComponent(pre.textContent); link.hidden = false; }
+  });
+
   // On phones, "Share" can send the prompt straight to an installed AI chat app.
   if (navigator.share) {
     document.querySelectorAll('[data-share]').forEach(function (b) { b.hidden = false; });

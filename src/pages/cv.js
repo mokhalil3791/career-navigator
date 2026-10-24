@@ -20,8 +20,7 @@ export function renderCV(ctx) {
     ctx.notify(t('CV downloaded. Open it in a browser to print or save as PDF.'));
   };
   const pages = estimatePages(state.cv);
-  return html`${ctx.ui.ai?.page === 'cv' ? html`<div class="actions section-space">${button(t('Return to my CV draft'), () => ctx.focusAfterRender('field-cv-headline'), { style: '' })}</div>` : nothing}
-${journeyHeading(ctx, 'cv', 'Check every line before you download.')}
+  return html`${journeyHeading(ctx, 'cv', 'Check every line before you download.')}
 ${ctx.ui.firstDraft ? html`<section class="banner first-draft" role="status"><p>${t('We made a first draft from your story. Check every line before you download.')}</p>${button(t('Undo: start from empty'), () => { if (ctx.confirm(t('Clear this draft? Your profile facts will stay.'))) { ctx.ui.firstDraft = false; ctx.dispatch({ type: 'startEmptyCv' }); } })}</section>` : nothing}
 <div class="tabs" role="tablist" @keydown=${navigateTabs} aria-label=${t('Application sections')}>${[['cv', t('CV')], ['letter', t('Letter')], ['linkedin', t('LinkedIn')]].map(([id, label]) => html`<button type="button" role="tab" aria-selected=${tab === id ? 'true' : 'false'} @click=${() => { ctx.ui.cvTab = id; ctx.rerender(); if (id === 'letter') ctx.focusAfterRender('field-cv-letter'); }}>${label}</button>`)}</div>
 <div class="split journey-controls"><div class="grid">

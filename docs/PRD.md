@@ -487,3 +487,13 @@ at least one profile fact is recorded. Source CV text alone does not qualify. Th
 migration preserves a once-per-workspace decision across saves and backups. Undo and Start from empty consume
 that decision; revisiting never refills it. Review remains false, both exports stay locked, and importing a
 backup always resets review. Sam uses the same path. AI proposals still require individual acceptance.
+
+**AI simplification (2026-10-25).** The default is a remembered free-chat choice with copy/open to a plain
+homepage, or phone sharing. Returning users paste replies into the unchanged structured parser and individual
+proposal review. Workspace prompts never appear in URLs; prefilled links are confined to public `/prompts/`
+content. This supersedes earlier workspace-prefill and inline route-selection decisions. Connection setup is
+under Settings → Advanced. The AI panel is a modal sheet, with exact text always available and first direct
+send gated by viewing and confirming it. Optional browser-owned local AI is offered only after a local
+availability check and requires consent before downloading. OpenRouter's public catalogue is fetched at
+connection time, restricted to `:free` IDs; configuration is a failure fallback, not an extra source of choices.
+No provider call, native download, physical-device use or Dutch-language review is claimed from mocked tests.

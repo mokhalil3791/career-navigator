@@ -11,24 +11,14 @@ import { safeUrl } from '../../core/escape.js';
 import * as ai from '../../ai/session.js';
 import { hasWebGPU, isLoaded, loadModel } from '../../ai/providers/webllm.js';
 import { kv } from '../../storage/device.js';
+import { freeCatalogue } from '../../ai/openrouter-catalogue.js';
+import { chatChoice, usingLabel } from './choice.js';
 
 /** Screen-only setup state (never saved). */
 const setup = { keyDraft: /** @type {Record<string, string>} */ ({}), remember: /** @type {Record<string, boolean>} */ ({}), status: /** @type {Record<string, string>} */ ({}), models: /** @type {Record<string, {id:string,label:string}[]>} */ ({}), webgpu: /** @type {boolean | null} */ (null), download: { agreed: false, progress: -1, text: '' } };
 
 /** @param {number} mb */
 const gb = (mb) => (mb / 1024).toFixed(1).replace('.0', '');
-
-/** First-use choice. No provider is contacted here.
- * @param {import('../../app-context.js').Ctx} ctx
- */
-export function firstRoute(ctx) {
-  const { t } = ctx;
-  if (setup.webgpu === null) hasWebGPU().then(ok => { setup.webgpu = ok; ctx.rerender(); });
-  const choice = ctx.ui.firstAiRoute || 'copy';
-  const options = [['copy', t('Copy and paste into a free AI chat (recommended)')], ['gemini', t('Connect a free Gemini key')], ...(setup.webgpu ? [['webllm', t('Run AI on this device')]] : [])];
-  return html`<fieldset class="route-picker"><legend>${t('AI help is optional')}</legend>${options.map(([id, label]) => html`<label class="check-row"><input type="radio" name="first-ai-route" value=${id} .checked=${choice === id} @change=${() => { ctx.ui.firstAiRoute = id; ctx.rerender(); }}><span>${label}</span></label>`)}</fieldset>
-  ${button(t('Use this AI route'), () => { ai.setRoute(choice); ctx.update('settings.aiRoute', choice); ctx.update('settings.aiRouteChosen', true); ctx.focusAfterRender('ai-panel-title'); }, { style: '' })}`;
-}
 
 /**
  * Compact route picker shown inside the AI panel.
@@ -40,8 +30,8 @@ export function connectRoute(ctx, where = 'panel') {
   const route = ai.getRoute();
   return html`<fieldset class="route-picker"><legend>${t('How should the AI run?')}</legend>
 <label class="check-row"><input type="radio" name="ai-route-${where}" value="copy" .checked=${route === 'copy'} @change=${() => { ai.setRoute('copy'); ctx.update('settings.aiRoute', 'copy'); ctx.update('settings.aiRouteChosen', true); ctx.rerender(); }}><span><strong>${t('Copy-paste into any free AI chat')}</strong><small>${t('Works for everyone. Nothing is sent by this app.')}</small></span></label>
-${ai.API_PROVIDERS.map((p) => html`<label class="check-row"><input type="radio" name="ai-route-${where}" value=${p.id} .checked=${route === p.id} @change=${() => { ai.setRoute(p.id); ctx.update('settings.aiRoute', p.id); ctx.update('settings.aiRouteChosen', true); ctx.rerender(); }}><span><strong>${t(p.label)}</strong><small>${statusLine(ctx, p)}</small></span></label>`)}
-</fieldset>${route !== 'copy' ? providerSetup(ctx, ai.providerConfig(route)) : nothing}`;
+${ai.API_PROVIDERS.map((p) => html`<label class="check-row"><input type="radio" name="ai-route-${where}" value=${p.id} .checked=${route === p.id} @change=${() => { if (p.id === 'openrouter') refreshOpenRouter(ctx); ai.setRoute(p.id); ctx.update('settings.aiRoute', p.id); ctx.update('settings.aiRouteChosen', true); ctx.rerender(); }}><span><strong>${t(p.label)}</strong><small>${statusLine(ctx, p)}</small></span></label>`)}
+</fieldset>${ai.providerConfig(route) ? providerSetup(ctx, ai.providerConfig(route)) : nothing}`;
 }
 
 /** @param {import('../../app-context.js').Ctx} ctx @param {any} p */
@@ -60,11 +50,11 @@ function providerSetup(ctx, p) {
     setup.status[p.id] = t('Checking…'); ctx.rerender();
     const result = await ai.checkConnection(p.id).catch((/** @type {Error} */ e) => ({ ok: false, message: e.message }));
     setup.status[p.id] = t(result.message);
-    if (result.ok) setup.models[p.id] = await ai.providerFor(p.id).listModels().catch(() => []);
+    if (result.ok) { if (p.id === 'openrouter') await refreshOpenRouter(ctx); else setup.models[p.id] = await ai.providerFor(p.id).listModels().catch(() => []); }
     ctx.rerender();
   };
   const modelPicker = () => {
-    const models = setup.models[p.id]?.length ? setup.models[p.id] : p.models || [];
+    const models = setup.models[p.id] ?? p.models ?? [];
     if (!models.length) return nothing;
     return html`<div class="field mt-10"><label for="model-${p.id}">${t('Model')}</label><select id="model-${p.id}" @change=${(/** @type {Event} */ e) => { ai.setModel(p.id, /** @type {HTMLSelectElement} */ (e.target).value); ctx.rerender(); }}>${models.map((m) => html`<option value=${m.id} ?selected=${ai.getModel(p.id) === m.id}>${m.label}${p.kind === 'device' && /** @type {any} */ (m).memoryMB ? ' — ' + t('up to about {size} GB', { size: gb(/** @type {any} */ (m).memoryMB) }) : ''}</option>`)}</select></div>`;
   };
@@ -72,6 +62,7 @@ function providerSetup(ctx, p) {
     const save = async () => {
       await ai.setKey(p.id, setup.keyDraft[p.id] || '', { remember: !!setup.remember[p.id], storage: { kv } }).catch(() => ctx.notify(t('The key could not be saved on this device; it is kept for this session only.'), true));
       setup.keyDraft[p.id] = '';
+      if (p.id === 'openrouter') await refreshOpenRouter(ctx);
       ctx.notify(t('Key added. It stays in this browser and is sent only to {host}.', { host: new URL(p.endpoint).host }));
       ctx.rerender();
     };
@@ -109,25 +100,24 @@ ${setup.download.progress >= 0 ? html`<label class="field-hint" for="webllm-prog
 /** WebLLM can answer now. */
 export const webllmReady = () => isLoaded() && setup.download.progress >= 1;
 
-/**
- * Full card for the prompt studio.
+/** Refresh only after an explicit Advanced connection action or unavailable choice.
+ * @param {import('../../app-context.js').Ctx} ctx
+ */
+export async function refreshOpenRouter(ctx) {
+  const result = await freeCatalogue();
+  setup.models.openrouter = result.models;
+  setup.status.openrouter = result.fallback ? ctx.t('Could not refresh the list. Showing the configured free choices.') : result.models.length ? '' : ctx.t('No free choices are available right now. Use your free AI chat instead.');
+  if (!result.models.some(m => m.id === ai.getModel('openrouter'))) ai.setModel('openrouter', result.models[0]?.id || '');
+  ctx.rerender();
+}
+
+/** Connections appear only after Settings → Advanced is opened.
  * @param {import('../../app-context.js').Ctx} ctx
  */
 export function connectCard(ctx) {
   const { t } = ctx;
-  return html`<details class="card section-space connect-card" ?open=${ai.getRoute() !== 'copy'}><summary><strong>${t('Free AI routes')}</strong> — ${ai.getRoute() === 'copy' ? t('copy-paste (default)') : t(ai.providerConfig(ai.getRoute())?.label || '')}</summary><div class="mt-15">${connectRoute(ctx, 'studio')}</div>
-<p class="source-note">${t('Every route is free. Career Navigator has no server and never asks you to pay. Copy-paste always works as a fallback.')}</p></details>`;
-}
-
-
-/** Current route stays visible; alternative providers and their setup are optional.
- * @param {import('../../app-context.js').Ctx} ctx
- */
-export function currentRoute(ctx) {
-  const { t } = ctx;
-  const route = ai.getRoute();
-  const provider = ai.providerConfig(route);
-  return html`<div class="current-route"><p><strong>${t('Current AI route: {route}', { route: provider ? t(provider.label) : t('Copy-paste into any free AI chat') })}</strong></p>
-${provider ? html`<p class="field-hint">${statusLine(ctx, provider)}</p>` : nothing}
-<details class="details ai-route-options" ?open=${!!provider && ((provider.kind === 'key' && !ai.getKey(route)) || (provider.kind === 'device' && !webllmReady()))}><summary>${t('Change AI route')}</summary>${connectRoute(ctx)}</details></div>`;
+  return html`<section class="card section-space"><h2>${t('AI help')}</h2><p>${t('Using: {chat}', { chat: usingLabel(ctx) })}</p>
+${chatChoice(ctx)}</section>
+<details class="card section-space connect-card" ?open=${!!ctx.ui.advancedOpen}><summary @click=${(/** @type {Event} */ e) => { e.preventDefault(); ctx.ui.advancedOpen = !ctx.ui.advancedOpen; ctx.rerender(); }}>${t('Advanced')}</summary>
+${ctx.ui.advancedOpen ? html`<h2 class="mt-15">${t('Connect AI directly (for advanced users)')}</h2>${connectRoute(ctx, 'studio')}<p class="source-note">${t(ai.providerConfig(ai.getRoute())?.privacy || '')}</p>${ctx.ui.modelUnavailable ? html`<p role="alert">${t('Model not available — choose another')}</p>` : nothing}` : nothing}</details>`;
 }

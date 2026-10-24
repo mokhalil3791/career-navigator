@@ -98,6 +98,18 @@ progress{inline-size:100%;block-size:10px;accent-color:var(--primary)}
 .requirement>summary .pill{flex-shrink:0}
 .requirement-fields{padding:12px}
 .mobile-save-status{display:none}
+body.ai-sheet-open{overflow:hidden}
+.ai-sheet{position:fixed;inset:0 0 0 auto;margin:0;inline-size:min(620px,100%);max-inline-size:100%;block-size:100dvh;max-block-size:100dvh;border:0;padding:0;background:var(--paper);color:var(--ink);box-shadow:var(--shadow)}
+.ai-sheet::backdrop{background:rgba(0,0,0,.35)}
+.ai-sheet-header{position:sticky;top:0;display:flex;align-items:start;justify-content:space-between;gap:16px;padding:20px;background:var(--paper);border-bottom:1px solid var(--line);z-index:2}
+.ai-sheet-header h2{font-size:1.2rem}
+.ai-sheet-header .btn{flex-shrink:0}
+.ai-sheet-body{padding:20px 24px 90px}
+.ai-primary{margin-block:18px}
+.ai-exact{margin-block:18px}
+.paste-answer>[data-testid=paste-answer]{width:100%;min-height:52px}
+.ai-sheet .notice{bottom:12px;z-index:5}
+@media(max-width:720px){.ai-sheet{inline-size:100%}.ai-sheet-body{padding-inline:16px}.ai-sheet-header{padding:16px}}
 .main-wrap>.journey-footer{margin:0 44px 24px}
 @media(max-width:720px){
   .sidebar{padding:8px 16px;gap:8px;overflow:visible}
@@ -117,7 +129,8 @@ progress{inline-size:100%;block-size:10px;accent-color:var(--primary)}
   .job-layout{gap:14px}
   .job-layout .job-list{gap:8px}
   .job-layout .job-select{padding:10px}
-  .job-layout .job-rank{padding:4px 10px}
+  .job-layout .job-rank{padding:4px 10px;flex-shrink:0;gap:16px}
+  .job-layout .job-rank button{min-width:44px;min-height:44px;flex-shrink:0}
   .job-layout .fields{gap:10px}
   .job-layout .field{gap:4px}
   .job-layout .facts-row .field{margin-top:0}

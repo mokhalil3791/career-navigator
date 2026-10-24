@@ -100,7 +100,7 @@ describe('openrouter', () => {
   });
   it('isFreeModel', () => {
     expect(isFreeModel({ id: 'x/y:free' })).toBe(true);
-    expect(isFreeModel({ id: 'x/y', pricing: { prompt: '0', completion: '0' } })).toBe(true);
+    expect(isFreeModel({ id: 'x/y', pricing: { prompt: '0', completion: '0' } })).toBe(false);
     expect(isFreeModel({ id: 'x/y', pricing: { prompt: '0.000001', completion: '0' } })).toBe(false);
   });
 });

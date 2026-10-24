@@ -33,11 +33,11 @@ export function contentOrigins(config) {
 
 export const getRoute = () => session.route;
 /** @param {string} route 'copy' or an api provider id */
-export function setRoute(route) { session.route = route === 'copy' || providerConfig(route) ? route : 'copy'; }
+export function setRoute(route) { session.route = ['copy', 'browser'].includes(route) || providerConfig(route) ? route : 'copy'; }
 /** @param {string} id */
 export const getKey = (id) => session.keys[id] || '';
 /** @param {string} id */
-export const getModel = (id) => session.model[id] || providerConfig(id)?.defaultModel || '';
+export const getModel = (id) => session.model[id] ?? providerConfig(id)?.defaultModel ?? '';
 /** @param {string} id @param {string} model */
 export function setModel(id, model) { session.model[id] = model; }
 /** @param {string} id */
@@ -66,7 +66,7 @@ export async function forgetKey(id, storage) {
 export async function loadSavedKeys(storage) {
   for (const p of API_PROVIDERS.filter((x) => x.kind === 'key')) {
     const key = await storage.kv.get(KEY_PREFIX + p.id).catch(() => undefined);
-    if (key) { session.keys[p.id] = key; session.savedKeys.add(p.id); if (session.route === 'copy') session.route = p.id; }
+    if (key) { session.keys[p.id] = key; session.savedKeys.add(p.id); }
   }
 }
 

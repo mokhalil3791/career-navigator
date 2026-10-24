@@ -136,3 +136,13 @@ See `docs/KNOWN-ISSUES.md`.
 **Agent visual check:** at 360 × 732, the home CV action begins around 409 px with a 44 px target; desktop expanded More tools was also inspected. No real provider was used. The prior pdf.js standard-font warning remains documented and unresolved.
 
 **Verified by a person:** none for C. Human timing, comprehension, real devices, fluent Dutch and Word/LibreOffice rendering remain pending. After merge, use `docs/plans/primary-journey-observation.md` with five intended users; report each result against the under-45-minute target. No manual release item was ticked and v1 remains at `/next/` without a release tag.
+
+## AI simplification (2026-10-25, branch `ai-simple`)
+
+**Implemented:** remembered free-chat choice, fixed-homepage copy/open, phone sharing and clipboard-paste fallback; modal AI sheet with exact-text review and unchanged individual proposal acceptance; all direct connections in Settings → Advanced. Browser-owned local AI is offered only when available, with download consent. OpenRouter refreshes its public free-only catalogue at connection time and after an unavailable choice, without automatically resending. Prefilled links exist only in the public static library. Old workspaces receive additive chat defaults; saving remains opt-in.
+
+**Automated verification:** 407 unit/parity/guardrail tests, type checking, core coverage, hosted and single-file builds. E2E covers first choice and remembered changes, every journey AI action, clipboard failures, phone sharing, focus return, fresh decisions for each pasted reply, local capability/download consent, Advanced Gemini, mocked OpenRouter refresh, and public-link contents. The existing CV journey still inspects both exports. Final browser-suite and CI results are recorded on the PR. Existing G1–G13 and the G5 fixture are unchanged; G14 adds workspace-URL privacy checks. No runtime dependencies or network hosts were added. Translation coverage: 726/726; app shell approximately 122 KB gzip.
+
+**Agent visual check:** [eight screenshots at 390 and 1366 px](reports/ai-simple/README.md). Safari Close restores focus to the actual button even when pointer clicks do not focus it. Advert-order arrows have larger, spaced touch targets after axe exposed partial overlap at the sticky footer. The axe rules remain unchanged.
+
+**Verified by a person:** none. Clipboard and sharing permissions, real chat tabs, browser-owned downloads, actual provider calls, physical phones and fluent Dutch review remain unverified. All external AI responses and public catalogue responses in E2E are mocked. No release-checklist items were ticked and no release tag was created.

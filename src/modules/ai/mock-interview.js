@@ -17,7 +17,7 @@ export const ANSWERS_BEFORE_FEEDBACK = 6;
 const START = 'Start the practice interview now: ask me your first question only.';
 
 /** Screen-only state. */
-const ui = { answer: '', redactOn: true, ticked: false, busy: false, error: '', streaming: '', controller: /** @type {AbortController | null} */ (null) };
+const ui = { previewSeen: false, answer: '', redactOn: true, ticked: false, busy: false, error: '', streaming: '', controller: /** @type {AbortController | null} */ (null) };
 
 /** @param {import('../../app-context.js').Ctx} ctx */
 function opening(ctx) {
@@ -35,15 +35,15 @@ export function mockInterview(ctx) {
   const answers = mock.messages.filter((m) => m.role === 'me').length;
   const finished = Boolean(mock.feedback);
   if (!config) {
-    return html`<section class="card section-space"><h2>${t('Mock interview with AI')}</h2><p class="card-sub">${t('To practise inside this page, choose a built-in free AI in the AI prompt studio (Gemini key, OpenRouter, Ollama or the in-browser model). Or copy the “Practise an interview” prompt into any free AI chat.')}</p><div class="actions mt-10">${button(t('Open AI prompt studio'), () => { ctx.update('ai.step', 'interview'); ctx.go('prompts'); })}</div></section>`;
+    return html`<section class="card section-space"><h2>${t('Mock interview with AI')}</h2><p class="card-sub">${t('Use your free AI chat to practise an interview, then bring the answer back here.')}</p><div class="actions mt-10">${button(t('Open AI prompt studio'), () => { ctx.update('ai.step', 'interview'); ctx.go('prompts'); })}</div></section>`;
   }
-  const host = config.kind === 'device' ? t('the model on this device') : new URL(config.endpoint).host;
-  const needsTick = ai.needsHostConfirmation(route);
+  const host = config.kind === 'device' ? t('this computer') : new URL(config.endpoint).host;
+  const needsTick = !ctx.ui.aiTextConfirmed?.[route];
 
   const call = async (/** @type {any[]} */ messages) => {
     ui.busy = true; ui.error = ''; ui.streaming = ''; ui.controller = new AbortController(); ctx.rerender();
     try {
-      ai.confirmSending(route);
+      (ctx.ui.aiTextConfirmed ||= {})[route] = true; ai.confirmSending(route);
       const request = [{ role: 'user', content: opening(ctx) }, ...messages.map((m) => ({ role: m.role === 'interviewer' ? 'assistant' : 'user', content: ui.redactOn ? redact(m.text, { name: ctx.state.profile.name }).text : m.text }))];
       const reply = await ai.send(route, { messages: /** @type {any} */ (request), signal: ui.controller.signal }, (soFar) => { ui.streaming = soFar; ctx.rerender(); });
       const myAnswers = messages.filter((m) => m.role === 'me').length;
@@ -65,9 +65,9 @@ export function mockInterview(ctx) {
 
   return html`<section class="card section-space mock-interview" aria-labelledby="mock-title"><div class="card-head"><div><p class="eyebrow">${t('Built-in AI · {host}', { host })}</p><h2 id="mock-title">${t('Mock interview with AI')}</h2><p class="card-sub">${t('One question at a time. After {n} answers you get feedback on clarity, evidence and relevance. No score.', { n: ANSWERS_BEFORE_FEEDBACK })}</p></div>${mock.messages.length ? button(t('Start again'), reset, { style: 'ghost small' }) : nothing}</div>
 ${!mock.messages.length ? html`<label class="check-row"><input type="checkbox" .checked=${ui.redactOn} @change=${(/** @type {Event} */ e) => { ui.redactOn = /** @type {HTMLInputElement} */ (e.target).checked; ctx.rerender(); }}><span>${t('Redact before sending')}</span></label>
-<details class="details"><summary>${t('Show the exact text that will be sent to {host}', { host })}</summary><textarea class="prompt-preview" readonly rows="8" aria-label=${t('Exact outgoing text')} .value=${opening(ctx)}></textarea></details>
+<details class="details"><summary @click=${() => { ui.previewSeen = true; ctx.rerender(); }}>${t('Show the exact text that will be sent to {host}', { host })}</summary><textarea class="prompt-preview" readonly rows="8" aria-label=${t('Exact outgoing text')} .value=${opening(ctx)}></textarea></details>
 ${needsTick ? html`<label class="check-row mt-10"><input type="checkbox" .checked=${ui.ticked} @change=${(/** @type {Event} */ e) => { ui.ticked = /** @type {HTMLInputElement} */ (e.target).checked; ctx.rerender(); }}><span>${t('I have read the text above and want to send it to {host}.', { host })}</span></label>` : nothing}
-<div class="actions mt-10">${button(html`${icon('spark', 16)}${t('Start the mock interview')}`, start, { style: '', disabled: ui.busy || (needsTick && !ui.ticked), testid: 'mock-start' })}</div>` : nothing}
+<div class="actions mt-10">${button(html`${icon('spark', 16)}${t('Start the mock interview')}`, start, { style: '', disabled: ui.busy || (needsTick && (!ui.ticked || !ui.previewSeen)), testid: 'mock-start' })}</div>` : nothing}
 <ol class="transcript">${mock.messages.map((m) => html`<li class=${m.role}><strong>${m.role === 'me' ? t('Me') : t('Interviewer')}</strong><p>${m.text}</p></li>`)}${ui.streaming ? html`<li class="interviewer"><strong>${t('Interviewer')}</strong><p>${ui.streaming}</p></li>` : nothing}</ol>
 ${ui.error ? html`<p class="evidence-warning" role="alert">${ui.error}</p>` : nothing}
 ${mock.messages.length && !finished ? html`<p class="field-hint">${t('Answer {n} of {total}', { n: Math.min(answers + 1, ANSWERS_BEFORE_FEEDBACK), total: ANSWERS_BEFORE_FEEDBACK })}</p><div class="field"><label for="mock-answer">${t('My answer')}</label><textarea id="mock-answer" rows="4" maxlength="8000" .value=${live(ui.answer)} @input=${(/** @type {Event} */ e) => { ui.answer = /** @type {HTMLTextAreaElement} */ (e.target).value; }}></textarea><span class="field-hint">${t('Your answer is sent to {host} together with the conversation so far.', { host })}</span></div>

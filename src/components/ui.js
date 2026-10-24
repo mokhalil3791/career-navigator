@@ -87,7 +87,7 @@ export function pageHeading(eyebrow, title, description, actions) {
  * @param {string} [text]
  */
 export function aiButton(ctx, step, text) {
-  return button(html`${icon('spark', 16)}${text || ctx.t('Use an AI prompt')}`, () => { ctx.update('ai.step', step); ctx.go('prompts'); }, { style: 'secondary small' });
+  return button(html`${icon('spark', 16)}${text || ctx.t('Use an AI prompt')}`, () => { if (ctx.services.openPrompt) ctx.services.openPrompt(ctx, step); else { ctx.update('ai.step', step); ctx.go('prompts'); } }, { style: 'secondary small' });
 }
 
 /**
