@@ -36,7 +36,7 @@ src/core/                PURE logic (no DOM), ported from v0.1 CareerCore. Keep 
 src/ai/                  provider contract, net guard, session (keys), redact, parse, tasks, providers/
 src/content/             loads content/ at build time; JSON-Schema checks; markdown (no raw HTML)
 src/components/          ui.js shell.js icon.js proposal-review.js evidence-pills.js progress.js
-src/pages/               the seven v0.1 pages (templates only)
+src/pages/               four journey steps, Home, Prompt library and Settings (templates only)
 src/modules/             ai, applications, coach, i18n (+ onboarding), knowledge, profile-plus
 src/i18n/                t('English text'); nl.json (machine-assisted, needs fluent review)
 src/storage/device.js    IndexedDB (opt-in), v0.1 localStorage pickup, delete everything
@@ -51,16 +51,17 @@ tests/unit/              core, AI, content      tests/e2e/     Playwright, 5 bro
 ## Commands
 - `npm test`: unit, parity and guardrail tests. `npm run coverage` enforces 90% lines on `src/core`.
 - `npm run typecheck`: `tsc --noEmit` over JSDoc.
-- `npm run build:all`: app into `dist/`, then the Pages site into `_site/` (v1 at `/next/`).
+- `npm run build:all`: app into `dist/`, then the Pages site into `_site/` (v1 at the project root; `/next/` redirects).
 - `npm run build:single`: single-file release in `release/`.
 - `npm run e2e`: Playwright. Run `npm run build:all` (and `build:single`) first, plus `npx playwright install`.
 - `npm run dev`: dev server (no CSP in dev). `npm run serve`: serve `_site/` on :4174.
 - `node scripts/check-content.mjs`: card age, translation coverage, shell budget.
 - `node scripts/dev/generate-v01-fixtures.mjs`, `node scripts/dev/generate-cv-fixtures.mjs`: regenerate the fictional fixtures.
 
-## Status (2026-10-23)
-Phases 0–5 are implemented (see `docs/plans/`). v1 is served at `/next/` until the maintainer approves moving it
-to the root and signs off the manual checklist in `docs/RELEASE-CHECKLIST.md`. Then they tag `v1.0.0`.
+## Status (2026-10-24)
+The approved v1 launch serves the app at the project root; `/next/` redirects with its hash preserved.
+Four steps: My story → Target job → My CV → Next steps. Orange role tokens live in `src/styles/tokens.css`.
+v0.1 is download-only. No release tag: the maintainer owns `docs/RELEASE-CHECKLIST.md`.
 
 ## Handoff: where to pick up
 - **State by requirement:** `docs/STATUS.md` (implemented / automatically tested / manually verified).
@@ -68,6 +69,6 @@ to the root and signs off the manual checklist in `docs/RELEASE-CHECKLIST.md`. T
 - **Decisions and interpretations:** the "Implementation record" section at the end of `docs/PRD.md`, and `docs/plans/phase-*.md`.
 - **Next priority (maintainer, 2026-10-23):** no new features. Make the primary journey dominant
   (import CV → verify facts → add one advert → review tailored draft → export), then observe five intended users.
-- **Do not:** tag `v1.0.0`, move v1 from `/next/` to the root, add runtime dependencies, or weaken `tests/guardrails/`, without the maintainer.
+- **Do not:** tag `v1.0.0`, change GitHub settings, add runtime dependencies, or weaken `tests/guardrails/`, without the maintainer.
 - **Before any commit:** `npm test && npm run typecheck && npm run build:all && npx playwright test --project=chromium`.
 - **Branches:** work on a branch from `main` and open one PR into `main`. Do not stack PRs; stacked PRs merged into their base branches, not into `main`.

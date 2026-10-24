@@ -49,10 +49,11 @@ async function tx(mode, run, storeName = STORE) {
  * Loads the saved workspace, if the user had device saving on.
  * Also picks up a v0.1 save from localStorage. The old copy is deleted ONLY after
  * the new copy was saved successfully, so a failed move never loses the user's work.
+ * @param {{ offerLegacy?: boolean }} [options] The app offers legacy work before importing it.
  * @returns {Promise<{ state: import('../core/schema.js').Workspace | null, message: string, error?: boolean }>}
  */
-export async function loadSaved() {
-  const legacy = readLegacy();
+export async function loadSaved(options = {}) {
+  const legacy = options.offerLegacy ? null : readLegacy();
   if (legacy) {
     try {
       await save(legacy);
@@ -86,6 +87,20 @@ function readLegacy() {
   } catch (_) {
     return null;
   }
+}
+
+/** Read a valid saved schema-1 backup without changing storage or consent.
+ * @returns {string | null}
+ */
+export function legacyBackup() {
+  try {
+    const text = globalThis.localStorage?.getItem(LEGACY_KEY);
+    if (!text || text.length > 1048576) return null;
+    const raw = JSON.parse(text);
+    if (raw.schemaVersion !== 1 || raw.settings?.remember !== true) return null;
+    normalizeWorkspace(migrate(raw));
+    return text;
+  } catch (_) { return null; }
 }
 
 function removeLegacy() {

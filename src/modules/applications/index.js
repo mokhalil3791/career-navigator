@@ -1,3 +1,4 @@
+import { journeyHeading } from '../../components/journey.js';
 // @ts-check
 /**
  * Applications tracker (FR-APP): advert link, date applied, stage, next
@@ -29,7 +30,7 @@ function renderApplications(ctx) {
     ctx.notify(t('Calendar file downloaded. Open it to add the follow-ups to your phone or computer calendar.'));
   };
   const untracked = state.jobs.filter((j) => !state.applications.some((a) => a.jobId === j.id));
-  return html`${pageHeading(t('02b / Keep track'), t('My applications.'), t('A job search can take months. Record what you sent, when to follow up and what you heard back.'), button(html`${icon('calendar', 16)}${t('Export follow-ups (.ics)')}`, exportIcs, { style: 'secondary' }))}
+  return html`${journeyHeading(ctx, 'applications', 'Keep track of applications and follow-up dates.')}<div class="actions">${button(t('Export follow-ups (.ics)'), exportIcs)}</div>
 <section class="grid three"><div class="card soft"><p class="eyebrow">${t('This week')}</p><h2 class="mt-6">${t('{n} sent', { n: week.sentThisWeek.length })}</h2><p class="card-sub">${t('Week of {date}', { date: week.weekStart })}</p></div>
 <div class="card ${week.followUpsDue.length ? 'sand' : ''}"><p class="eyebrow">${t('Follow-ups due')}</p><h2 class="mt-6">${week.followUpsDue.length}</h2><p class="card-sub">${week.overdue.length ? t('{n} overdue', { n: week.overdue.length }) : t('Nothing overdue')}</p></div>
 <div class="card"><p class="eyebrow">${t('All applications')}</p><h2 class="mt-6">${state.applications.length}</h2><p class="card-sub">${STAGES.map((s) => `${t(STAGE_LABELS[s])}: ${state.applications.filter((a) => a.stage === s).length}`).filter((x) => !x.endsWith(': 0')).join(' · ') || t('None yet')}</p></div></section>

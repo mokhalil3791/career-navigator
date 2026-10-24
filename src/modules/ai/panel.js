@@ -21,6 +21,7 @@ import { uid } from '../../lib/uid.js';
 import * as ai from '../../ai/session.js';
 import providers from '../../../config/providers.json';
 import { currentRoute } from './connect.js';
+import { firstRoute } from './connect.js';
 
 /**
  * @typedef {object} AiRun
@@ -126,11 +127,13 @@ export function aiPanel(ctx, view) {
   if (!run || run.page !== view) return nothing;
   const { t } = ctx;
   const close = () => { run.controller?.abort(); ctx.ui.ai = null; ctx.rerender(); };
+  if (!ctx.state.settings.aiRouteChosen) return html`<section class="card ai-panel"><h2 id="ai-panel-title" tabindex="-1">${t('How do you want to use AI?')}</h2>${firstRoute(ctx)}${button(t('Close'), close)}</section>`;
   if (run.sourceContext !== reviewContext(ctx, run)) return html`<section class="card ai-panel section-space" aria-labelledby="ai-panel-title"><h2 id="ai-panel-title" tabindex="-1">${t(run.title)}</h2><p role="alert">${t('Your source facts or target advert changed. These suggestions belong to the earlier context. Start again before applying more changes.')}</p>
 ${run.output ? html`<details class="details"><summary>${t('Earlier unverified reply')}</summary><pre class="original-text">${run.output}</pre></details>` : nothing}
 <div class="actions mt-18">${button(t('Start again with current facts'), () => { run.controller?.abort(); openAi(ctx, { kind: run.kind, id: run.id, title: run.title, page: run.page, jobId: run.jobId }); }, { style: '' })}${button(t('Close'), close, { style: 'secondary' })}</div></section>`;
   const route = ai.getRoute();
   const config = ai.providerConfig(route);
+  if (run.id === 'interview' && config && ctx.services.mockInterview) return html`<section class="ai-panel"><h2 id="ai-panel-title" tabindex="-1">${t('AI: practise an interview')}</h2>${button(t('Close'), close)}${ctx.services.mockInterview(ctx)}</section>`;
   const { text, counts } = outgoing(ctx, run);
   const host = config && config.kind !== 'device' ? new URL(config.endpoint).host : '';
   const masked = Object.entries(counts).map(([k, n]) => `${n} ${t(k)}`).join(', ');

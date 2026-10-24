@@ -1,49 +1,67 @@
 /* Prompt library page. Palette from v0.1 (tokens). No remote fonts. */
-:root{--ink:#193d3b;--muted:#5c6c68;--deep:#123e3c;--teal:#186961;--mint:#e6f0e9;--lime:#d7eea6;--paper:#f7f8f3;--line:#d8e0da;--sand:#fff1df}
+:root{  --ink:#2B1A12;
+  --muted:#6B5548;
+  --deep:#7C2D12;
+  --primary:#C2410C;
+  --primary-hover:#9A3412;
+  --accent:#FB923C;
+  --soft:#FFEDD5;
+  --soft-2:#FFF7ED;
+  --paper:#FFFBF7;
+  --white:#FFFFFF;
+  --line:#EADBCF;
+  --control:#8B7567;
+  --success:#15803D;
+  --danger:#B91C1C;
+  --focus:#1D4ED8;
+  --shadow:#2B1A1209;
+  --overlay:#FFFFFF18;}
 *{box-sizing:border-box}
 body{margin:0;font:16px/1.55 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--paper)}
-a{color:var(--teal);text-underline-offset:3px}
-:focus-visible{outline:3px solid #c46d24;outline-offset:3px}
-.skip{position:absolute;left:8px;top:-60px;background:#fff;padding:10px 14px}.skip:focus{top:8px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 20px;background:var(--deep);color:#edf7ee}
-.brand{color:#fff;font-weight:700;text-decoration:none}.tag{font-size:.8rem;color:#c6dbd4}
+a{color:var(--primary);text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.skip{position:absolute;left:8px;top:-60px;background:var(--white);padding:10px 14px}.skip:focus{top:8px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 20px;background:var(--deep);color:var(--white)}
+.brand{color:var(--white);font-weight:700;text-decoration:none}.tag{font-size:.8rem;color:var(--soft)}
 main{max-width:860px;margin:0 auto;padding:24px 16px 40px}
 h1{font-size:clamp(1.8rem,5vw,2.5rem);line-height:1.15;margin:8px 0 12px}
 h2{font-size:1.15rem;margin:0}
 .lead{color:var(--muted);margin:0 0 16px}
-.how{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 16px 16px 36px;margin:0 0 14px}
+.how{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:16px 16px 16px 36px;margin:0 0 14px}
 .how li+li{margin-top:6px}.chats a{display:inline-block;margin:4px 8px 0 0}
-.note{background:var(--sand);border:1px solid #ead6bb;border-radius:12px;padding:12px 14px;font-size:.9rem}
-.prompt{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:14px}
+.note{background:var(--soft-2);border:1px solid var(--soft-2);border-radius:12px;padding:12px 14px;font-size:.9rem}
+.prompt{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:14px}
 .prompt header{display:flex;gap:12px;align-items:flex-start}.prompt header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
-.num{flex-shrink:0;width:30px;height:30px;border-radius:8px;background:var(--mint);color:var(--teal);display:grid;place-items:center;font-weight:700}
+.num{flex-shrink:0;width:30px;height:30px;border-radius:8px;background:var(--soft);color:var(--primary);display:grid;place-items:center;font-weight:700}
 .paste{font-size:.88rem;margin:12px 0 8px}
-.full summary{cursor:pointer;color:var(--teal);font-weight:600;min-height:44px;display:flex;align-items:center}
-pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f6f0;border-radius:9px;padding:12px;font-size:.8rem;max-height:420px;overflow:auto}
+.full summary{cursor:pointer;color:var(--primary);font-weight:600;min-height:44px;display:flex;align-items:center}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--soft-2);border-radius:9px;padding:12px;font-size:.8rem;max-height:420px;overflow:auto}
 .actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px}
-.btn{font:inherit;font-weight:650;border:1px solid transparent;border-radius:10px;background:var(--deep);color:#fff;padding:10px 16px;min-height:44px;min-width:44px;cursor:pointer}
-.btn.secondary{background:#fff;color:var(--ink);border-color:var(--line)}
+.btn{font:inherit;font-weight:650;border:1px solid transparent;border-radius:10px;background:var(--deep);color:var(--white);padding:10px 16px;min-height:44px;min-width:44px;cursor:pointer}
+.btn.secondary{background:var(--white);color:var(--ink);border-color:var(--line)}
 .link{font-size:.85rem}
 .handout{display:none}
 .more{margin-top:24px}
 footer{max-width:860px;margin:0 auto;padding:0 16px 30px;font-size:.78rem;color:var(--muted)}
-.status{position:fixed;left:16px;right:16px;bottom:16px;margin:0 auto;max-width:460px;background:var(--deep);color:#fff;border-radius:10px;padding:0;text-align:center}
+.status{position:fixed;left:16px;right:16px;bottom:16px;margin:0 auto;max-width:460px;background:var(--deep);color:var(--white);border-radius:10px;padding:0;text-align:center}
 .status:not(:empty){padding:12px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 /* Printed handout: one A4 page with titles, steps and a QR code. */
 @media print{
   @page{size:A4;margin:14mm}
-  body{background:#fff;font-size:9.5pt;line-height:1.4}
+  body{background:var(--white);font-size:9.5pt;line-height:1.4}
   .top,.skip,.actions,.full,.more,.status,.note{display:none!important}
   main{padding:0;max-width:none}
   h1{font-size:17pt;margin:0 0 4px}
-  .how,.prompt{border:1px solid #bbb;break-inside:avoid;padding:5px 9px;margin-top:5px}
+  .how,.prompt{border:1px solid var(--soft-2);break-inside:avoid;padding:5px 9px;margin-top:5px}
   .prompt header{gap:8px}.num{width:22px;height:22px}h2{font-size:11pt}
   .lead{margin-bottom:6px}
   .how{padding-left:28px}
-  .prompt header p{color:#333}
+  .prompt header p{color:var(--muted)}
   .paste{margin:4px 0 0;font-size:9pt}
   .handout{display:flex;gap:14px;align-items:center;margin-top:8px;break-inside:avoid}
   .handout img{width:92px;height:92px}
   footer{padding:6px 0 0;font-size:8pt}
 }
+
+@media print{main>.btn,.prompt>.source-note{display:none!important}}

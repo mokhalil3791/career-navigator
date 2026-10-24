@@ -36,6 +36,10 @@ export async function mockGemini(page, offOrigin) {
         : `Question ${userTurns}: Tell me about a time you checked data for errors.`;
     } else if (first.startsWith('CAREER NAVIGATOR — EXTRACT-REQUIREMENTS')) {
       reply = 'Sure.\n```json\n{"requirements":[{"text":"Python","kind":"must"},{"text":"Dutch B1","kind":"nice"}],"hours":"36 hours","location":"Utrecht","dutch":{"demand":"plus","level":""}}\n```';
+    } else if (first.startsWith('CAREER NAVIGATOR — SUGGEST-FIELDS')) {
+      reply = JSON.stringify({ fields: { headline: 'Logistics coordinator', experience: '2019–2024 Planner, Example Transport BV (fictional). Planned routes for 15 drivers in Excel.', skills: 'Route planning in Excel', languages: 'Arabic native, English B2, Dutch A2' } });
+    } else if (first.startsWith('CAREER NAVIGATOR — TAILOR-CV')) {
+      reply = JSON.stringify({ changes: [{ field: 'summary', after: 'Planned routes for 15 drivers in Excel.', source: 'Planned routes for 15 drivers in Excel.', reason: 'Lead with recorded route planning.' }] });
     } else {
       reply = 'This is a mocked answer. Check every claim yourself.';
     }

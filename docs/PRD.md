@@ -474,4 +474,16 @@ This section records every place where the build differs from, or adds to, the r
 
 **Next priority (from the review): feature expansion paused.** Make one primary journey dominant:
 *Import CV → verify facts → add one advert → review tailored draft → export*. Then observe five intended users completing it
-before adding features. Also consider merging the duplicate text and structured fields for education and languages.
+before adding features. Education and language text remain the default; structured rows are optional details,
+with no automatic conversion or destructive merge.
+
+**Approved v1 launch (2026-10-24).** The project root serves v1; `/next/` only redirects, preserving the route.
+The old workshop app is download-only. Four consistent steps are My story → Target job → My CV → Next steps;
+Prompt library and Settings remain available. Orange semantic tokens replace the earlier palette. This is a
+launch implementation, not a release-checklist sign-off or evidence from the five-user pilot.
+
+An automatic first CV uses only `draftCvFromProfile`, when all CV, letter and LinkedIn content is empty and
+at least one profile fact is recorded. Source CV text alone does not qualify. The additive `cv.autoDrafted`
+migration preserves a once-per-workspace decision across saves and backups. Undo and Start from empty consume
+that decision; revisiting never refills it. Review remains false, both exports stay locked, and importing a
+backup always resets review. Sam uses the same path. AI proposals still require individual acceptance.

@@ -19,7 +19,7 @@ const knowledge = buildKnowledge(/** @type {Record<string, string>} */ (import.m
 function cardView(ctx, card, open = false) {
   const { t } = ctx;
   const report = `${brand.repoUrl}/issues/new?template=wrong-fact.yml&title=${encodeURIComponent('Wrong or outdated fact: ' + card.title)}`;
-  return html`<details class="card knowledge" ?open=${open}><summary><span class="eyebrow">${t('Dutch job market')}</span><strong>${card.title}</strong><small>${card.summary}</small></summary>
+  return html`<details class="card knowledge" ?open=${open}><summary><span class="eyebrow">${t('Good to know')}</span><strong>${card.title}</strong><small>${card.summary}</small><span>${t('Read more')}</span></summary>
 <div class="knowledge-body">${renderMarkdown(card.body)}</div>
 <p class="source-note"><strong>${t('Sources:')}</strong> ${card.sources.map((s, i) => html`${i ? ' · ' : ''}<a href=${safeUrl(s.url)} target="_blank" rel="noopener noreferrer">${s.title}</a>`)}<br>${t('Last reviewed: {date}', { date: card.lastReviewed })}${card.lang !== ctx.state.settings.uiLanguage ? ' · ' + t('Shown in English until a translation is reviewed.') : ''}</p>
 <p class="source-note">${t('This is general information, not legal, immigration, tax or benefits advice.')} <a href=${safeUrl(report)} target="_blank" rel="noopener noreferrer">${t('Report a wrong fact')}</a></p></details>`;
@@ -37,8 +37,8 @@ function renderLearn(ctx) {
 /** @param {any} app */
 export function knowledgeModule(app) {
   app.services.knowledgeFor = (/** @type {any} */ ctx, /** @type {string} */ page) => {
-    const cards = cardsFor(knowledge.cards, page, ctx.state.settings.uiLanguage);
-    return cards.length ? html`${cards.slice(0, 2).map((c) => cardView(ctx, /** @type {any} */ (c)))}` : nothing;
+    const cards = cardsFor(knowledge.cards, page, ctx.state.settings.uiLanguage).slice(0, 1);
+    return cards.length ? html`${cards.map((c) => cardView(ctx, /** @type {any} */ (c)))}` : nothing;
   };
   const warnings = [...knowledge.warnings, ...upcomingEvents(eventsFile, isoDate()).warnings];
   if (warnings.length) app.ctx().content.warnings.push(...warnings);

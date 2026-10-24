@@ -1,8 +1,9 @@
+import { navigate, loadDemo, openTask } from './navigation.js';
 // PR B: one advert through reviewed HTML/Word exports; no real provider calls.
 import { readFileSync } from 'node:fs';
 import AxeBuilder from '@axe-core/playwright';
 import { test, expect, openApp, seriousAxe } from './fixtures.js';
-import { navigate } from './navigation.js';
+
 import { readZipEntry } from '../../src/core/exports/zip.js';
 
 test.use({ reducedMotion: 'reduce' });
@@ -22,9 +23,9 @@ test('one advert, explicit draft, accept/edit/reject, review and inspect both ex
   await page.locator('#field-profile-about').fill('I checked weekly records.');
   await page.locator('#field-profile-skills').fill('Excel filters and SQL practice.');
   await page.locator('#field-profile-education').fill('Example college, 2020');
-  await page.getByRole('button', { name: 'Next: add a job advert' }).click();
+  await page.getByRole('button', { name: 'Next: Target job' }).click();
   await expect(page.getByRole('button', { name: 'Add an advert', exact: true })).toHaveCount(0);
-  await page.getByRole('button', { name: 'Add my first advert' }).click();
+  await page.getByRole('button', { name: 'Paste a job advert' }).click();
   await page.locator('#job-title').fill('Fictional reporting role');
   await page.locator('#job-company').fill('Example employer');
   await expect(page.getByText('Paste advert text to tailor your CV to this role. You can still continue with a general CV.')).toBeVisible();
@@ -39,17 +40,17 @@ test('one advert, explicit draft, accept/edit/reject, review and inspect both ex
   await page.keyboard.press('Enter');
   await expect(page.locator('#job-evidence')).toHaveAttribute('open');
   await expect(page.locator('#job-evidence-title')).toBeFocused();
-  await expect(page.getByTestId('extract')).toBeVisible();
+  await expect(page.getByTestId('journey-ai')).toBeVisible();
   await expect(page.locator('.requirement')).toHaveCount(0);
   await page.getByRole('button', { name: 'Continue to my CV draft' }).click();
   await expect(page.locator('h1')).toBeFocused();
-  await expect(page.locator('#field-cv-summary')).toHaveValue('');
+  await expect(page.locator('#field-cv-summary')).toHaveValue('I checked weekly records.');
   await exportsLocked(page);
-  await page.getByRole('button', { name: 'Create draft from my profile' }).click();
-  await expect(page.locator('#field-cv-headline')).toBeFocused();
+  await expect(page.locator('.first-draft')).toBeVisible();
+  await expect(page.locator('h1')).toBeFocused();
   await expect(page.locator('#field-cv-summary')).toHaveValue('I checked weekly records.');
   await expect(page.locator('#field-cv-education')).toHaveValue('Example college, 2020');
-  await page.getByTestId('tailor').click();
+  await openTask(page);
   await expect(page.locator('#ai-outgoing')).toHaveValue(/Fictional reporting role/);
   const changes = [
     { field: 'summary', after: 'I checked weekly records using Excel.', source: 'I checked weekly records.', reason: 'Lead with recorded work' },
@@ -73,7 +74,7 @@ test('one advert, explicit draft, accept/edit/reject, review and inspect both ex
   await page.locator('.ai-panel').getByRole('button', { name: 'Close', exact: true }).click();
   await expect(page.locator('#field-cv-headline')).toHaveValue('Fictional reporting assistant');
   await expect(page.locator('#field-cv-skills')).toHaveValue('Excel filters; SQL practice in my own project.');
-  await before(page, '#cv-review', '#cv-optional-letter');
+  await expect(page.getByRole('tab', { name: 'Letter', exact: true })).toBeVisible();
   await expect(page.locator('#field-cv-letter')).toHaveCount(0);
   await page.getByRole('button', { name: 'Preview CV text' }).click();
   await expect(page.getByRole('region', { name: 'CV text preview' })).toContainText('I checked weekly records using Excel.');
@@ -114,17 +115,17 @@ test('one advert, explicit draft, accept/edit/reject, review and inspect both ex
 test('returning CV and letter stay visible and replacement still needs confirmation', async ({ page }, info) => {
   await openApp(page, '#/cv');
   await page.locator('#field-cv-summary').fill('My returning draft.');
-  await page.getByText('Optional motivation letter', { exact: true }).click();
-  await page.getByRole('button', { name: 'Add or edit my letter' }).click();
+  await page.getByRole('tab', { name: 'Letter', exact: true }).click();
   await expect(page.locator('#field-cv-letter')).toBeFocused();
   await page.locator('#field-cv-letter').fill('My existing letter has claims to check.');
+  await page.getByRole('tab', { name: /^(CV|Cv)$/ }).click();
   await page.locator('#cv-reviewed').check();
   await navigate(page, 'My profile', 'profile');
   await page.locator('#field-profile-about').fill('Replacement profile.');
   await navigate(page, 'My application', 'cv');
   await expect(page.locator('#field-cv-summary')).toHaveValue('My returning draft.');
-  await expect(page.locator('#field-cv-letter')).toBeVisible();
-  await before(page, '#field-cv-letter', '#cv-reviewed');
+  await expect(page.locator('#cv-review')).toContainText('My existing letter has claims to check.');
+  await before(page, '#cv-review pre', '#cv-reviewed');
   await exportsLocked(page);
   // Exercise cancellation, then approval, without changing the app's confirm behavior.
   page.removeAllListeners('dialog');
@@ -134,10 +135,12 @@ test('returning CV and letter stay visible and replacement still needs confirmat
   page.once('dialog', (dialog) => dialog.accept());
   await page.getByRole('button', { name: 'Copy my profile into CV' }).click();
   await expect(page.locator('#field-cv-summary')).toHaveValue('Replacement profile.');
-  await expect(page.locator('#field-cv-letter')).toHaveValue('My existing letter has claims to check.');
-  await expect(page.locator('#field-cv-letter')).toBeVisible();
+  await expect(page.locator('#cv-review')).toContainText('My existing letter has claims to check.');
+  await expect(page.locator('#cv-review pre')).toBeVisible();
   await page.locator('#cv-reviewed').check();
+  await page.getByRole('tab', { name: 'Letter', exact: true }).click();
   await page.locator('#field-cv-letter').fill('My reviewed letter, with a checked example.');
+  await page.getByRole('tab', { name: /^(CV|Cv)$/ }).click();
   await exportsLocked(page);
   await page.locator('#cv-reviewed').check();
   for (const format of ['cv', 'docx']) {
@@ -157,13 +160,10 @@ test('general CV without AI or advert remains exportable, optional tools follow 
   await page.setViewportSize({ width: 360, height: 732 });
   await openApp(page);
   const welcome = page.locator('.welcome');
-  await welcome.getByRole('button', { name: 'Next', exact: true }).click();
-  await welcome.getByRole('button', { name: /Start my own/ }).click();
-  await welcome.locator('input[value=none]').check();
-  await welcome.getByRole('button', { name: 'Start', exact: true }).click();
-  await page.locator('#field-profile-about').fill('My manual general CV.');
+    await welcome.getByRole('button', { name: /Start my own/ }).click();
+      await page.locator('#field-profile-about').fill('My manual general CV.');
   await navigate(page, 'My application', 'cv');
-  await page.getByRole('button', { name: 'Create draft from my profile' }).click();
+  await expect(page.locator('.first-draft')).toBeVisible();
   await expect(page.getByTestId('tailor')).toHaveCount(0);
   await expect(page.locator('#field-cv-summary')).toHaveValue('My manual general CV.');
   await exportsLocked(page);
@@ -179,7 +179,7 @@ test('Dutch narrow layout keeps evidence review and letter review accessible', a
   await page.setViewportSize({ width: 360, height: 732 });
   await openApp(page, '#/jobs');
   await page.locator('#ui-language').selectOption('nl');
-  await page.getByRole('button', { name: 'Mijn eerste vacature toevoegen' }).click();
+  await page.getByRole('button', { name: 'Plak een vacature' }).click();
   await page.locator('#job-title').fill('Fictieve vacature');
   await page.locator('#job-body').fill('Excel gebruiken voor wekelijkse rapporten.');
   await page.getByRole('link', { name: 'De eisen van deze vacature bekijken' }).click();
@@ -187,10 +187,10 @@ test('Dutch narrow layout keeps evidence review and letter review accessible', a
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole('button', { name: 'Verder naar mijn concept-cv' }).click();
   await page.locator('#field-cv-summary').fill('Fictieve werkervaring.');
-  await page.getByText('Optionele motivatiebrief', { exact: true }).click();
-  await page.getByRole('button', { name: 'Mijn brief toevoegen of bewerken' }).click();
+  await page.getByRole('tab', { name: 'Brief', exact: true }).click();
   await page.locator('#field-cv-letter').fill('Mijn eigen motivatie.');
-  await before(page, '#field-cv-letter', '#cv-reviewed');
+  await page.getByRole('tab', { name: /^(CV|Cv)$/ }).click();
+  await before(page, '#cv-review pre', '#cv-reviewed');
   await exportsLocked(page);
   expect(seriousAxe(await new AxeBuilder({ page }).analyze())).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

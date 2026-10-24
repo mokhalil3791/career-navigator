@@ -40,7 +40,7 @@ has previewed and confirmed, or a model download the user started.
 
 ## Build
 - `vite build` → `dist/` with the strict CSP (`scripts/lib/csp-plugin.mjs`) and service worker (`scripts/lib/sw-plugin.mjs`).
-- `scripts/build-site.mjs` → `_site/` for Pages: v0.1 at `/`, `/prompts`, `/p/<slug>`, `/qr`, v1 at `/next/`.
+- `scripts/build-site.mjs` → `_site/` for Pages: v1 at `/`, `/prompts`, `/p/<slug>`, `/qr`, `/handout`; `/next/` redirects. v0.1 is download-only.
 - `scripts/build-single.mjs` → one HTML file with CSP hashes (WebLLM excluded) for GitHub Releases.
 
 ## Runtime dependencies (approved, fewer than 5)

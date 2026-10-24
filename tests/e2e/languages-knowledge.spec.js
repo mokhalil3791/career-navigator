@@ -1,41 +1,38 @@
+import { navigate, loadDemo, openTask } from './navigation.js';
 // @ts-check
 // Phase 3: journey 4 (Dutch interface), onboarding, knowledge cards, axe in English and Dutch.
 import AxeBuilder from '@axe-core/playwright';
 import { readFileSync } from 'node:fs';
-import { test, expect, openApp, loadDemo, seriousAxe, gotoView, sidebarDiagnostics } from './fixtures.js';
+import { test, expect, openApp, seriousAxe, gotoView, sidebarDiagnostics } from './fixtures.js';
 // Axe measures colours; transitions (toast, hover lift) can give false contrast results mid-animation.
 test.use({ reducedMotion: 'reduce' });
 
-test('onboarding: language → example or own → AI mode, with privacy before data entry (FR-ONB-1/2)', async ({ page }) => {
-  await openApp(page);
-  const welcome = page.locator('.welcome');
-  await expect(welcome.getByText('Your privacy, in plain words')).toBeVisible();
-  await expect(welcome.getByRole('link', { name: 'Read the full privacy notice' })).toHaveAttribute('href', /PRIVACY\.md$/);
-  await welcome.locator('input[name=welcome-lang][value=nl]').check();
-  await expect(welcome.getByRole('heading', { level: 2 })).toHaveText('Welkom. Welke taal heeft je voorkeur?');
-  await expect(page.locator('html')).toHaveAttribute('lang', 'nl');
-  await welcome.getByRole('button', { name: 'Volgende' }).click();
-  await welcome.getByRole('button', { name: /Begin met mijn eigen|Begin met een lege/ }).click();
-  await welcome.locator('input[name=welcome-ai][value=copy]').check();
-  await welcome.getByRole('button', { name: 'Starten' }).click();
-  await expect(page.locator('h1')).toHaveText('Begin met je ervaring.');
-  await expect(page.locator('.welcome')).toHaveCount(0);
+test('one-screen welcome explains privacy before data entry and keeps language choice', async ({ page }) => {
+ await openApp(page); const welcome = page.locator('.welcome');
+ await expect(welcome.locator('li')).toHaveCount(3);
+ await expect(welcome.getByRole('link')).toHaveAttribute('href', /PRIVACY\.md$/);
+ await page.locator('#ui-language').selectOption('nl');
+ await expect(welcome.getByRole('heading')).toHaveText('Welkom');
+ await expect(page.locator('html')).toHaveAttribute('lang','nl');
+ await welcome.getByRole('button', { name: /Begin met mijn eigen|Begin met een lege/ }).click();
+ await expect(page.locator('h1')).toHaveText('1. Mijn verhaal');
+ await expect(page.locator('.welcome')).toHaveCount(0);
 });
 
 test('journey 4: Dutch interface, profile and plan in Dutch, CV stays in the chosen application language', async ({ page }, info) => {
   await openApp(page);
   await page.locator('#ui-language').selectOption('nl');
   await gotoView(page, 'profile');
-  await expect(page.locator('h1')).toHaveText('Begin met je ervaring.');
+  await expect(page.locator('h1')).toHaveText('1. Mijn verhaal');
   await page.locator('#field-profile-headline').fill('Data-analist in opleiding');
   await page.locator('#field-profile-experience').fill('2020–2024 | Operationeel coördinator | Voorbeeld BV (fictief)');
   await gotoView(page, 'plan');
-  await expect(page.locator('h1')).toHaveText('Een bruikbaar plan voor de komende 90 dagen.');
+  await expect(page.locator('h1')).toHaveText('4. Volgende stappen');
   await page.locator('#role-template').selectOption('data_analyst');
   await page.getByRole('button', { name: 'Deze sjabloon gebruiken' }).click();
   await page.locator('#field-plan-nextAction').fill('Eén vacature kiezen en de vraag voor mijn portfolio opschrijven.');
   await gotoView(page, 'cv');
-  await page.getByRole('button', { name: 'Concept maken van mijn profiel' }).click();
+  await expect(page.locator('.first-draft')).toBeVisible();
   await page.locator('#cv-reviewed').check();
   const english = page.waitForEvent('download');
   await page.getByTestId('export-cv').click();

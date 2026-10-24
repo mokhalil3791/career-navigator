@@ -1,8 +1,9 @@
+import { navigate, loadDemo, openTask } from './navigation.js';
 // Complete primary journey using visible controls and fictional pasted AI replies only.
 import { readFileSync } from 'node:fs';
 import AxeBuilder from '@axe-core/playwright';
 import { test, expect, openApp, seriousAxe } from './fixtures.js';
-import { navigate } from './navigation.js';
+
 import { readZipEntry } from '../../src/core/exports/zip.js';
 import { mockGemini } from './mock-ai.js';
 
@@ -12,15 +13,12 @@ const profileReply = { fields: { headline: 'Logistics coordinator', experience, 
 
 async function startOwn(page, mode = 'copy') {
   await openApp(page);
-  await expect(page.locator('.primary-journey')).toHaveCount(0);
+  await expect(page.locator('.primary-journey')).toBeVisible();
   const welcome = page.locator('.welcome');
-  await expect(welcome).toContainText('AI prompt studio');
-  await expect(welcome).toContainText('My 90-day plan under More tools');
-  await welcome.getByRole('button', { name: 'Next', exact: true }).click();
-  await welcome.getByRole('button', { name: /Start my own/ }).click();
-  await welcome.locator(`input[value=${mode}]`).check();
-  await welcome.getByRole('button', { name: 'Start', exact: true }).click();
-}
+  await expect(welcome.locator('li')).toHaveCount(3);
+  await expect(welcome.locator('input[type=radio]')).toHaveCount(0);
+    await welcome.getByRole('button', { name: /Start my own/ }).click();
+    }
 
 async function locked(page) {
   for (const id of ['export-cv', 'export-docx']) await expect(page.getByTestId(id)).toBeDisabled();
@@ -50,7 +48,7 @@ test('first CV: PDF → fact decisions → one advert → tailoring decisions �
   await expect(page.locator('#field-profile-cvText')).toHaveValue(source);
   await expect(page.locator('#field-profile-headline')).toHaveValue('');
   await expect(page.locator('#field-profile-experience')).toHaveValue('');
-  await page.getByTestId('suggest-fields').click();
+  await openTask(page);
   await expect(page.locator('.current-route')).toContainText('Current AI route: Copy-paste into any free AI chat');
   await expect(page.locator('.ai-route-options')).not.toHaveAttribute('open');
   await expect(page.locator('.copy-steps li')).toHaveCount(4);
@@ -78,8 +76,8 @@ test('first CV: PDF → fact decisions → one advert → tailoring decisions �
   await expect(page.locator('#field-profile-about')).toHaveValue('');
   await expect(page.locator('#field-profile-experience')).toHaveValue(experience + ' I checked the routes myself.');
   await page.locator('#field-profile-education').fill('User-entered fictional Excel course');
-  await page.getByRole('button', { name: 'Next: add a job advert' }).click();
-  await page.getByRole('button', { name: 'Add my first advert' }).click();
+  await page.getByRole('button', { name: 'Next: Target job' }).click();
+  await page.getByRole('button', { name: 'Paste a job advert' }).click();
   await page.locator('#job-title').fill('Fictional route planner');
   await page.locator('#job-company').fill('Example company');
   await page.locator('#job-body').fill('Plan routes in Excel and check daily transport records.');
@@ -88,11 +86,11 @@ test('first CV: PDF → fact decisions → one advert → tailoring decisions �
   await expect(page.getByRole('link', { name: "Check this advert's requirements" })).toBeVisible();
   await expect(page.locator('.requirement')).toHaveCount(0);
   await page.getByRole('button', { name: 'Continue to my CV draft' }).click();
-  await expect(page.locator('#field-cv-experience')).toHaveValue('');
-  await page.getByRole('button', { name: 'Create draft from my profile' }).click();
+  await expect(page.locator('#field-cv-experience')).toHaveValue(experience + ' I checked the routes myself.');
+  await expect(page.locator('.first-draft')).toBeVisible();
   await expect(page.locator('#field-cv-education')).toHaveValue('User-entered fictional Excel course');
   await expect(page.locator('#field-cv-languages')).toHaveValue('Arabic native, English B2, Dutch A2');
-  await page.getByTestId('tailor').click();
+  await openTask(page);
   await expect(page.locator('#ai-outgoing')).toHaveValue(/Fictional route planner/);
   await page.locator('#ai-pasted').fill(JSON.stringify({ changes: [
     { field: 'summary', after: 'I planned routes for 15 drivers in Excel.', reason: 'Use recorded tasks', source: experience },
@@ -123,8 +121,8 @@ test('first CV: PDF → fact decisions → one advert → tailoring decisions �
     expect(text).not.toContain('REJECTED');
   }
   await navigate(page, 'Overview', 'home');
-  await expect(page.locator('.primary-journey')).toContainText('Reviewed by you');
-  await page.getByRole('button', { name: 'Continue my CV', exact: true }).click();
+  await expect(page.locator('.step-card').filter({ hasText: '3. My CV' })).toContainText('Done');
+  await page.locator('.step-card').filter({ hasText: '3. My CV' }).click();
   await expect(page.locator('#field-cv-summary')).toHaveValue('I planned routes for 15 drivers in Excel and checked my work.');
 });
 
@@ -135,12 +133,12 @@ test('manual pasted-CV path exports both formats without AI', async ({ page }, i
   await expect(page.getByTestId('suggest-fields')).toHaveCount(0);
   await page.locator('#field-profile-headline').fill('Logistics coordinator');
   await page.locator('#field-profile-experience').fill(experience);
-  await page.getByRole('button', { name: 'Next: add a job advert' }).click();
-  await page.getByRole('button', { name: 'Add my first advert' }).click();
+  await page.getByRole('button', { name: 'Next: Target job' }).click();
+  await page.getByRole('button', { name: 'Paste a job advert' }).click();
   await page.locator('#job-title').fill('Fictional planner');
   await page.locator('#job-body').fill('Plan routes in Excel.');
   await page.getByRole('button', { name: 'Continue to my CV draft' }).click();
-  await page.getByRole('button', { name: 'Create draft from my profile' }).click();
+  await expect(page.locator('.first-draft')).toBeVisible();
   await expect(page.getByTestId('tailor')).toHaveCount(0);
   await locked(page);
   await page.locator('#cv-reviewed').check();
@@ -148,56 +146,30 @@ test('manual pasted-CV path exports both formats without AI', async ({ page }, i
 });
 
 for (const language of ['en', 'nl']) {
-  test(`home and grouped navigation keep workshop and secondary tools reachable (${language})`, async ({ page }) => {
-    await openApp(page);
-    await page.getByRole('button', { name: 'Skip the welcome', exact: true }).click();
-    await expect(page.locator('h1')).toBeFocused();
-    await page.locator('#ui-language').selectOption(language);
-    const dutch = language === 'nl';
-    const mobile = page.locator('#mobile-view');
-    if (await mobile.isVisible()) {
-      await expect(mobile.locator('optgroup').nth(0).locator('option[value=prompts]')).toHaveCount(1);
-      await expect(mobile.locator('optgroup').nth(1).locator('option')).toHaveCount(5);
-    } else {
-      await expect(page.locator('.nav-list > button').last()).toHaveText(dutch ? 'AI-promptstudio' : 'AI prompt studio');
-      await expect(page.locator('.nav-more')).not.toHaveAttribute('open');
-      await page.locator('.nav-more summary').focus();
-      await page.keyboard.press('Enter');
-      await expect(page.locator('.nav-more')).toHaveAttribute('open');
-    }
-    expect(seriousAxe(await new AxeBuilder({ page }).analyze())).toEqual([]);
-    // Use labels already rendered by the app, keeping this traversal valid in both languages.
-    for (const id of ['interview', 'plan', 'applications', 'learn', 'coach', 'prompts', 'home']) {
-      if (await mobile.isVisible()) await mobile.selectOption(id);
-      else {
-        const label = await mobile.locator(`option[value=${id}]`).textContent();
-        const target = page.locator('.nav-list').getByRole('button', { name: label, exact: true });
-        if (!(await target.isVisible())) await page.locator('.nav-more summary').click();
-        await target.click();
-      }
-      await expect(page).toHaveURL(new RegExp('#/' + id + '$'));
-      await expect(page.locator('h1')).toBeFocused();
-    }
-    await expect(page.locator('.primary-journey')).toBeVisible();
-    await page.locator('.primary-journey .actions button').click();
-    await expect(page).toHaveURL(/#\/profile$/);
-    await expect(page.locator('#cv-file')).toBeVisible();
-  });
+ test('four-step navigation keeps every tool reachable (' + language + ')', async ({ page }) => {
+  await openApp(page); await page.locator('#ui-language').selectOption(language);
+  expect(seriousAxe(await new AxeBuilder({ page }).analyze())).toEqual([]);
+  for (const id of ['profile','jobs','cv','interview','plan','applications','learn','coach','prompts','home']) {
+    await navigate(page, '', id); await expect(page.locator('h1')).toBeFocused();
+  }
+  await page.locator('.primary-journey .actions button').first().click();
+  await expect(page).toHaveURL(/#\/profile$/); await expect(page.locator('#cv-file')).toBeVisible();
+ });
 }
 
 test('route disclosure preserves built-in preview, confirmation and copy-paste fallback', async ({ page, offOrigin }) => {
   const calls = await mockGemini(page, offOrigin);
   await openApp(page, '#/jobs');
-  await page.getByRole('button', { name: 'Add my first advert' }).click();
+  await page.getByRole('button', { name: 'Paste a job advert' }).click();
   await page.locator('#job-body').fill('Fictional Excel advert.');
   await page.getByRole('link', { name: "Check this advert's requirements" }).click();
-  await page.getByTestId('extract').click();
+  await openTask(page);
   await expect(page.locator('.ai-route-options')).not.toHaveAttribute('open');
   await page.locator('.ai-route-options summary').click();
   await page.locator('.ai-panel input[value=gemini]').check();
   await page.locator('#key-gemini').fill('test-free-key');
   await page.getByRole('button', { name: 'Use this key' }).click();
-  await page.locator('.ai-route-options summary').click();
+  if (await page.locator('.ai-route-options').evaluate(el => el.hasAttribute('open'))) await page.locator('.ai-route-options summary').click();
   await expect(page.locator('.current-route')).toContainText('Gemini');
   await expect(page.locator('#ai-outgoing')).toHaveValue(/Fictional Excel advert/);
   await expect(page.getByTestId('ai-send')).toBeDisabled();
@@ -210,7 +182,7 @@ test('route disclosure preserves built-in preview, confirmation and copy-paste f
   await page.getByTestId('ai-send').click();
   await expect(page.locator('.proposal')).not.toHaveCount(0);
   expect(calls).toHaveLength(1);
-  await page.locator('.ai-route-options summary').click();
+  if (!(await page.locator('.ai-route-options').evaluate(el => el.hasAttribute('open')))) await page.locator('.ai-route-options summary').click();
   await page.locator('.ai-panel input[value=copy]').check();
   await page.locator('.ai-route-options summary').click();
   await expect(page.getByRole('button', { name: 'Read the reply', exact: true })).toBeVisible();
@@ -220,7 +192,7 @@ test('returning to old suggestions after a source change requires an explicit re
   await openApp(page, '#/profile');
   await page.getByText('Paste or check CV text', { exact: true }).click();
   await page.locator('#field-profile-cvText').fill(source);
-  await page.getByTestId('suggest-fields').click();
+  await openTask(page);
   await page.locator('#ai-pasted').fill(JSON.stringify(profileReply));
   await page.getByRole('button', { name: 'Read the reply', exact: true }).click();
   await page.getByRole('button', { name: 'Return to my profile facts' }).click();
@@ -236,11 +208,11 @@ test('returning to old suggestions after a source change requires an explicit re
 
 test('changed advert blocks previous tailoring suggestions until restarted', async ({ page }) => {
   await openApp(page, '#/jobs');
-  await page.getByRole('button', { name: 'Add my first advert' }).click();
+  await page.getByRole('button', { name: 'Paste a job advert' }).click();
   await page.locator('#job-body').fill('Old fictional advert: plan routes.');
   await page.getByRole('button', { name: 'Continue to my CV draft' }).click();
   await page.locator('#field-cv-summary').fill('My own existing draft.');
-  await page.getByTestId('tailor').click();
+  await openTask(page);
   await page.locator('#ai-pasted').fill(JSON.stringify({ changes: [{ field: 'summary', after: 'Old target wording.', source: 'My own existing draft.', reason: 'Test pending suggestion' }] }));
   await page.getByRole('button', { name: 'Read the reply', exact: true }).click();
   await expect(page.locator('.proposal')).toHaveCount(1);

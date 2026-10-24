@@ -39,8 +39,8 @@ export function renderStudio(ctx) {
   const canPrefill = prompt.length <= providers.prefillMaxChars;
   const context = ['compare', 'search'].includes(step) ? t('Your profile and saved adverts') : ['fit', 'tailor', 'interview', 'letter'].includes(step) ? t('Your profile and selected advert') : t('Your profile');
   const back = step === 'compare' || step === 'fit' || step === 'search' ? ['jobs', t('Review my job evidence')] : step === 'interview' ? ['interview', t('Return to interview practice')] : ['cv', t('Edit my application')];
-  return html`${pageHeading(t('Optional / AI prompt studio'), t('Better context. More useful help.'), t('Prepare a prompt here, run it in a free AI chat, then bring back a draft to review.'))}
-${ctx.services.aiConnect ? ctx.services.aiConnect(ctx) : nothing}
+  return html`${pageHeading('', t('Prompt library'), t('Prepare a prompt here, run it in a free AI chat, then bring back a draft to review.'))}
+${ctx.services.planFromGaps ? ctx.services.planFromGaps(ctx) : nothing}
 <div class="prompt-layout"><aside><div class="prompt-tabs" aria-label=${t('Choose a prompt')}>${STEPS.map(([id, n]) => { const p = content.prompts.find((x) => x.id === id); return html`<button type="button" class="prompt-tab" aria-pressed=${String(id === step)} @click=${() => { ctx.update('ai.step', id); ctx.focusAfterRender('h1'); }}><span>${n}</span>${t(p?.title || id)}</button>`; })}</div>
 <p class="source-note">${t('Seven career prompts. The app prepares the text; your chosen AI service runs it. The same prompts are on the public prompt library page.')}</p>${ctx.services.customPrompts ? ctx.services.customPrompts(ctx) : nothing}</aside>
 <div class="grid"><section class="card"><div class="prompt-steps"><span><b>1</b> ${t('Preview')}</span><span>→</span><span><b>2</b> ${t('Copy & run in AI')}</span><span>→</span><span><b>3</b> ${t('Review the result')}</span></div><h2>${t(meta.title)}</h2><p class="card-sub">${t(meta.summary)}</p>

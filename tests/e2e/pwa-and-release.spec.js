@@ -1,10 +1,11 @@
+import { navigate, loadDemo, openTask } from './navigation.js';
 // @ts-check
 // Phase 5: installable PWA and offline (journey 5), and the single-file release build.
 import { existsSync, readdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { test, expect, openApp, loadDemo, gotoView } from './fixtures.js';
-import { navigate } from './navigation.js';
+import { test, expect, openApp, gotoView } from './fixtures.js';
+
 
 // These tests need the real service worker (they never call an AI provider).
 test.use({ serviceWorkers: 'allow' });

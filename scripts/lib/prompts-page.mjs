@@ -23,6 +23,7 @@ export function renderPromptsPage(prompts, providers) {
     const text = buildLibraryPrompt(p);
     return `<article class="prompt" id="${E(p.slug)}">
   <header><span class="num">${i + 1}</span><div><h2>${E(p.title)}</h2><p>${E(p.summary)}</p></div></header>
+  <p class="source-note">Works best inside Career Navigator, which adds your facts for you.</p>
   <p class="paste"><strong>Paste with it:</strong> ${p.pasteWith.map(E).join(' · ')}</p>
   <details class="full"><summary>Show the full prompt</summary><pre id="text-${E(p.slug)}" tabindex="0" aria-label="Full prompt: ${E(p.title)}">${E(text)}</pre></details>
   <div class="actions"><button type="button" class="btn" data-copy="text-${E(p.slug)}">Copy prompt</button><button type="button" class="btn secondary" data-share="text-${E(p.slug)}" hidden>Share to an app</button><a class="link" href="#${E(p.slug)}">Link to this prompt</a></div>
@@ -43,6 +44,7 @@ export function renderPromptsPage(prompts, providers) {
 <a class="skip" href="#main">Skip to prompts</a>
 <header class="top"><a class="brand" href="../">Career Navigator</a><span class="tag">Free · no sign-up · nothing saved</span></header>
 <main id="main">
+<a class="btn" href="../">Open Career Navigator</a>
 <h1>Free AI career prompts</h1>
 <p class="lead">Seven prompts for building your CV and finding work in the Netherlands. They work in any free AI chat. Each prompt asks the AI to stick to your real facts and to use evidence instead of scores.</p>
 <ol class="how">

@@ -42,6 +42,7 @@ export function extractStrings() {
   for (const s of ['Saved', 'Applied', 'Interview', 'Offer', 'Rejected', 'Withdrawn']) seen.add(s);
   seen.add('This file contains personal details. Share it only with people you trust, and delete it when you no longer need it.');
   for (const f of readdirSync(join(ROOT, 'content', 'interview'))) seen.add(JSON.parse(readFileSync(join(ROOT, 'content', 'interview', f), 'utf8')).title);
+  for (const text of ['Not started', 'In progress', 'Done', '90-day plan', 'Import a CV or enter your facts. Check the text before using it.', 'Find the requirements and connect them to your own evidence.', 'Check every line before you download.', 'Practise an answer using a real example.', 'Choose one useful next step for your next 90 days.', 'Keep track of applications and follow-up dates.']) seen.add(text);
   seen.delete('');
   return [...seen];
 }
