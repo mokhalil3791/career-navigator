@@ -56,7 +56,7 @@ ${button(html`${icon('plus', 16)}${t('Add education')}`, () => { const id = uid(
     return html`<div class="field full"><label for="cv-file">${t('Import my CV from a file')}<span class="optional">${t('PDF, DOCX or TXT')}</span></label><input id="cv-file" type="file" accept=".pdf,.docx,.txt,application/pdf,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document" @change=${onFile}><span class="field-hint">${t('The text is read in your browser only. Nothing is uploaded. It goes into “Paste an existing CV”, not into your profile fields.')}</span></div>`;
   };
 
-  s.docxButton = (/** @type {any} */ ctx) => button(html`${icon('download', 16)}${ctx.t('Download as Word (DOCX)')}`, () => {
+  s.docxButton = (/** @type {any} */ ctx) => button(html`${icon('download', 16)}${ctx.t('Download Word (DOCX)')}`, () => {
     try {
       const bytes = buildCvDocx(ctx.state);
       ctx.download(ctx.state.demo ? 'fictional-example-cv.docx' : 'my-career-cv.docx', new Blob([/** @type {BlobPart} */ (bytes)], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }));

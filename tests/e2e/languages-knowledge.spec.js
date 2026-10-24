@@ -35,7 +35,7 @@ test('journey 4: Dutch interface, profile and plan in Dutch, CV stays in the cho
   await page.getByRole('button', { name: 'Deze sjabloon gebruiken' }).click();
   await page.locator('#field-plan-nextAction').fill('Eén vacature kiezen en de vraag voor mijn portfolio opschrijven.');
   await gotoView(page, 'cv');
-  await page.getByRole('button', { name: 'Mijn profiel naar het cv kopiëren' }).click();
+  await page.getByRole('button', { name: 'Concept maken van mijn profiel' }).click();
   await page.locator('#cv-reviewed').check();
   const english = page.waitForEvent('download');
   await page.getByTestId('export-cv').click();
