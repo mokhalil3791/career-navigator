@@ -1,8 +1,9 @@
+import { navigate, loadDemo, openTask } from './navigation.js';
 // @ts-check
 // Phase 4: journey 1 (coach round trip), CV import, DOCX export, applications, .ics and check-in.
 import { readFileSync } from 'node:fs';
-import { test, expect, openApp, loadDemo, gotoView } from './fixtures.js';
-import { navigate } from './navigation.js';
+import { test, expect, openApp, gotoView } from './fixtures.js';
+
 
 /** @param {import('@playwright/test').Page} page */
 async function download(page, /** @type {() => Promise<unknown>} */ trigger, /** @type {string} */ path) {
@@ -44,18 +45,18 @@ test('journey 1: example → review adverts → coach pack → coach view → no
   await download(coach, () => coach.getByTestId('download-coach-notes').click(), notesPath);
   await coachContext.close();
 
-  // Back to the job seeker: notes appear beside the CV and change nothing else.
+  // Back to the job seeker: notes appear in Settings and change nothing else.
   const before = await page.evaluate(() => document.querySelector('#field-plan-targetRole') && /** @type {HTMLInputElement} */ (document.querySelector('#field-plan-targetRole')).value);
   await page.locator('#import-file').setInputFiles(notesPath);
   await expect(page.locator('#notice')).toContainText('1 coach notes added');
-  await gotoView(page, 'cv');
+  await navigate(page, 'Settings', 'settings');
   await expect(page.locator('.coach-notes')).toContainText('Lead with the SQL project');
   await expect(page.locator('.coach-notes')).toContainText('Coach R.');
   await gotoView(page, 'plan');
   expect(await page.locator('#field-plan-targetRole').inputValue()).toBe(before);
 
   // Delete everything.
-  await page.locator('.privacy-drawer summary').click();
+  await navigate(page, 'Settings', 'settings');
   await page.getByTestId('delete-everything').click();
   await expect(page.locator('#notice')).toContainText('Everything this app stored in this browser has been deleted.');
   await expect(page.locator('.banner')).toHaveCount(0);
@@ -122,6 +123,7 @@ test('plan: milestone dates, .ics export and weekly check-in (FR-PLAN-2/3)', asy
 
 test('profile rows: languages with CEFR and basis, education with IDW (FR-PRO-4/5), target roles (FR-PRO-1)', async ({ page }) => {
   await openApp(page, '#/profile');
+  await page.getByText('More details (optional)', { exact: true }).click();
   await page.locator('#profile-languages-details summary').click();
   await page.getByRole('button', { name: 'Add a language' }).click();
   await page.locator('input[id^=lang-]').fill('Dutch');
@@ -132,7 +134,7 @@ test('profile rows: languages with CEFR and basis, education with IDW (FR-PRO-4/
   await page.getByRole('button', { name: 'Add education', exact: true }).click();
   await page.locator('input[id^=edu-title-]').fill('Bachelor of Accounting');
   await page.locator('select[id^=edu-idw-]').selectOption('applied');
-  await page.getByText('Optional: target roles and work preferences', { exact: true }).click();
+  await expect(page.getByText('More details (optional)', { exact: true }).locator('..')).toHaveAttribute('open');
   await page.locator('#target-0').fill('Financial administrator');
   await gotoView(page, 'prompts');
   await expect(page.locator('#prompt-preview')).toHaveValue(/Dutch: B1, certified \(Staatsexamen NT2 programme I\)/);

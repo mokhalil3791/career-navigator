@@ -1,6 +1,28 @@
 # v1 status by requirement
 
-Baseline: Phases 0–5 and the review fixes are merged into `main` (`e2f4929`, PR #8). **v1 is a preview at `/next/`. It is not tagged and not at the root.** The table records the baseline checks from 2026-10-23; branch changes are described separately below.
+## Approved launch implementation (2026-10-24)
+
+- FR-ONB / FR-PRO / FR-JOB / FR-CV / FR-INT / FR-PLAN / FR-APP: four numbered steps, import-first profile,
+  optional structured details, visible advert evidence review, CV/Letter/LinkedIn tabs, and Next steps tabs.
+- FR-CV-1/2/3: a first draft copies recorded facts only through the existing mapper. Every CV content field,
+  including letter and LinkedIn, must be empty. The additive `cv.autoDrafted` migration records the once-only
+  decision. Undo/Start from empty never refills on a later visit. Review stays false and both exports stay locked.
+  Sam follows the same path; backup import resets review even after an auto-draft.
+- FR-AI / FR-PS / NFR-SEC: one main AI action per step, first-use route choice, provider preview/redaction and
+  individual proposal acceptance retained. Saving remains opt-in; first-edit prompt and Settings make it visible.
+- FR-LIB / FR-FORK / NFR-A11Y / NFR-I18N: orange role tokens, contrast tests, public prompt library styling,
+  printable A4 handout, Dutch string coverage, root deployment and route-preserving old-link redirect.
+
+**Automated locally:** 395 unit/parity/guardrail tests; typecheck; hosted and single-file builds; 68 Chromium
+E2E tests. Coverage command passes its 90% line gate. Desktop WebKit and both mobile suites passed 189 tests with nine existing browser-specific skips; the final focused launch/auto-draft suite passed 44 cases across the four local projects. Screenshots and scope are in `docs/reports/v1-launch/README.md`. G1–G13 and `tests/e2e/fixtures.js` are unchanged.
+
+**Verified by a person:** none. All provider replies in tests are mocked. No model download, real Gemini call,
+real-device upgrade, fluent Dutch review, physical print, Word/LibreOffice rendering or five-user pilot has
+been performed. The existing PDF standard-font warning remains unresolved. No manual checklist item is ticked.
+
+## Historical implementation records
+
+Baseline: Phases 0–5, review fixes and primary-journey PRs #9–#11 are merged into `main`. The approved `v1-launch` branch serves v1 at the project root, with `/next/` as a redirect only. No release tag. The table records baseline checks; launch verification is recorded separately below.
 
 Column meanings:
 - **Implemented:** code is in the baseline (✔), partly (◐), or not built (✘).
@@ -83,7 +105,7 @@ See `docs/KNOWN-ISSUES.md`.
 
 ## Primary journey PR C (2026-10-24, branch `primary-journey-entry`)
 
-**Implemented on this branch:** a primary five-step CV route and recorded-state continuation; simpler welcome; primary AI prompt studio navigation and secondary More tools; grouped mobile selector; current AI route with optional provider setup; four copy-paste instructions and session-only backup reminder. Existing CV/profile content is never filled or verified by navigation. Changed source/advert context blocks previous primary-task proposals until an explicit restart. No schema, core reducer, exporter, provider or guardrail changes.
+**Merged in PR #11 (green CI):** a primary five-step CV route and recorded-state continuation; simpler welcome; primary AI prompt studio navigation and secondary More tools; grouped mobile selector; current AI route with optional provider setup; four copy-paste instructions and session-only backup reminder. Existing CV/profile content is never filled or verified by navigation. Changed source/advert context blocks previous primary-task proposals until an explicit restart. No schema, core reducer, exporter, provider or guardrail changes.
 
 **Automated verification:** full PDF-to-reviewed-export journey and focused cases passed on Chromium/mobile-chrome/mobile-safari; both HTML and DOCX XML are inspected for accepted/edited text and absence of rejected text. The malformed reply, no-AI path, returning draft, EN/NL navigation/axe, mocked provider confirmation/fallback and changed-context behavior are checked. The broader mobile suites passed 52 tests. Unit/parity/guardrail count remains 342. Exact final Chromium and CI results are recorded on the PR. Translation coverage: 743/743; shell approximately 120 KB gzip.
 

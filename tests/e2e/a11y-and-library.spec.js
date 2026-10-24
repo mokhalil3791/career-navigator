@@ -1,7 +1,8 @@
+import { navigate, loadDemo, openTask } from './navigation.js';
 // @ts-check
 // NFR-A11Y-2: axe-core on every page (empty and demo). FR-LIB: prompt library page.
 import AxeBuilder from '@axe-core/playwright';
-import { test, expect, openApp, loadDemo, seriousAxe, gotoView, sidebarDiagnostics } from './fixtures.js';
+import { test, expect, openApp, seriousAxe, gotoView, sidebarDiagnostics } from './fixtures.js';
 // Axe measures colours; transitions (toast, hover lift) can give false contrast results mid-animation.
 test.use({ reducedMotion: 'reduce' });
 
@@ -40,12 +41,10 @@ test.describe('public prompt library', () => {
     await page.goto('/p/tailor/');
     await expect(page).toHaveURL(/\/prompts\/#tailor$/);
   });
-  test('hosted v0.1 at the root still works, without score-requesting originals', async ({ page }) => {
+  test('v1 at the root keeps the score-free prompt studio', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('h1')).toBeVisible();
-    const select = page.locator('#mobile-view');
-    if (await select.isVisible()) await select.selectOption('prompts');
-    else await page.getByRole('button', { name: 'AI prompt studio' }).first().click();
+    await navigate(page, '', 'prompts');
     await expect(page.locator('#prompt-preview')).not.toHaveValue(/match score from 0 to 100/);
   });
 });

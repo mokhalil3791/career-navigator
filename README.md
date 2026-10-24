@@ -4,11 +4,15 @@ A free, private career workspace for newcomers to the Netherlands. Build a truth
 compare job adverts with your own evidence, practise interviews and make a 90-day learning plan.
 Everything runs in your browser.
 
-- **Open the app (workshop version, v0.1):** https://mokhalil3791.github.io/career-navigator/
-- **Try the new version (v1 preview):** https://mokhalil3791.github.io/career-navigator/next/ (works offline, can be installed on your phone, English and Dutch)
+- **Open Career Navigator:** https://mokhalil3791.github.io/career-navigator/ (offline-capable, English and Dutch)
+- **Printable take-home sheet:** https://mokhalil3791.github.io/career-navigator/handout/
 - **Free AI career prompts:** https://mokhalil3791.github.io/career-navigator/prompts/
 - **Short links for slides:** `…/career-navigator/p/cv`, `/p/check`, `/p/tailor`, `/p/interview`, `/p/letter`, `/p/jobs`, `/p/compare`
 - **QR codes:** [`assets/qr/app.svg`](assets/qr/app.svg) and [`assets/qr/prompts.svg`](assets/qr/prompts.svg)
+
+**Four steps:** My story → Target job → My CV → Next steps. The last step contains interview practice, a 90-day plan and applications. Tools contains Prompt library and Settings.
+
+**Orange brand:** role colours live in `src/styles/tokens.css` and `config/brand.json`. Decorative orange is never text on white.
 
 **Free forever.** No account, no payment, no trial and no analytics. You never need a payment card.
 
@@ -17,7 +21,7 @@ Everything runs in your browser.
 Career Navigator never needs a paid AI. You use the free plan of an AI chat you already have, such as
 Claude, Gemini, Le Chat, Copilot, ChatGPT or Duck.ai.
 
-1. In the app, open **AI prompt studio** (or open the **prompt library** page).
+1. In the app, open **Prompt library** (or open the public **prompt library** page).
 2. Choose a prompt, for example *Check one job*. The app adds your profile facts and the job advert.
    It never adds the name field, and it adds safety rules: no invented facts and no match scores.
 3. **Read the exact text** that will be copied. Remove anything you do not want to share.
@@ -33,7 +37,7 @@ edit or reject each one. Nothing changes until you click **Accept**.
 
 ## Built-in free AI (optional)
 
-In **AI prompt studio → Free AI routes** you can also connect a free AI directly. You always see the exact
+In **Settings → Free AI routes** you can also connect a free AI directly. You always see the exact
 text and where it goes before anything is sent, and **Redact before sending** masks emails, phone
 numbers, BSN-like numbers, addresses and your name.
 
@@ -90,7 +94,7 @@ Read [`docs/PRD.md`](docs/PRD.md), [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md
 ```
 npm install
 npm test              # unit, parity and guardrail tests
-npm run build:all     # app + GitHub Pages site into _site/ (v1 at /next/)
+npm run build:all     # app + GitHub Pages site into _site/ (v1 at the root)
 npm run build:single  # one-file release for USB sticks
 npm run e2e           # Playwright end-to-end tests (after build:all)
 ```

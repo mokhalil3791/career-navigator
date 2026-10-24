@@ -7,9 +7,10 @@ This takes about 10 minutes and costs nothing. You need a free GitHub account.
 2. **Switch on Pages.** In your new repository, go to **Settings → Pages**. Under **Build and deployment → Source**, choose **GitHub Actions**.
 3. **Run the first deploy.** Go to **Actions → Deploy to GitHub Pages → Run workflow**. Wait until the job has a green tick (about 3 minutes).
 4. **Open your site.** It is at `https://<your-user-name>.github.io/<repository-name>/`.
-   - `/` is the original v0.1 workshop app (until the maintainers switch it over)
-   - `/next/` is the v1 app
+   - `/` is the v1 app, with four steps and the orange brand
+   - `/next/` redirects to the root, keeping the page hash
    - `/prompts/` is the public prompt library
+   - `/handout/` is the printable take-home sheet
 5. **Change things in the browser.** Open any file on GitHub and click the pencil, or press `.` to open the web editor.
    Commit to `main`, and the site redeploys by itself. See [CUSTOMISING.md](CUSTOMISING.md) for safe changes.
 
@@ -20,3 +21,7 @@ content file has a typo. The message names the file and the field.
 helper with a computer to run `npm run build:qr` after changing `SITE_URL` in `scripts/lib/prompts-page.mjs`.
 
 **Ollama users:** set `OLLAMA_ORIGINS` to your own site address (see the README).
+
+Vite assets, the manifest and the service worker use paths relative to the project root. No GitHub setting change is needed. v0.1 remains in `reference/v0.1/` and is attached by the release workflow, but is not served as an app. The launch creates no release tag.
+
+After deployment, check the root, both old-address redirect cases, every prompt short link and both QR targets. IndexedDB work remains available across paths on the same origin. Legacy localStorage work is offered for import without enabling saving or keeping a previous review tick.

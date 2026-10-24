@@ -266,3 +266,13 @@ Add or update Playwright tests at **390×844** and **1366×900**, across Chromiu
     - opening the old `/next/` link on a phone that used it before
 
 Stop and ask me only if a guardrail conflicts with this plan, if something would cost money, or if you need a new runtime dependency.
+
+## Maintainer clarification: approved automatic first draft
+
+The old explicit-draft journey assertion may be replaced. G1–G13 and the G5 fixture remain unchanged.
+Auto-drafting requires every CV content field (including letter and LinkedIn) to be empty and at least one
+recorded profile fact; source CV text alone is not a fact. Only the existing `draftCvFromProfile` mapping is
+used, without AI. The migrated `cv.autoDrafted` marker persists across saves and backups, so clearing or
+Start from empty never causes a refill. The first-draft banner includes Undo: start from empty. Sam takes
+the same path. Review remains false and both exports stay locked. Backup import must still reset review.
+The maintainer's uncommitted `fictional-cv.txt` edit is excluded from this launch worktree and preserved.

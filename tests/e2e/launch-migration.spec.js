@@ -1,3 +1,4 @@
+import { navigate, loadDemo, openTask } from './navigation.js';
 import { readFileSync } from 'node:fs';
 import { test, expect } from './fixtures.js';
 import { newWorkspace } from '../../src/core/schema.js';
@@ -52,5 +53,5 @@ test('legacy import needs consent, preserves the original and resets review and 
   await expect(page.getByTestId('export-cv')).toBeDisabled();
   await expect(page.getByTestId('export-docx')).toBeDisabled();
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('career-navigator.workspace.v1')).settings.remember)).toBe(true);
-  await expect(page.locator('.storage-status')).toContainText('Session only');
+  await expect(page.locator('.storage-status')).toContainText('Not saved — download a backup');
 });

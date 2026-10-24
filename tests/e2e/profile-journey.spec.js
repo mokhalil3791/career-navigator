@@ -1,8 +1,9 @@
+import { navigate, loadDemo, openTask } from './navigation.js';
 // PR A: import first, optional details, and navigation without a verification claim.
 import { readFileSync } from 'node:fs';
 import AxeBuilder from '@axe-core/playwright';
 import { test, expect, openApp, seriousAxe } from './fixtures.js';
-import { navigate } from './navigation.js';
+
 import { newWorkspace } from '../../src/core/schema.js';
 
 test.use({ reducedMotion: 'reduce' });
@@ -13,11 +14,8 @@ test('phone-sized profile starts with local PDF import and preserves source-only
   page.on('console', (message) => { if (message.type() === 'warning') warnings.push(message.text()); });
   await openApp(page);
   const welcome = page.locator('.welcome');
-  await welcome.getByRole('button', { name: 'Next', exact: true }).click();
-  await welcome.getByRole('button', { name: /Start my own/ }).click();
-  await welcome.locator('input[value=copy]').check();
-  await welcome.getByRole('button', { name: 'Start', exact: true }).click();
-  await expect(page.locator('#cv-file')).toBeInViewport({ ratio: 1 });
+    await welcome.getByRole('button', { name: /Start my own/ }).click();
+      await expect(page.locator('#cv-file')).toBeInViewport({ ratio: 1 });
   expect((await page.locator('#cv-file').boundingBox()).height).toBeGreaterThanOrEqual(44);
   await expect(page.locator('main .card').first()).toContainText('Start with your CV');
   await expect(page.locator('#profile-education-details')).not.toHaveAttribute('open');
@@ -29,10 +27,10 @@ test('phone-sized profile starts with local PDF import and preserves source-only
   for (const key of ['headline', 'experience', 'education', 'languages']) {
     await expect(page.locator('#field-profile-' + key)).toHaveValue('');
   }
-  await expect(page.getByTestId('suggest-fields')).toBeVisible();
+  await expect(page.getByTestId('journey-ai')).toBeVisible();
   // Record diagnostics without suppressing or requiring a pdf.js warning to persist.
   await info.attach('pdf-import-warnings', { body: JSON.stringify(warnings, null, 2), contentType: 'application/json' });
-  await page.getByRole('button', { name: 'Next: add a job advert' }).click();
+  await page.getByRole('button', { name: 'Next: Target job' }).click();
   await expect(page).toHaveURL(/#\/jobs$/);
   await navigate(page, 'My application', 'cv');
   await expect(page.locator('#cv-reviewed')).not.toBeChecked();
@@ -43,11 +41,8 @@ test('phone-sized profile starts with local PDF import and preserves source-only
 test('manual and pasted sources remain available without AI or duplicate entry', async ({ page }) => {
   await openApp(page);
   const welcome = page.locator('.welcome');
-  await welcome.getByRole('button', { name: 'Next', exact: true }).click();
-  await welcome.getByRole('button', { name: /Start my own/ }).click();
-  await welcome.locator('input[value=none]').check();
-  await welcome.getByRole('button', { name: 'Start', exact: true }).click();
-  await page.getByRole('button', { name: 'Enter facts myself' }).click();
+    await welcome.getByRole('button', { name: /Start my own/ }).click();
+      await page.getByRole('button', { name: 'Enter facts myself' }).click();
   await expect(page.locator('#field-profile-headline')).toBeFocused();
   await page.locator('#field-profile-headline').fill('Fictional planner');
   await page.locator('#field-profile-education').fill('Original diploma, Example college, 2020');
@@ -59,12 +54,12 @@ test('manual and pasted sources remain available without AI or duplicate entry',
   await expect(page.getByTestId('suggest-fields')).toHaveCount(0);
   await expect(page.locator('#field-profile-experience')).toHaveValue('');
   await expect(page.locator('#profile-languages-details')).not.toHaveAttribute('open');
-  await page.getByRole('button', { name: 'Next: add a job advert' }).click();
+  await page.getByRole('button', { name: 'Next: Target job' }).click();
   await navigate(page, 'My profile', 'profile');
   await expect(page.locator('#field-profile-languages')).toHaveValue('Dutch A2, self-assessed');
   await expect(page.locator('#field-profile-cvText')).toBeVisible();
   await navigate(page, 'My application', 'cv');
-  await page.getByRole('button', { name: 'Create draft from my profile' }).click();
+  await expect(page.locator('.first-draft')).toBeVisible();
   await expect(page.locator('#field-cv-education')).toHaveValue('Original diploma, Example college, 2020');
   await expect(page.locator('#field-cv-languages')).toHaveValue('Dutch A2, self-assessed');
 });
@@ -85,10 +80,7 @@ for (const language of ['en', 'nl']) {
     // Wait for completion, not just the early language change, before navigating away.
     await expect(page.locator('#notice')).toContainText('Backup imported.');
     await expect(page.locator('#ui-language')).toHaveValue(language);
-    const openProfile = async () => {
-      if (await page.locator('#mobile-view').isVisible()) await page.locator('#mobile-view').selectOption('profile');
-      else await page.getByRole('navigation', { name: language === 'en' ? 'Main navigation' : 'Hoofdnavigatie' }).getByRole('button', { name: language === 'en' ? 'My profile' : 'Mijn profiel', exact: true }).click();
-    };
+    const openProfile = async () => { await navigate(page, '', 'profile'); };
     await openProfile();
     for (const subject of ['education', 'languages']) await expect(page.locator('#profile-' + subject + '-details')).toHaveAttribute('open', '');
     await expect(page.locator('#lang-lang-test')).toHaveValue('Dutch');
@@ -112,7 +104,7 @@ for (const language of ['en', 'nl']) {
     await expect(page.locator('#field-profile-education')).toHaveValue(state.profile.education);
     await page.setViewportSize({ width: 360, height: 732 });
     // Firefox can resolve resize before the responsive layout has been painted.
-    await expect(page.locator('#mobile-view')).toBeVisible();
+    await expect(page.locator('.nav-sheet summary')).toBeVisible();
     await expect.poll(() => page.evaluate(() => {
       if (document.documentElement.scrollWidth <= innerWidth) return 'No horizontal overflow';
       const overflowing = [...document.querySelectorAll('body *')].filter((el) => el.getBoundingClientRect().right > innerWidth + 1)
