@@ -13,7 +13,7 @@ not a real-phone check or a human usability study. No manual release-checklist i
 Detail views: [collapsed requirements](target-job-requirements.png), [review and exports](my-cv-exports.png).
 The sticky bar appears at the original viewport boundary in full-page captures; use viewport shots to judge it.
 
-Sam's Target job page measures **3,283 px**, below four 844 px screens (3,376 px), with all requirement rows
+Sam's Target job page measures **3,132 px**, below four 844 px screens (3,376 px), with all requirement rows
 collapsed and the evidence section open. Opening one row closes the previous row; its text, status, evidence
 and next-step values remain unchanged. The automated test checks all values before and after expansion.
 

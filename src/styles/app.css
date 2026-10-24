@@ -114,10 +114,18 @@ progress{inline-size:100%;block-size:10px;accent-color:var(--primary)}
   .journey-ai{position:static}
   .journey-ai .btn{width:auto}
   .job-layout .card{padding:16px}
-  .job-layout .fields{gap:12px}
+  .job-layout{gap:14px}
+  .job-layout .job-list{gap:8px}
+  .job-layout .job-select{padding:10px}
+  .job-layout .job-rank{padding:4px 10px}
+  .job-layout .fields{gap:10px}
   .job-layout .field{gap:4px}
   .job-layout .facts-row .field{margin-top:0}
-  .job-layout .card-head{margin-bottom:12px}
+  .job-layout .card-head{margin-bottom:12px;gap:8px}
+  .job-layout .card-head .actions:empty{display:none}
+  .job-layout .divider{margin-block:10px}
+  .job-layout .source-note{margin-top:10px}
+  .job-layout .requirement>summary{padding:8px}
   .job-layout .form-footer{margin-top:16px}
   .main-wrap>.journey-footer{position:sticky;bottom:0;inset-inline:auto;margin:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:var(--white);border-top:1px solid var(--control);z-index:15}
   .notice{bottom:calc(var(--journey-bar-height, 0px) + 12px);max-width:calc(100vw - 32px)}

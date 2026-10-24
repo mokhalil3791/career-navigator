@@ -17,7 +17,7 @@ final suite and CI results are recorded on the PR. Dutch coverage: 713/713 strin
 G1–G13, the G5 fixture, dependency manifests and AGENTS/CLAUDE remain unchanged.
 
 **Agent visual check:** [390 px screenshots](reports/v1-polish/README.md). Sam's collapsed Target job page
-is 3,283 px high at 390 × 844, below four screens (3,376 px).
+is 3,132 px high at 390 × 844, below four screens (3,376 px).
 
 **Verified by a person:** none. Real phones, fluent Dutch review, Word/LibreOffice rendering and the five-user
 pilot remain pending. No release-checklist items were ticked, and no release tag or repository setting changed.
