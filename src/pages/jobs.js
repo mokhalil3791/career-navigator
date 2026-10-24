@@ -6,7 +6,7 @@ import { live } from 'lit-html/directives/live.js';
 import { icon } from '../components/icon.js';
 import { navigateTabs, aiButton, button, goButton, pageHeading } from '../components/ui.js';
 import { evidencePills } from '../components/evidence-pills.js';
-import { needsEvidence, STATUS_OPTIONS } from '../core/evidence.js';
+import { needsEvidence, STATUS_OPTIONS, STATUS_LABELS } from '../core/evidence.js';
 import { MAX_JOBS, MAX_REQUIREMENTS } from '../core/schema.js';
 import { uid } from '../lib/uid.js';
 
@@ -43,12 +43,13 @@ function renderRequirement(ctx, r, i) {
     ctx.dispatch({ type: 'removeRequirement', id: r.id });
   };
   const base = 'req-' + r.id;
-  return html`<section class="requirement" data-requirement=${r.id}><div class="requirement-top"><strong>${t('Requirement {n}', { n: i + 1 })}${r.kind === 'must' ? html` <span class="pill">${t('Must-have')}</span>` : r.kind === 'nice' ? html` <span class="pill gray">${t('Nice to have')}</span>` : nothing}</strong>${button(t('Remove'), remove, { style: 'ghost small' })}</div><div class="fields">
+  const status = needsEvidence(r) ? 'unknown' : r.status;
+  return html`<details class="requirement" data-requirement=${r.id} ?open=${ctx.ui.openRequirement === r.id}><summary @click=${(/** @type {Event} */ e) => { e.preventDefault(); ctx.ui.openRequirement = ctx.ui.openRequirement === r.id ? null : r.id; ctx.rerender(); }}><span>${r.text || t('Requirement {n}', { n: i + 1 })}</span><span class="pill ${status === 'unknown' ? 'gray' : ''}">${t(STATUS_LABELS[status])}</span></summary><div class="requirement-fields"><div class="requirement-top"><strong>${t('Requirement {n}', { n: i + 1 })}${r.kind === 'must' ? html` <span class="pill">${t('Must-have')}</span>` : r.kind === 'nice' ? html` <span class="pill gray">${t('Nice to have')}</span>` : nothing}</strong>${button(t('Remove'), remove, { style: 'ghost small' })}</div><div class="fields">
 <div class="field full"><label for="${base}-text">${t('What does the advert ask for?')}</label><input type="text" id="${base}-text" maxlength="2000" placeholder=${t('e.g. Basic SQL and data checks')} .value=${live(r.text)} @input=${edit('text')}></div>
 <div class="field"><label for="${base}-status">${t('My evidence status')}</label><select id="${base}-status" @change=${edit('status')}>${STATUS_OPTIONS.map(([value, label]) => html`<option value=${value} ?selected=${r.status === value}>${t(label)}</option>`)}</select></div>
 <div class="field"><label for="${base}-next">${t('Next step or question')}</label><input type="text" id="${base}-next" maxlength="3000" placeholder=${t('What could I show, learn or ask?')} .value=${live(r.nextStep)} @input=${edit('nextStep')}></div>
 <div class="field full"><label for="${base}-evidence">${t('Evidence from my experience')}</label><textarea id="${base}-evidence" rows="2" maxlength="6000" placeholder=${t('Name a real task, project or example you can explain.')} .value=${live(r.evidence)} @input=${edit('evidence')}></textarea>${ctx.services.evidenceHelper ? ctx.services.evidenceHelper(ctx, r) : nothing}<span class="evidence-warning" id="${base}-warning">${needsEvidence(r) ? t('Add evidence. This requirement is counted as unclear until you do.') : ''}</span></div>
-</div></section>`;
+</div></div></details>`;
 }
 
 /** @param {import('../app-context.js').Ctx} ctx */
@@ -71,7 +72,7 @@ ${ctx.services.jobFacts ? ctx.services.jobFacts(ctx, j) : nothing}
 <div class="divider"></div><div class="card-head"><div><h3>${t('Requirements & my evidence')}</h3><p class="card-sub">${t('Add each requirement separately. You choose the status and supply the evidence.')}</p></div><div class="actions"></div></div>
 ${ctx.ui.proposalPanel ? ctx.ui.proposalPanel(ctx) : nothing}
 <div id="evidence-summary">${evidencePills(ctx, j)}</div><div id="requirements">${j.requirements.map((r, i) => renderRequirement(ctx, r, i))}</div>
-<div class="actions mt-18">${button(html`${icon('plus', 16)}${t('Add a requirement')}`, () => { const id = uid('req'); if (ctx.dispatch({ type: 'addRequirement', id })) ctx.focusAfterRender('req-' + id + '-text'); }, { disabled: j.requirements.length >= MAX_REQUIREMENTS })}</div>
+<div class="actions mt-18">${button(html`${icon('plus', 16)}${t('Add a requirement')}`, () => { const id = uid('req'); ctx.ui.openRequirement = id; if (ctx.dispatch({ type: 'addRequirement', id })) ctx.focusAfterRender('req-' + id + '-text'); }, { disabled: j.requirements.length >= MAX_REQUIREMENTS })}</div>
 <p class="source-note">${t('Supported = evidence recorded · Partly supported = some evidence · Not shown = evidence not yet recorded · Unclear = requirement or meaning needs clarification. These are your review notes, not a hiring score.')}</p><div class="divider"></div>
 ${jobField(ctx, t('My decision, gap & question for the employer'), 'reason', j, { area: true, max: 8000, placeholder: t('Why might I choose this role?\nWhat should I learn or show?\nWhat do I need to ask the employer?') })}
 <div class="form-footer"><span class="muted small">${t('You can reorder adverts in the list.')}</span>${goButton(ctx, html`${t('Prepare my application')} ${icon('arrow', 16)}`, 'cv', '')}</div></details></section>`;

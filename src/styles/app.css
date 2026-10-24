@@ -90,3 +90,44 @@ progress{inline-size:100%;block-size:10px;accent-color:var(--primary)}
 @media(max-width:720px){.sidebar{flex-direction:row;align-items:center;justify-content:space-between;gap:12px}.sidebar .brand{padding:0}.brand small{display:none}.crumb{display:block!important;margin:0}.topbar{padding:8px 16px;gap:8px}.top-actions{flex-wrap:wrap;gap:8px}.journey-ai{position:fixed;bottom:64px;inset-inline:12px;z-index:17}.journey-ai .btn{width:100%;background:var(--white)}.journey-footer{padding-top:64px}.content{padding-bottom:160px}.page-heading .actions{margin:0}.stepper{gap:5px}.stepper button{padding:6px;font-size:.73rem}.nav-sheet summary{min-width:44px}.job-list{display:flex}.notice{bottom:150px}}
 [hidden]{display:none!important}.success-moment{padding:18px;background:var(--soft);border:1px solid var(--primary);border-radius:12px;margin-top:18px;animation:success-in .3s ease-out}@keyframes success-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){.success-moment{animation:none}}
 .ai-task-label{display:block;font-weight:400;font-size:.7rem;margin-top:2px}.tools-label{font-size:.75rem;color:var(--soft);margin:16px 12px 6px}.brand{min-height:44px}button{min-height:44px;min-width:44px}@media(max-width:720px){.journey-ai .btn{color:var(--deep);border-color:var(--control);min-height:44px}}
+
+/* Compact requirement summaries retain the full editor when expanded. */
+.requirement{padding:0;margin-top:8px}
+.requirement>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:10px;cursor:pointer;font-size:.88rem}
+.requirement>summary>span:first-child{flex:1;min-width:0}
+.requirement>summary .pill{flex-shrink:0}
+.requirement-fields{padding:12px}
+.mobile-save-status{display:none}
+.main-wrap>.journey-footer{margin:0 44px 24px}
+@media(max-width:720px){
+  .sidebar{padding:8px 16px;gap:8px;overflow:visible}
+  .sidebar .brand{margin-inline-end:auto;font-size:1rem}
+  .sidebar>div:last-child{flex-shrink:0}
+  .sidebar .mobile-save-status{display:grid;place-items:center;background:transparent;color:var(--white);border:0;padding:8px;border-radius:8px}
+  .topbar{display:none}
+  .main-wrap{display:flex;flex-direction:column;min-height:calc(100dvh - 60px)}
+  .nav-sheet[open] nav{position:static;padding:0;box-shadow:none;max-height:none}
+  .nav-sheet[open] .menu-panel{position:fixed;inset:68px 12px auto;background:var(--deep);padding:12px;border-radius:16px;max-height:calc(100dvh - 80px);overflow:auto;z-index:40;box-shadow:var(--shadow)}
+  .menu-tools{display:flex;flex-wrap:wrap;gap:12px;padding:12px}
+  .menu-tools .lang-select{width:auto;flex:1}
+  .content{width:100%;padding:24px 16px;flex:1}
+  .journey-ai{position:static}
+  .journey-ai .btn{width:auto}
+  .job-layout .card{padding:16px}
+  .job-layout{gap:14px}
+  .job-layout .job-list{gap:8px}
+  .job-layout .job-select{padding:10px}
+  .job-layout .job-rank{padding:4px 10px}
+  .job-layout .fields{gap:10px}
+  .job-layout .field{gap:4px}
+  .job-layout .facts-row .field{margin-top:0}
+  .job-layout .card-head{margin-bottom:12px;gap:8px}
+  .job-layout .card-head .actions:empty{display:none}
+  .job-layout .divider{margin-block:10px}
+  .job-layout .source-note{margin-top:10px}
+  .job-layout .requirement>summary{padding:8px}
+  .job-layout .form-footer{margin-top:16px}
+  .main-wrap>.journey-footer{position:sticky;bottom:0;inset-inline:auto;margin:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:var(--white);border-top:1px solid var(--control);z-index:15}
+  .notice{bottom:calc(var(--journey-bar-height, 0px) + 12px);max-width:calc(100vw - 32px)}
+  html{scroll-padding-bottom:calc(var(--journey-bar-height, 0px) + 12px)}
+}

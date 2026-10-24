@@ -30,6 +30,6 @@ export function i18nModule(app) {
     return html`<section class="card welcome section-space" aria-labelledby="welcome-title"><h2 id="welcome-title">${t('Welcome')}</h2>
 <ul class="tip-list"><li>${t('Everything you write stays in this browser. There is no account and no analytics.')}</li><li>${t('Nothing is saved after you close the page, unless you switch on “Save on this device”.')}</li><li>${t('Nothing goes to an AI until you see the exact text and choose to send or copy it.')}</li></ul>
 <p class="source-note"><a href="${brand.repoUrl}/blob/main/docs/PRIVACY.md" target="_blank" rel="noopener noreferrer">${t('Read the full privacy notice')}</a></p>
-<div class="actions mt-15">${button(t('Start my own'), () => { ctx.update('settings.onboarded', true); ctx.go('profile'); }, { style: '' })}${button(t('Try the example'), () => s.loadDemo())}</div></section>`;
+<div class="actions mt-15">${button(t('Start my own'), () => { ctx.update('settings.onboarded', true); ctx.go('profile'); }, { style: '' })}${button(t('Try the example'), () => s.loadDemo(), { testid: 'load-demo' })}</div></section>`;
   };
 }

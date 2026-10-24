@@ -11,7 +11,7 @@ for (const [width, height] of [[390,844],[1366,900]]) {
     const calls = await mockGemini(page, offOrigin);
     await openApp(page);
     await expect(page.getByTestId('load-demo')).toBeVisible();
-    await page.getByRole('button', { name: 'Start', exact: true }).click();
+    await page.getByRole('button', { name: 'Start my own', exact: true }).click();
     await page.locator('#cv-file').setInputFiles('tests/fixtures/cv/fictional-cv.pdf');
     await expect(page.locator('#field-profile-cvText')).toHaveValue(/Planned routes for 15 drivers/);
     await page.getByTestId('journey-ai').click();
@@ -55,7 +55,7 @@ for (const [width, height] of [[390,844],[1366,900]]) {
       await expect(page.locator('.stepper [aria-current=step]')).toHaveText(`${i}. ${label}`);
       await expect(page.locator(`.nav-list [data-route="${id}"]`)).toHaveText(`${i}. ${label}`);
       await expect(page.getByTestId('journey-ai')).toHaveCount(1);
-      if (i < 4) await expect(page.locator('.journey-footer button').last()).toHaveText(`Next: ${['My story','Target job','My CV','Next steps'][i]}`);
+      if (i < 4) await expect(page.locator('.journey-footer button').last()).toHaveText(i === 3 ? 'Next: practise and plan' : `Next: ${['My story','Target job','My CV','Next steps'][i]}`);
       expect(seriousAxe(await new AxeBuilder({ page }).analyze())).toEqual([]);
     }
     await gotoView(page,'settings');
@@ -69,7 +69,7 @@ for (const [width, height] of [[390,844],[1366,900]]) {
 
 test('example remains one click away after welcome; comparison and writing tabs are keyboard accessible', async ({ page }) => {
   await openApp(page);
-  await page.getByRole('button', { name: 'Start', exact: true }).click();
+  await page.getByRole('button', { name: 'Start my own', exact: true }).click();
   await gotoView(page, 'home');
   await page.getByTestId('load-demo').click();
   await expect(page.locator('.banner')).toContainText("You're exploring Sam's example");

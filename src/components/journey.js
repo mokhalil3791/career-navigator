@@ -17,10 +17,11 @@ export function stepIndex(view) { return ['plan', 'applications'].includes(view)
  */
 export function stepStatuses(state) {
   const facts = hasProfileFacts(state);
-  return [facts ? 'Done' : state.profile.cvText ? 'In progress' : 'Not started',
+  const steps = [facts ? 'Done' : state.profile.cvText ? 'In progress' : 'Not started',
     state.jobs.some(j => j.body.trim() && j.requirements.length) ? 'Done' : state.jobs.length ? 'In progress' : 'Not started',
-    state.cv.reviewed ? 'Done' : hasCvWork(state) ? 'In progress' : 'Not started',
-    state.plan.nextAction.trim() ? 'Done' : state.applications.length || Object.keys(state.interview.answers).length ? 'In progress' : 'Not started'];
+    state.cv.reviewed ? 'Done' : hasCvWork(state) ? 'In progress' : 'Not started'];
+  const action = Boolean(state.plan.nextAction.trim() || state.applications.length || Object.values(state.interview.answers).some(answer => answer.trim()));
+  return [...steps, action ? steps.every(s => s === 'Done') ? 'Done' : 'In progress' : 'Not started'];
 }
 
 /** @param {import('../app-context.js').Ctx} ctx @param {string} view */
@@ -32,7 +33,7 @@ export function stepper(ctx, view) {
 /** @param {import('../app-context.js').Ctx} ctx @param {string} view */
 export function journeyFooter(ctx, view) {
   const i = stepIndex(view), next = JOURNEY[i + 1];
-  return html`<div class="journey-footer">${button(ctx.t('Back'), () => ctx.go(i > 0 ? JOURNEY[i - 1].id : 'home'))}${next ? button(ctx.t('Next: {step}', { step: ctx.t(next.label) }), () => ctx.go(next.id), { style: '' }) : button(ctx.t('Home'), () => ctx.go('home'))}</div>`;
+  return html`<div class="journey-footer">${button(ctx.t('Back'), () => ctx.go(i > 0 ? JOURNEY[i - 1].id : 'home'))}${next ? button(i === 2 ? ctx.t('Next: practise and plan') : ctx.t('Next: {step}', { step: ctx.t(next.label) }), () => ctx.go(next.id), { style: '' }) : button(ctx.t('Home'), () => ctx.go('home'))}</div>`;
 }
 
 /** @param {import('../app-context.js').Ctx} ctx @param {string} view @param {string} lead */

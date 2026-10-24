@@ -70,6 +70,14 @@ export function startApp(root, options = {}) {
   let pendingFocus = null;
   let noticeTimer = 0;
   let saving = Promise.resolve();
+  /** @type {HTMLElement | null} */
+  let journeyBar = null;
+  // Toasts use the real bar height, including wrapped labels and the safe area.
+  const barObserver = new ResizeObserver(syncBarHeight);
+  function syncBarHeight() {
+    const height = journeyBar && matchMedia('(max-width:720px)').matches ? journeyBar.getBoundingClientRect().height : 0;
+    document.documentElement.style.setProperty('--journey-bar-height', `${height}px`);
+  }
 
   applyBrandColours();
 
@@ -115,6 +123,12 @@ export function startApp(root, options = {}) {
     const page = pages.find((p) => p.id === view) || pages[0];
     setRootAttributes(c.state.settings.uiLanguage, c.state.settings.simpleLanguage);
     render(shell(c, pages.filter((p) => !p.hidden), view, page.render(c)), root);
+    const nextBar = /** @type {HTMLElement | null} */ (root.querySelector('.journey-footer'));
+    if (nextBar !== journeyBar) {
+      barObserver.disconnect(); journeyBar = nextBar;
+      if (journeyBar) barObserver.observe(journeyBar);
+    }
+    syncBarHeight();
     applyFocus();
   }
 
@@ -212,6 +226,8 @@ export function startApp(root, options = {}) {
       // Keep the original localStorage copy until the person decides how to save.
       store.dispatch({ type: 'replace', state: parseWorkspace(text) });
       ui.legacyOffer = false;
+      // Accepting an imported workspace is the first content change in this session.
+      ui.sessionEdited = true; ui.savePromptSeen = true;
       ui.askToSave = true;
       rerender();
     },
@@ -252,7 +268,9 @@ export function startApp(root, options = {}) {
   });
 
   store.subscribe((state, action) => {
-    if (!state.settings.remember && !ui.savePromptSeen && action.type !== 'replace' && (action.path?.startsWith('profile.') || action.path?.startsWith('cv.') || ['editJob', 'addJob', 'addRow'].includes(action.type))) {
+    const edited = action.type !== 'replace' && (['profile.', 'cv.', 'plan.', 'interview.'].some(prefix => action.path?.startsWith(prefix)) || ['editJob', 'addJob', 'removeJob', 'addRow', 'editRow', 'removeRow', 'addRequirement', 'editRequirement', 'removeRequirement', 'setJobFacts', 'setCv', 'applyTemplate', 'startEmptyCv'].includes(action.type));
+    if (edited) ui.sessionEdited = true;
+    if (edited && !state.settings.remember && !ui.savePromptSeen) {
       ui.savePromptSeen = true; ui.askToSave = true;
     }
     rerender();

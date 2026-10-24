@@ -1,5 +1,23 @@
 // UI navigation adapters. G5 and all original fixture safety checks stay unchanged.
 import { expect } from './fixtures.js';
+
+export async function chooseLanguage(page, language) {
+  if (await page.locator('#ui-language').isVisible()) await page.locator('#ui-language').selectOption(language);
+  else {
+    await page.locator('.nav-sheet summary').click();
+    await page.locator('#ui-language-menu').selectOption(language);
+    await page.locator('.nav-sheet summary').click();
+  }
+}
+
+export async function saveBackup(page) {
+  if (await page.locator('.topbar').isVisible()) await page.locator('.topbar').getByRole('button', { name: /Save backup|Back-up opslaan/ }).click();
+  else {
+    await page.locator('.nav-sheet summary').click();
+    await page.locator('.menu-tools').getByRole('button', { name: /Save backup|Back-up opslaan/ }).click();
+    await page.locator('.nav-sheet summary').click();
+  }
+}
 export async function navigate(page, label, id) {
   const destination = ['plan', 'applications'].includes(id) ? 'interview' : ['coach', 'learn'].includes(id) ? 'settings' : id;
   const desktop = page.locator(`.nav-list [data-route="${destination}"]`);

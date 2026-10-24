@@ -1,5 +1,27 @@
 # v1 status by requirement
 
+## Phone polish (2026-10-24, branch `v1-polish`)
+
+**Implemented:** one welcome action pair, no duplicate example action during demo use; a single-row phone
+header with language and backup controls in Menu and Settings; unsaved status appears with the first content
+edit's save prompt. Back/Next is sticky at the viewport bottom and toast clearance follows its actual height.
+Requirements expand one at a time without changing stored evidence. My CV keeps banner Undo, removes the
+two replacement shortcuts, makes Word primary and labels the continuation “Next: practise and plan”.
+Step 4 is Done only after steps 1–3 are Done and a nonblank interview answer, plan next action or application exists.
+
+**Automatically tested:** 400 unit/parity/guardrail tests; coverage passes its 90% line gate; typecheck,
+hosted/single-file builds and content checks. Focused browser checks cover Home states, first-edit warning,
+menu controls, sticky placement and toast clearance at three scroll positions on every step, requirement
+value preservation and Word-first locked exports. All four locally installed browser projects are exercised;
+final suite and CI results are recorded on the PR. Dutch coverage: 713/713 strings; shell: 119.9 KB gzip.
+G1–G13, the G5 fixture, dependency manifests and AGENTS/CLAUDE remain unchanged.
+
+**Agent visual check:** [390 px screenshots](reports/v1-polish/README.md). Sam's collapsed Target job page
+is 3,132 px high at 390 × 844, below four screens (3,376 px).
+
+**Verified by a person:** none. Real phones, fluent Dutch review, Word/LibreOffice rendering and the five-user
+pilot remain pending. No release-checklist items were ticked, and no release tag or repository setting changed.
+
 ## Approved launch implementation (2026-10-24)
 
 - FR-ONB / FR-PRO / FR-JOB / FR-CV / FR-INT / FR-PLAN / FR-APP: four numbered steps, import-first profile,
