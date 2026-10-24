@@ -122,6 +122,28 @@ test('Advanced still connects Gemini and requires visible exact text before send
   await page.getByTestId('ai-send').click(); await expect(page.locator('.proposal')).not.toHaveCount(0); expect(calls).toHaveLength(1);
 });
 
+test('a saved interview requires exact review again after reload and previews every outgoing message', async ({ page, offOrigin }) => {
+  const calls = await mockGemini(page, offOrigin); await openApp(page, '#/settings');
+  const connect = async () => {
+    await page.locator('.connect-card summary').click(); await page.locator('input[name^=ai-route][value=gemini]').check();
+    await page.locator('#key-gemini').fill('test-free-key'); await page.getByRole('button', { name: 'Use this key' }).click();
+  };
+  await connect(); await page.locator('#remember').check(); await expect(page.locator('#notice')).toContainText('saved on this device');
+  await navigate(page, '', 'interview'); await page.getByTestId('journey-ai').click();
+  await page.locator('.mock-interview summary').click(); await page.getByLabel(/I have read the text above/).check(); await page.getByTestId('mock-start').click();
+  await expect(page.locator('.transcript .interviewer')).toHaveCount(1);
+  await close(page); await navigate(page, '', 'settings'); await page.reload(); await connect();
+  await navigate(page, '', 'interview'); await page.getByTestId('journey-ai').click();
+  await page.locator('#mock-answer').fill('I checked 12 records.'); await expect(page.getByTestId('mock-send')).toBeDisabled(); expect(calls).toHaveLength(1);
+  await page.getByLabel(/I have read the text above/).check(); await expect(page.getByTestId('mock-send')).toBeDisabled();
+  await page.locator('.mock-interview summary').click();
+  const outgoing = JSON.parse(await page.locator('.mock-interview .prompt-preview').inputValue());
+  expect(outgoing.at(-1).content).toBe('I checked 12 records.');
+  await page.getByTestId('mock-send').click(); await expect(page.locator('.transcript .interviewer')).toHaveCount(2);
+  expect(calls.at(-1).body.contents.map(m => m.parts.map(p => p.text).join(''))).toEqual(outgoing.map(m => m.content));
+  await expect(page.locator('.mock-interview .prompt-preview')).toBeVisible();
+});
+
 test('OpenRouter connects with a public free-only list and refreshes an unavailable selection', async ({ page, offOrigin }) => {
   offOrigin.allow('https://openrouter.ai'); let lists = 0, sends = 0;
   await page.route('https://openrouter.ai/api/v1/models', async route => {
