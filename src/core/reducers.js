@@ -9,7 +9,8 @@
  *  - AI-originated actions are refused unless acceptedByUser is set to true (G4, principle 3).
  */
 import { DANGEROUS_KEYS } from './validate.js';
-import { MAX_JOBS, MAX_REQUIREMENTS } from './schema.js';
+import { MAX_JOBS, MAX_REQUIREMENTS, newWorkspace } from './schema.js';
+import { shouldAutoDraft } from './auto-draft.js';
 import { draftCvFromProfile } from './cv.js';
 import { planFromRole } from './plan.js';
 
@@ -36,7 +37,7 @@ export function invalidatesReview(action) {
       return action.path.startsWith('profile.');
     case 'addJob': case 'selectJob': case 'removeJob': case 'editJob': case 'setJobFacts':
     case 'addRequirement': case 'removeRequirement': case 'editRequirement':
-    case 'draftCv': case 'setCv':
+    case 'draftCv': case 'setCv': case 'autoDraftCv': case 'startEmptyCv':
       return true;
     default:
       return false;
@@ -154,7 +155,13 @@ export function reduce(state, action) {
       r[action.key] = String(action.value);
       break;
     }
-    case 'draftCv': next.cv = draftCvFromProfile(next); break;
+    case 'autoDraftCv':
+      if (!shouldAutoDraft(state)) return state;
+      next.cv = { ...draftCvFromProfile(state), autoDrafted: true };
+      break;
+    case 'skipAutoDraft': next.cv.autoDrafted = true; break;
+    case 'startEmptyCv': next.cv = { ...newWorkspace().cv, autoDrafted: true }; break;
+    case 'draftCv': next.cv = { ...draftCvFromProfile(next), autoDrafted: true }; break;
     case 'setCv': Object.assign(next.cv, action.fields); break;
     case 'setReviewed': next.cv.reviewed = action.value === true; break;
     case 'applyTemplate': {

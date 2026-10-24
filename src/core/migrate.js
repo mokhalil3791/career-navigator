@@ -36,5 +36,12 @@ export function migrate(input) {
     fail('Workspace', 'unsupported or missing schemaVersion; this version accepts schema 1 or 2');
   }
   while (data.schemaVersion < SCHEMA_VERSION) data = STEPS[data.schemaVersion](data);
+  // Additive schema-2 migration: older backups have no auto-draft marker.
+  // Retain an explicit true/false; normalization validates its type.
+  if (data.cv && data.cv.autoDrafted === undefined) {
+    data = safeCopy(data);
+    data.cv = safeCopy(record(data.cv, 'CV'));
+    data.cv.autoDrafted = false;
+  }
   return data;
 }

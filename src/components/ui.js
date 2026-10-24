@@ -7,6 +7,22 @@ import { html, nothing } from 'lit-html';
 import { live } from 'lit-html/directives/live.js';
 import { icon } from './icon.js';
 
+/** Arrow/Home/End navigation for the small, automatically activated tab lists.
+ * @param {KeyboardEvent} event
+ */
+export function navigateTabs(event) {
+  if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+  const list = /** @type {HTMLElement} */ (event.currentTarget);
+  const tabs = Array.from(list.querySelectorAll('button[role="tab"]'));
+  const current = tabs.indexOf(/** @type {Element} */ (event.target));
+  if (current < 0) return;
+  event.preventDefault();
+  const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1
+    : (current + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+  const tab = /** @type {HTMLButtonElement} */ (tabs[next]);
+  tab.click(); tab.focus();
+}
+
 /**
  * @typedef {import('../app-context.js').Ctx} Ctx
  */
@@ -61,7 +77,7 @@ export function field(ctx, label, path, opts = {}) {
  * @param {unknown} [actions]
  */
 export function pageHeading(eyebrow, title, description, actions) {
-  return html`<div class="page-heading"><div><p class="eyebrow">${eyebrow}</p><h1 tabindex="-1" class="focus-heading">${title}</h1><p class="lead">${description}</p></div>${actions ? html`<div class="actions">${actions}</div>` : nothing}</div>`;
+  return html`<div class="page-heading"><div>${eyebrow ? html`<p class="eyebrow">${eyebrow}</p>` : nothing}<h1 tabindex="-1" class="focus-heading">${title}</h1><p class="lead">${description}</p></div>${actions ? html`<div class="actions">${actions}</div>` : nothing}</div>`;
 }
 
 /**

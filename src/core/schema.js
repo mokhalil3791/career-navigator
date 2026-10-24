@@ -36,13 +36,13 @@ export function newWorkspace() {
       targetRoles: [], workPreferences: { hours: '', hybrid: '', region: '' }, languageRows: [], educationRows: [],
     },
     jobs: [], selectedJobId: '',
-    cv: { headline: '', summary: '', experience: '', education: '', skills: '', languages: '', letter: '', reviewed: false, linkedin: { headline: '', about: '', bullets: '' } },
+    cv: { headline: '', summary: '', experience: '', education: '', skills: '', languages: '', letter: '', reviewed: false, autoDrafted: false, linkedin: { headline: '', about: '', bullets: '' } },
     interview: { questionIndex: 0, answers: {}, notes: {}, packId: 'default', mock: { messages: [], feedback: '' } },
     plan: { roleId: 'custom', targetRole: '', priorities: ['', '', ''], project: '', day30: '', day60: '', day90: '', nextAction: '', nextDate: '', hours: 6, milestoneDates: { day30: '', day60: '', day90: '' }, checkins: [] },
     applications: [],
     ai: { step: 'profile', language: 'English', extra: '', drafts: { profile: '', search: '', compare: '', fit: '', tailor: '', interview: '', letter: '' }, customPrompts: [] },
     coachNotes: [],
-    settings: { remember: false, uiLanguage: 'en', applicationLanguage: 'English', simpleLanguage: false, onboarded: false, aiMode: 'copy' },
+    settings: { remember: false, uiLanguage: 'en', applicationLanguage: 'English', simpleLanguage: false, onboarded: false, aiMode: 'copy', aiRouteChosen: false, aiRoute: 'copy' },
   };
 }
 
@@ -160,6 +160,7 @@ export function normalizeWorkspace(input) {
   const cv = record(src.cv, 'CV', true);
   CV_KEYS.forEach(function (key) { out.cv[key] = string(cv[key], 'CV.' + key, key === 'headline' ? 2000 : 20000); });
   out.cv.reviewed = boolean(cv.reviewed, 'CV.reviewed');
+  out.cv.autoDrafted = boolean(cv.autoDrafted, 'CV.autoDrafted');
   const li = record(cv.linkedin, 'CV.linkedin', true);
   out.cv.linkedin = { headline: string(li.headline, 'LinkedIn.headline', 300), about: string(li.about, 'LinkedIn.about', 3000), bullets: string(li.bullets, 'LinkedIn.bullets', 3000) };
 
@@ -216,6 +217,8 @@ export function normalizeWorkspace(input) {
     simpleLanguage: boolean(s.simpleLanguage, 'Settings.simpleLanguage'),
     onboarded: boolean(s.onboarded, 'Settings.onboarded'),
     aiMode: oneOf(s.aiMode, 'Settings.aiMode', ['none', 'copy', 'builtin'], 'copy'),
+    aiRouteChosen: boolean(s.aiRouteChosen, 'Settings.aiRouteChosen'),
+    aiRoute: oneOf(s.aiRoute, 'Settings.aiRoute', ['copy', 'gemini', 'webllm', 'openrouter', 'ollama'], 'copy'),
   };
   return out;
 }
