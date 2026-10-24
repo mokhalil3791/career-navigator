@@ -24,10 +24,17 @@ export function aiModule(app) {
   const aiBtn = (/** @type {any} */ ctx, /** @type {string} */ label, /** @type {() => void} */ run, testid = '') => on(ctx) ? button(html`${icon('spark', 16)}${label}`, run, { style: 'secondary small', testid }) : nothing;
 
   s.aiPanel = aiPanel;
+  s.evidenceHelper = (/** @type {any} */ ctx) => button(ctx.t('Suggest evidence'), () => openAi(ctx, { kind: 'task', id: 'suggest-evidence', title: 'Suggest evidence from my profile', page: 'jobs', jobId: ctx.state.selectedJobId }), { style: 'secondary small' });
+  s.journeyAi = (/** @type {any} */ ctx, /** @type {string} */ view) => {
+    const t = ctx.t;
+    const task = view === 'profile' ? ['suggest-fields', t('AI: fill my profile')] : view === 'jobs' ? ['extract-requirements', t('AI: find the requirements')] : view === 'cv' ? [ctx.ui.cvTab === 'linkedin' ? 'linkedin' : ctx.ui.cvTab === 'letter' ? 'letter' : 'tailor-cv', t('AI: tailor my CV')] : ['interview', t('AI: practise an interview')];
+    const action = view === 'profile' && ctx.state.profile.cvText.trim() ? t('Turn this into my profile') : view === 'jobs' && ctx.state.jobs.some((j) => j.body.trim()) ? t('Find the requirements') : view === 'cv' ? t('Tailor to this job') : task[1];
+    return html`<span class="journey-ai">${button(html`<span>${action}${action !== task[1] ? html`<small class="ai-task-label">${task[1]}</small>` : nothing}</span>`, () => openAi(ctx, { kind: ['interview', 'letter'].includes(task[0]) ? 'step' : 'task', id: task[0], title: task[1], page: view, jobId: ctx.state.selectedJobId }), { style: '', testid: 'journey-ai' })}</span>`;
+  };
   s.aiConnect = connectCard;
   s.webllmReady = webllmReady;
   s.beforeDeleteEverything = async () => { aiSession.clearSession(); };
-  s.afterStart = async () => { await aiSession.loadSavedKeys({ kv }).catch(() => {}); app.rerender(); };
+  s.afterStart = async () => { aiSession.setRoute(app.store.getState().settings.aiRoute); await aiSession.loadSavedKeys({ kv }).catch(() => {}); app.rerender(); };
 
   s.extractButton = (/** @type {any} */ ctx, /** @type {any} */ job) => html`${aiBtn(ctx, ctx.t('Extract requirements'), () => openAi(ctx, { kind: 'task', id: 'extract-requirements', title: 'Extract requirements from this advert', page: 'jobs', jobId: job.id }), 'extract')}${job.requirements.length ? aiBtn(ctx, ctx.t('Suggest evidence'), () => openAi(ctx, { kind: 'task', id: 'suggest-evidence', title: 'Suggest evidence from my profile', page: 'jobs', jobId: job.id })) : nothing}`;
 
@@ -49,7 +56,7 @@ ${f.dutch ? html`<p class="pill ${f.dutch === 'required' ? 'alert' : f.dutch ===
 
   s.linkedinCard = (/** @type {any} */ ctx) => {
     const { t } = ctx;
-    return html`<section class="card"><div class="card-head"><div><h2>${t('LinkedIn sections')}</h2><p class="card-sub">${t('A headline, an About section and three experience bullets, from your recorded facts only.')}</p></div>${aiBtn(ctx, t('Write with AI'), () => openAi(ctx, { kind: 'task', id: 'linkedin', title: 'Write my LinkedIn sections', page: 'cv' }))}</div>
+    return html`<section class="card"><div class="card-head"><div><h2>${t('LinkedIn sections')}</h2><p class="card-sub">${t('A headline, an About section and three experience bullets, from your recorded facts only.')}</p></div></div>
 <div class="fields">${field(ctx, t('LinkedIn headline'), 'cv.linkedin.headline', { full: true, max: 300 })}${field(ctx, t('About'), 'cv.linkedin.about', { area: true, full: true, rows: 5, max: 3000 })}${field(ctx, t('Three experience bullets'), 'cv.linkedin.bullets', { area: true, full: true, rows: 4, max: 3000 })}</div></section>`;
   };
 

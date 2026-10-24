@@ -18,6 +18,18 @@ const setup = { keyDraft: /** @type {Record<string, string>} */ ({}), remember: 
 /** @param {number} mb */
 const gb = (mb) => (mb / 1024).toFixed(1).replace('.0', '');
 
+/** First-use choice. No provider is contacted here.
+ * @param {import('../../app-context.js').Ctx} ctx
+ */
+export function firstRoute(ctx) {
+  const { t } = ctx;
+  if (setup.webgpu === null) hasWebGPU().then(ok => { setup.webgpu = ok; ctx.rerender(); });
+  const choice = ctx.ui.firstAiRoute || 'copy';
+  const options = [['copy', t('Copy and paste into a free AI chat (recommended)')], ['gemini', t('Connect a free Gemini key')], ...(setup.webgpu ? [['webllm', t('Run AI on this device')]] : [])];
+  return html`<fieldset class="route-picker"><legend>${t('AI help is optional')}</legend>${options.map(([id, label]) => html`<label class="check-row"><input type="radio" name="first-ai-route" value=${id} .checked=${choice === id} @change=${() => { ctx.ui.firstAiRoute = id; ctx.rerender(); }}><span>${label}</span></label>`)}</fieldset>
+  ${button(t('Use this AI route'), () => { ai.setRoute(choice); ctx.update('settings.aiRoute', choice); ctx.update('settings.aiRouteChosen', true); ctx.focusAfterRender('ai-panel-title'); }, { style: '' })}`;
+}
+
 /**
  * Compact route picker shown inside the AI panel.
  * @param {import('../../app-context.js').Ctx} ctx
@@ -27,8 +39,8 @@ export function connectRoute(ctx, where = 'panel') {
   const { t } = ctx;
   const route = ai.getRoute();
   return html`<fieldset class="route-picker"><legend>${t('How should the AI run?')}</legend>
-<label class="check-row"><input type="radio" name="ai-route-${where}" value="copy" .checked=${route === 'copy'} @change=${() => { ai.setRoute('copy'); ctx.rerender(); }}><span><strong>${t('Copy-paste into any free AI chat')}</strong><small>${t('Works for everyone. Nothing is sent by this app.')}</small></span></label>
-${ai.API_PROVIDERS.map((p) => html`<label class="check-row"><input type="radio" name="ai-route-${where}" value=${p.id} .checked=${route === p.id} @change=${() => { ai.setRoute(p.id); ctx.rerender(); }}><span><strong>${t(p.label)}</strong><small>${statusLine(ctx, p)}</small></span></label>`)}
+<label class="check-row"><input type="radio" name="ai-route-${where}" value="copy" .checked=${route === 'copy'} @change=${() => { ai.setRoute('copy'); ctx.update('settings.aiRoute', 'copy'); ctx.update('settings.aiRouteChosen', true); ctx.rerender(); }}><span><strong>${t('Copy-paste into any free AI chat')}</strong><small>${t('Works for everyone. Nothing is sent by this app.')}</small></span></label>
+${ai.API_PROVIDERS.map((p) => html`<label class="check-row"><input type="radio" name="ai-route-${where}" value=${p.id} .checked=${route === p.id} @change=${() => { ai.setRoute(p.id); ctx.update('settings.aiRoute', p.id); ctx.update('settings.aiRouteChosen', true); ctx.rerender(); }}><span><strong>${t(p.label)}</strong><small>${statusLine(ctx, p)}</small></span></label>`)}
 </fieldset>${route !== 'copy' ? providerSetup(ctx, ai.providerConfig(route)) : nothing}`;
 }
 
@@ -117,5 +129,5 @@ export function currentRoute(ctx) {
   const provider = ai.providerConfig(route);
   return html`<div class="current-route"><p><strong>${t('Current AI route: {route}', { route: provider ? t(provider.label) : t('Copy-paste into any free AI chat') })}</strong></p>
 ${provider ? html`<p class="field-hint">${statusLine(ctx, provider)}</p>` : nothing}
-<details class="details ai-route-options"><summary>${t('Change AI route')}</summary>${connectRoute(ctx)}</details></div>`;
+<details class="details ai-route-options" ?open=${!!provider && ((provider.kind === 'key' && !ai.getKey(route)) || (provider.kind === 'device' && !webllmReady()))}><summary>${t('Change AI route')}</summary>${connectRoute(ctx)}</details></div>`;
 }
