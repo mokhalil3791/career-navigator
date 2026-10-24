@@ -1,51 +1,51 @@
 /* Styles added in v1.0 (v0.1 styles are in layout.css). Uses logical properties so right-to-left languages work. */
 .progress-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
-.progress-item{display:flex;gap:10px;align-items:flex-start;inline-size:100%;text-align:start;border:1px solid var(--line);background:#fff;border-radius:13px;padding:12px;min-block-size:44px;color:var(--ink)}
+.progress-item{display:flex;gap:10px;align-items:flex-start;inline-size:100%;text-align:start;border:1px solid var(--line);background:var(--white);border-radius:13px;padding:12px;min-block-size:44px;color:var(--ink)}
 .progress-item small{display:block;color:var(--muted);font-size:.72rem;margin-block-start:2px}
 .progress-item strong{font-size:.82rem}
-.progress-mark{inline-size:20px;block-size:20px;border-radius:50%;border:1.5px solid #b9c8bf;display:grid;place-items:center;flex-shrink:0;color:#fff}
-.progress-item.done .progress-mark{background:var(--teal);border-color:var(--teal)}
+.progress-mark{inline-size:20px;block-size:20px;border-radius:50%;border:1.5px solid var(--control);display:grid;place-items:center;flex-shrink:0;color:var(--white)}
+.progress-item.done .progress-mark{background:var(--primary);border-color:var(--primary)}
 .independence{font-weight:600}
 .footer{flex-wrap:wrap}
 @media(max-width:950px){.progress-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:500px){.progress-list{grid-template-columns:1fr 1fr}}
 /* Accessibility fixes found by axe (WCAG 2.2 AA contrast ≥ 4.5:1); v0.1 colours were too light. */
-.step-num{color:#56665f}
-.hero-caption{color:#3d5a3c}
+.step-num{color:var(--muted)}
+.hero-caption{color:var(--muted)}
 .footer{color:var(--muted)}
 /* AI panel, proposals and diff (Phase 2) */
-.ai-panel{border-color:#c9dccd;box-shadow:0 0 0 3px #e6f0e9}
+.ai-panel{border-color:var(--soft-2);box-shadow:0 0 0 3px var(--soft-2)}
 .row-between{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .route-picker{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:10px;margin:0}
 .route-picker legend{font-weight:650;font-size:.84rem;padding:0 6px}
-.route-picker input[type=radio]{inline-size:18px;block-size:18px;margin-block-start:3px;accent-color:var(--teal)}
-.provider-setup{border-inline-start:3px solid var(--lime);padding-inline-start:14px;margin-block-start:12px}
+.route-picker input[type=radio]{inline-size:18px;block-size:18px;margin-block-start:3px;accent-color:var(--primary)}
+.provider-setup{border-inline-start:3px solid var(--accent);padding-inline-start:14px;margin-block-start:12px}
 .proposals{display:grid;gap:12px}
-.proposal{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fafbf8}
-.proposal.done{background:#f0f4ee;color:var(--muted);padding:10px 14px}
+.proposal{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--white)}
+.proposal.done{background:var(--soft-2);color:var(--muted);padding:10px 14px}
 .proposal h3{font-size:.9rem;margin-block-end:8px}
-.diff{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.85rem;line-height:1.6;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;max-block-size:280px;overflow:auto}
-.diff ins{background:#d9f0d0;color:#1d4a17;text-decoration:none;border-block-end:2px solid #6aa45c}
-.diff del{background:#fbe2df;color:#7a2320;text-decoration:line-through}
+.diff{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.85rem;line-height:1.6;background:var(--white);border:1px solid var(--line);border-radius:8px;padding:10px;max-block-size:280px;overflow:auto}
+.diff ins{background:var(--soft-2);color:var(--deep);text-decoration:none;border-block-end:2px solid var(--primary)}
+.diff del{background:var(--soft-2);color:var(--danger);text-decoration:line-through}
 .ai-output pre{max-block-size:360px}
 .facts-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .transcript{list-style:none;padding:0;margin:14px 0;display:grid;gap:10px}
 .transcript li{border-radius:12px;padding:10px 12px;max-inline-size:85%}
 .transcript li p{white-space:pre-wrap;margin-block-start:4px;font-size:.88rem}
-.transcript .interviewer{background:var(--mint)}
-.transcript .me{background:#fff;border:1px solid var(--line);margin-inline-start:auto}
+.transcript .interviewer{background:var(--soft)}
+.transcript .me{background:var(--white);border:1px solid var(--line);margin-inline-start:auto}
 .preserve{white-space:pre-wrap}
 .custom-prompt{border:1px solid var(--line);border-radius:10px;padding:10px;margin-block:10px;display:grid;gap:8px}
-progress{inline-size:100%;block-size:10px;accent-color:var(--teal)}
+progress{inline-size:100%;block-size:10px;accent-color:var(--primary)}
 @media(max-width:720px){.facts-row{grid-template-columns:1fr 1fr}}
 /* Phase 3: languages, welcome, knowledge cards */
-.lang-select{min-height:36px;padding:6px 10px;font-size:.78rem;inline-size:auto;border-radius:8px}
-.welcome{border:2px solid var(--lime)}
+.lang-select{min-height:44px;padding:6px 10px;font-size:.78rem;inline-size:auto;border-radius:8px}
+.welcome{border:2px solid var(--accent)}
 .welcome-steps{list-style:none;display:flex;gap:8px;flex-wrap:wrap;padding:0;margin:0 0 14px;font-size:.76rem;color:var(--muted)}
 .welcome-steps li{border:1px solid var(--line);border-radius:20px;padding:4px 10px}
-.welcome-steps li[aria-current=step]{background:var(--deep);color:#fff;border-color:var(--deep)}
-.welcome-steps li.done{background:var(--mint);color:var(--teal)}
-.privacy-note{background:var(--mint);border-radius:12px;padding:14px 16px}
+.welcome-steps li[aria-current=step]{background:var(--deep);color:var(--white);border-color:var(--deep)}
+.welcome-steps li.done{background:var(--soft);color:var(--primary)}
+.privacy-note{background:var(--soft);border-radius:12px;padding:14px 16px}
 .knowledge summary{cursor:pointer;display:grid;gap:4px;min-block-size:44px}
 .knowledge summary small{color:var(--muted);font-size:.8rem}
 .knowledge-body{margin-block-start:12px}
@@ -60,7 +60,7 @@ progress{inline-size:100%;block-size:10px;accent-color:var(--teal)}
 .subform legend{font-weight:650;font-size:.84rem;padding:0 6px}
 .row-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;align-items:end;padding-block:8px;border-block-end:1px dashed var(--line)}
 .application .card-head{align-items:center}
-.coach-notes blockquote{margin:10px 0;padding:10px 14px;background:#fff;border-inline-start:3px solid var(--teal);border-radius:8px}
+.coach-notes blockquote{margin:10px 0;padding:10px 14px;background:var(--white);border-inline-start:3px solid var(--primary);border-radius:8px}
 .coach-note{margin-block-start:12px}
 .pack-picker{max-inline-size:420px}
 /* Keep the primary CV file picker easy to tap, including its native button. */
@@ -76,7 +76,7 @@ progress{inline-size:100%;block-size:10px;accent-color:var(--teal)}
 .journey-controls .btn{min-block-size:44px}
 
 /* Secondary destinations remain keyboard-accessible without crowding the CV route. */
-.nav-more summary{cursor:pointer;min-block-size:44px;padding:12px 13px;color:#c6dbd4;font-size:.88rem}
+.nav-more summary{cursor:pointer;min-block-size:44px;padding:12px 13px;color:var(--soft);font-size:.88rem}
 .nav-list .nav-button,.mobile-navigation select{min-block-size:44px}
 .journey-steps{padding-inline-start:24px;margin-block:18px}
 .journey-steps li{padding-block:3px}

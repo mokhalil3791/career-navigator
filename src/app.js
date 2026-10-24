@@ -282,6 +282,6 @@ function applyBrandColours() {
   // CSSOM changes are allowed by the CSP (unlike inline style attributes).
   const root = document.documentElement.style;
   if (brand.colors?.deep) root.setProperty('--deep', brand.colors.deep);
-  if (brand.colors?.teal) root.setProperty('--teal', brand.colors.teal);
-  if (brand.colors?.lime) root.setProperty('--lime', brand.colors.lime);
+  if (brand.colors?.primary) root.setProperty('--primary', brand.colors.primary);
+  if (brand.colors?.accent) root.setProperty('--accent', brand.colors.accent);
 }

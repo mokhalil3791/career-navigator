@@ -3,7 +3,11 @@
   "name": "Career Navigator",
   "tagline": "Your next step",
   "footer": "Career Navigator · Your data, your decisions.",
-  "colors": { "deep": "#123e3c", "teal": "#186961", "lime": "#d7eea6" },
+  "colors": {
+    "deep": "#7C2D12",
+    "primary": "#C2410C",
+    "accent": "#FB923C"
+  },
   "siteUrl": "https://mokhalil3791.github.io/career-navigator/",
   "promptLibraryUrl": "https://mokhalil3791.github.io/career-navigator/prompts/",
   "repoUrl": "https://github.com/mokhalil3791/career-navigator"
