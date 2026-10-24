@@ -60,6 +60,7 @@ ${button(html`${icon('plus', 16)}${t('Add education')}`, () => { const id = uid(
     try {
       const bytes = buildCvDocx(ctx.state);
       ctx.download(ctx.state.demo ? 'fictional-example-cv.docx' : 'my-career-cv.docx', new Blob([/** @type {BlobPart} */ (bytes)], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }));
+      ctx.ui.cvDownloaded = true; ctx.rerender();
       ctx.notify(ctx.t('Word file downloaded. It opens in Word, LibreOffice and Google Docs.'));
     } catch (error) { ctx.notify(ctx.t(/** @type {Error} */ (error).message), true); }
   }, { style: 'secondary', disabled: !ctx.state.cv.reviewed, testid: 'export-docx' });

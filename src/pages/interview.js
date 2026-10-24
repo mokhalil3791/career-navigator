@@ -1,3 +1,4 @@
+import { journeyHeading } from '../components/journey.js';
 // @ts-check
 /** Interview practice (FR-INT). Ported from v0.1 renderInterview. */
 import { html, nothing } from 'lit-html';
@@ -16,7 +17,7 @@ export function renderInterview(ctx) {
     ctx.dispatch({ type: 'question', direction, count: questions.length });
     ctx.focusAfterRender('field-interview-answers-' + questions[Math.max(0, Math.min(questions.length - 1, idx + direction))].id);
   };
-  return html`${pageHeading(t('03 / Prepare with purpose'), t('Practise one answer at a time.'), t('Use a real example. Write your answer, reflect, and make one improvement.'), aiButton(ctx, 'interview', t('Practise with AI')))}
+  return html`${journeyHeading(ctx, 'interview', 'Practise an answer using a real example.')}
 ${ctx.services.packPicker ? ctx.services.packPicker(ctx) : nothing}
 <div class="split"><section class="card interview-card"><div class="question-counter"><span class="eyebrow">${t('Question {n} of {total}', { n: idx + 1, total: questions.length })}</span><div class="question-progress" aria-hidden="true">${questions.map((_, i) => html`<span class=${i <= idx ? 'active' : ''}></span>`)}</div></div>
 <h2 class="question-text">${t(q.question)}</h2><p class="question-tip">${t(q.tip)}</p>
@@ -28,5 +29,5 @@ ${ctx.services.voiceInput ? ctx.services.voiceInput(ctx, 'interview.answers.' + 
 <aside class="grid"><section class="card soft"><p class="eyebrow">${t('A simple answer structure')}</p><h3 class="mt-10">${t('Try STAR.')}</h3><div class="star-grid"><div><strong>S</strong><small>${t('Situation')}<br>${t('What was happening?')}</small></div><div><strong>T</strong><small>${t('Task')}<br>${t('What was your goal?')}</small></div><div><strong>A</strong><small>${t('Action')}<br>${t('What did you do?')}</small></div><div><strong>R</strong><small>${t('Result')}<br>${t('What changed?')}</small></div></div></section>
 <section class="card"><h3>${t('Practice, without a score.')}</h3><p class="card-sub">${t('This workspace saves your writing and reflections. It does not rate your language, accent or hiring chances.')}</p><p class="card-sub">${t('For feedback, ask a trusted person or use the optional AI interview.')}</p></section>
 ${ctx.services.knowledgeFor ? ctx.services.knowledgeFor(ctx, 'interview') : nothing}</aside></div>
-${ctx.services.mockInterview ? ctx.services.mockInterview(ctx) : nothing}`;
+`;
 }
