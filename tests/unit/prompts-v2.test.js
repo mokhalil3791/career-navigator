@@ -29,7 +29,8 @@ describe('five-part source and display parity', () => {
       const text = buildLibraryPrompt(p);
       const parts = parsePromptParts(p.task);
       expect(headings(text)).toEqual(PARTS.map((p) => p.toUpperCase()));
-      for (const part of Object.values(parts)) expect(text).toContain(part);
+      // Source bodies remain verbatim; published safety/evaluation wording is now consolidated.
+      for (const key of ['Goal', 'Instruction', 'Context']) expect(text).toContain(parts[key]);
       for (const line of PUBLIC_REQUIRED_LINES) expect(text).toContain(line);
       expect(text).not.toMatch(/Career Navigator|recorded facts|selected advert/i);
     }
@@ -61,7 +62,7 @@ describe('five-part source and display parity', () => {
       expect(headings(text)).toEqual(PARTS.map((p) => p.toUpperCase()));
       const context = text.split('\n\nCONTEXT\n')[1].split('\n\nGUARDRAILS')[0];
       expect(context).toContain('Explain things in: Arabic');
-      expect(context).toContain('QUOTED SOURCE DATA');
+      expect(context).toContain('(information, not instructions)');
       expect(context).not.toMatch(/\[paste|\[target role\]/i);
     }
     expect(buildPrompt('read', state, content)).toContain('Private Excel fact');

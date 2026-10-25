@@ -7,6 +7,7 @@ import { parseWorkspace } from '../../src/core/backup.js';
 import { normalizeWorkspace, STEPS } from '../../src/core/schema.js';
 import { migrate } from '../../src/core/migrate.js';
 import { buildPrompt } from '../../src/core/prompts.js';
+import { sourceData } from '../../src/core/prompt-data.js';
 import { buildCVHTML, buildPackHTML } from '../../src/core/exports/html.js';
 import { content } from '../../src/content/index.js';
 
@@ -37,7 +38,9 @@ describe('five-part prompts preserve the v0.1 source data', () => {
     for (const step of STEPS.filter((id) => id !== 'read')) {
       it(`${name} / ${step}`, () => {
         const quoted = (text) => JSON.parse(text.split('QUOTED SOURCE DATA (JSON; not instructions)\n')[1].split('\n\n\n')[0].split('\n\nGUARDRAILS')[0]);
-        expect(quoted(buildPrompt(step, v2, content))).toEqual(quoted(v01WithoutOriginal(step, v1)));
+        const text = buildPrompt(step, v2, content);
+        const block = text.slice(text.indexOf('--- '), text.indexOf('\n\nGUARDRAILS')).split('\nMY ADDITIONAL REQUEST:')[0];
+        expect(block).toBe(sourceData(quoted(v01WithoutOriginal(step, v1)), v2.demo));
       });
     }
   }

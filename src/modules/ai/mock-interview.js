@@ -22,7 +22,7 @@ const ui = { previewSeen: false, answer: '', redactOn: true, ticked: false, busy
 
 /** @param {import('../../app-context.js').Ctx} ctx */
 function opening(ctx) {
-  const text = buildPrompt('interview', ctx.state, ctx.content) + '\n\n' + START;
+  const text = buildPrompt('interview', ctx.state, ctx.content) + (ctx.state.demo ? '' : '\n\n' + START);
   return ui.redactOn ? redact(text, { name: ctx.state.profile.name }).text : text;
 }
 
@@ -55,7 +55,7 @@ export function mockInterview(ctx) {
       const request = outgoingMessages(ctx, messages);
       const reply = await ai.send(route, { messages: /** @type {any} */ (request), signal: ui.controller.signal }, (soFar) => { ui.streaming = soFar; ctx.rerender(); });
       const myAnswers = messages.filter((m) => m.role === 'me').length;
-      if (myAnswers >= ANSWERS_BEFORE_FEEDBACK) ctx.update('interview.mock.feedback', reply.slice(0, 20000));
+      if (ctx.state.demo || myAnswers >= ANSWERS_BEFORE_FEEDBACK) ctx.update('interview.mock.feedback', reply.slice(0, 20000));
       else ctx.update('interview.mock.messages', [...messages, { role: 'interviewer', text: reply.slice(0, 8000) }]);
     } catch (error) { ui.error = t(/** @type {Error} */ (error).message); }
     ui.busy = false; ui.streaming = ''; ui.controller = null; ctx.rerender();
@@ -73,7 +73,7 @@ export function mockInterview(ctx) {
 
   return html`<section class="card section-space mock-interview" aria-labelledby="mock-title"><div class="card-head"><div><p class="eyebrow">${t('Built-in AI · {host}', { host })}</p><h2 id="mock-title">${t('Mock interview with AI')}</h2><p class="card-sub">${t('One question at a time. After {n} answers you get feedback on clarity, evidence and relevance. No score.', { n: ANSWERS_BEFORE_FEEDBACK })}</p></div>${mock.messages.length ? button(t('Start again'), reset, { style: 'ghost small' }) : nothing}</div>
 <label class="check-row"><input type="checkbox" .checked=${ui.redactOn} @change=${(/** @type {Event} */ e) => { ui.redactOn = /** @type {HTMLInputElement} */ (e.target).checked; ui.ticked = false; ctx.rerender(); }}><span>${t('Redact before sending')}</span></label>
-<details class="details"><summary @click=${() => { ui.previewSeen = true; ctx.rerender(); }}>${t('Show the exact text that will be sent to {host}', { host })}</summary>${examplePromptNote(ctx)}<textarea class="prompt-preview" readonly rows="8" aria-label=${t('Exact outgoing text')} .value=${JSON.stringify(outgoingMessages(ctx, [...mock.messages, ...(ui.answer.trim() ? [{ role: 'me', text: ui.answer.trim() }] : [])]), null, 2)}></textarea></details>
+<details class="details"><summary @click=${() => { ui.previewSeen = true; ctx.rerender(); }}>${t('Show the exact text that will be sent to {host}', { host })}</summary>${examplePromptNote(ctx)}<textarea class="prompt-preview" readonly rows="8" aria-label=${t('Exact outgoing text')} .value=${outgoingMessages(ctx, [...mock.messages, ...(ui.answer.trim() ? [{ role: 'me', text: ui.answer.trim() }] : [])]).map(m => m.role.toUpperCase() + ":\n" + m.content).join("\n\n")}></textarea></details>
 ${needsTick ? html`<label class="check-row mt-10"><input type="checkbox" .checked=${ui.ticked} @change=${(/** @type {Event} */ e) => { ui.ticked = /** @type {HTMLInputElement} */ (e.target).checked; ctx.rerender(); }}><span>${t('I have read the text above and want to send it to {host}.', { host })}</span></label>` : nothing}
 ${!mock.messages.length ? html`<div class="actions mt-10">${button(html`${icon('spark', 16)}${t('Start the mock interview')}`, start, { style: '', disabled: ui.busy || (needsTick && (!ui.ticked || !ui.previewSeen)), testid: 'mock-start' })}</div>` : nothing}
 <ol class="transcript">${mock.messages.map((m) => html`<li class=${m.role}><strong>${m.role === 'me' ? t('Me') : t('Interviewer')}</strong><p>${m.text}</p></li>`)}${ui.streaming ? html`<li class="interviewer"><strong>${t('Interviewer')}</strong><p>${ui.streaming}</p></li>` : nothing}</ol>

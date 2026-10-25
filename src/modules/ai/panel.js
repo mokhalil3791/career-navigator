@@ -183,7 +183,7 @@ async function pasteAnswer(ctx, run) {
 function sharedSummary(ctx, run) {
   const { t } = ctx;
   const job = ctx.state.jobs.find(j => j.id === (run.jobId || ctx.state.selectedJobId));
-  let summary = t('Shared: your recorded profile facts.');
+  let summary = t('Shared: your profile.');
   if (run.id === 'suggest-fields') summary = t('Shared: the CV text you imported.');
   else if (run.id === 'extract-requirements') summary = t('Shared: the “{job}” advert.', { job: job?.title || t('Untitled advert') });
   else if (run.id === 'suggest-evidence') summary = t('Shared: your profile and the advert’s requirements.');

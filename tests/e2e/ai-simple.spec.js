@@ -137,10 +137,11 @@ test('a saved interview requires exact review again after reload and previews ev
   await page.locator('#mock-answer').fill('I checked 12 records.'); await expect(page.getByTestId('mock-send')).toBeDisabled(); expect(calls).toHaveLength(1);
   await page.getByLabel(/I have read the text above/).check(); await expect(page.getByTestId('mock-send')).toBeDisabled();
   await page.locator('.mock-interview summary').click();
-  const outgoing = JSON.parse(await page.locator('.mock-interview .prompt-preview').inputValue());
-  expect(outgoing.at(-1).content).toBe('I checked 12 records.');
+  const outgoing = await page.locator('.mock-interview .prompt-preview').inputValue();
+  expect(outgoing).toMatch(/USER:\nI checked 12 records\.$/);
+  expect(outgoing).not.toContain('\\n');
   await page.getByTestId('mock-send').click(); await expect(page.locator('.transcript .interviewer')).toHaveCount(2);
-  expect(calls.at(-1).body.contents.map(m => m.parts.map(p => p.text).join(''))).toEqual(outgoing.map(m => m.content));
+  expect(calls.at(-1).body.contents.map(m => (m.role === 'model' ? 'ASSISTANT' : 'USER') + ':\n' + m.parts.map(p => p.text).join('')).join('\n\n')).toBe(outgoing);
   await expect(page.locator('.mock-interview .prompt-preview')).toBeVisible();
 });
 

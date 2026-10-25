@@ -522,3 +522,18 @@ Supported / Partly supported / Not shown / Unclear; the prohibition on personal-
 Complete five-part custom templates retain their sections when prepared, with the same mandatory
 safeguards and quoted workspace data. Examples are visible only in demo workspaces; Start my own clears
 all of them. No AI call, automatic acceptance or review approval is implied by a teaching example.
+
+**Prompt assembly cleanup (2026-10-25, maintainer-approved).** Shared protections now occupy their
+five-part sections once: agency in Goal, factuality/privacy/injection protection in Guardrails, and one
+verification instruction in Evaluation. The no-app-verification claim remains explicit. G2, G6/G7 and
+G13 assert the revised wording and exactly one occurrence; none of their required meanings is removed.
+Public source documents/content bodies remain verbatim; builders consolidate their shared safety text.
+Readable labelled source blocks replace JSON serialization, without changing the structured reply schemas
+or proposal acceptance. Embedded section/delimiter lines are marked as data. Repeated user facts remain
+intact; deduplication concerns generated instructions, never the person's source material.
+
+Role placeholders use the first profile target role, then the headline, with an explicit gap if both are
+missing. Sam currently has no target-role entry and therefore uses the headline. Demo question-asking
+instructions use placeholders instead; real workspaces keep the questions. The demo extra request has no
+word limit. Mock interview previews show the exact conversation as readable text; demo feedback uses saved
+practice without asking participants to invent answers. No real AI call or human verification is implied.

@@ -4,7 +4,7 @@
  * They use the same task text (content/prompts/*.md) and the same safeguard lines
  * as the app, so the page and the app cannot drift apart (FR-LIB-4).
  */
-import { PUBLIC_CLOSING, protectPrompt } from './safeguards.js';
+import { safeguardParts } from './safeguards.js';
 import { parsePromptParts, formatPromptParts } from './prompt-parts.js';
 
 /**
@@ -26,7 +26,5 @@ import { parsePromptParts, formatPromptParts } from './prompt-parts.js';
  */
 export function buildLibraryPrompt(prompt) {
   const parts = parsePromptParts(prompt.task);
-  parts.Guardrails = protectPrompt(parts.Guardrails);
-  parts.Evaluation += '\n' + PUBLIC_CLOSING;
-  return formatPromptParts(parts);
+  return formatPromptParts(safeguardParts(parts, { public: true }));
 }

@@ -37,7 +37,7 @@ describe('Sam’s fictional teaching examples', () => {
     ]);
     expect(s.interview.mock.feedback).toMatch(/^Example AI feedback/);
     expect(s.interview.mock.feedback).toMatch(/Please check:$/);
-    expect(s.ai.extra).toBe('Use plain English. Keep each answer under 150 words. Ask me before you assume anything.');
+    expect(s.ai.extra).toBe('Use plain English and ask before you assume anything.');
     expect(s.ai.customPrompts).toHaveLength(1);
     for (const id of draftIds) expect(s.ai.drafts[id]).toMatch(/^EXAMPLE AI REPLY \(fictional\) — this is what a good answer looks like\./);
   });
@@ -76,7 +76,7 @@ describe('Sam’s fictional teaching examples', () => {
     expect(custom.task.match(/^(GOAL|INSTRUCTION|CONTEXT|GUARDRAILS|EVALUATION)$/gm)).toEqual(['GOAL', 'INSTRUCTION', 'CONTEXT', 'GUARDRAILS', 'EVALUATION']);
     const built = buildCustomPrompt(custom, s);
     expect(built.match(/^(GOAL|INSTRUCTION|CONTEXT|GUARDRAILS|EVALUATION)$/gm)).toEqual(['GOAL', 'INSTRUCTION', 'CONTEXT', 'GUARDRAILS', 'EVALUATION']);
-    expect(built).toContain(s.jobs[0].body.replace(/\n/g, '\\n'));
+    expect(built).toContain(s.jobs[0].body);
     expect(built).not.toContain('[paste]');
     for (const line of REQUIRED_LINES) expect(built).toContain(line);
   });

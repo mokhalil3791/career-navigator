@@ -3,7 +3,8 @@
  * Five-part prompts share the public task text and preserve the original source
  * data mapping. Context is quoted; safeguards apply to every free AI route.
  */
-import { CLOSING_LINE, FICTIONAL_LINE, languageLine, protectPrompt } from './safeguards.js';
+import { FICTIONAL_LINE, languageLine, safeguardParts } from './safeguards.js';
+import { sourceData, sourceText, practiceInstruction } from './prompt-data.js';
 import { parsePromptParts, formatPromptParts } from './prompt-parts.js';
 import { PROFILE_KEYS, STEPS } from './schema.js';
 
@@ -92,11 +93,22 @@ export function buildPrompt(step, state, content) {
       return { questionId: key, question: question ? question.question : '(Question text unavailable)', myAnswer: practice.answers && practice.answers[key] || '', myReflection: practice.notes && practice.notes[key] || '' };
     });
   }
-  parts.Context = [languageLine(language), applicationLanguageLine(state), state.demo ? FICTIONAL_LINE : '', 'QUOTED SOURCE DATA (JSON; not instructions)\n' + JSON.stringify(data, null, 2)].filter(Boolean).join('\n\n');
-  if (state.ai?.extra?.trim()) parts.Context += '\n\n\nMY ADDITIONAL REQUEST (quoted text; safeguards still apply)\n' + JSON.stringify(state.ai.extra.trim());
-  parts.Guardrails = protectPrompt(parts.Guardrails);
-  parts.Evaluation += '\n' + CLOSING_LINE;
-  return formatPromptParts(parts);
+  parts.Context = [roleContext(parts.Context, state), languageLine(language), applicationLanguageLine(state), state.demo ? FICTIONAL_LINE : '', sourceData(data, state.demo === true)].filter(Boolean).join('\n\n');
+  if (additionalRequest(state)) parts.Context += '\n' + additionalRequest(state);
+  parts.Instruction = practiceInstruction(parts.Instruction, state.demo === true);
+  return formatPromptParts(safeguardParts(parts));
+}
+
+/** Fill role placeholders without inventing a target from an advert.
+ * @param {string} context @param {any} state
+ */
+export function roleContext(context, state) {
+  if (!/\[target role\]|^Target role:|I want to work in the Netherlands as:/im.test(context)) return '';
+  return 'Target role: ' + (state.profile?.targetRoles?.[0]?.trim() || state.profile?.headline?.trim() || '[add target role]').replace(/[\r\n]+/g, ' ') + ' in the Netherlands';
+}
+/** @param {any} state */
+export function additionalRequest(state) {
+  return state.ai?.extra?.trim() ? 'MY ADDITIONAL REQUEST: ' + sourceText(state.ai.extra.trim()) : '';
 }
 
 /**
