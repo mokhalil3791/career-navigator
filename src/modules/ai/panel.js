@@ -7,6 +7,7 @@
  *  3. Replies stream in with a Stop button. Structured replies become proposals
  *     (accept / edit / reject); free text is an unverified draft.
  */
+import { examplePromptNote } from '../../components/example.js';
 import { html, nothing } from 'lit-html';
 import { live } from 'lit-html/directives/live.js';
 import { button } from '../../components/ui.js';
@@ -222,7 +223,7 @@ ${button(t('Start again with current facts'), () => { ctx.ui.ai = null; openAi(c
 ${share && !direct ? button(t('Copy and open {chat}', { chat: chat.label }), () => handoff(ctx, run, false)) : nothing}</div>
 ${direct && !ready && !downloadNeeded ? html`<p>${t('Finish connecting in Settings → Advanced, or use your free AI chat.')}</p>` : nothing}
 <details class="details ai-exact" ?open=${!!run.previewOpen}><summary @click=${(/** @type {Event} */ e) => { e.preventDefault(); run.previewOpen = !run.previewOpen; if (run.previewOpen) run.previewSeen = true; ctx.rerender(); }}>${t('See the exact text')}</summary>
-<label class="visually-hidden" for="ai-outgoing">${t('Exact outgoing text')}</label><textarea id="ai-outgoing" class="prompt-preview" readonly rows="9" spellcheck="false" .value=${text}></textarea>
+${examplePromptNote(ctx)}<label class="visually-hidden" for="ai-outgoing">${t('Exact outgoing text')}</label><textarea id="ai-outgoing" class="prompt-preview" readonly rows="9" spellcheck="false" .value=${text}></textarea>
 <label class="check-row"><input type="checkbox" .checked=${run.redactOn} @change=${(/** @type {Event} */ e) => { run.redactOn = /** @type {HTMLInputElement} */ (e.target).checked; run.hostTicked = false; ctx.rerender(); }}><span>${t('Redact before sending')}</span></label>
 <p class="field-hint">${run.redactOn ? t('Redaction catches common patterns only. Read the text before sending.') : t('Redaction is off: the text is sent exactly as shown.')}${Object.keys(counts).length ? ' ' + t('Common contact details were hidden.') : ''}</p></details>
 ${needsTick ? html`<label class="check-row mt-10"><input id="ai-host-tick" type="checkbox" ?disabled=${!run.previewSeen} .checked=${run.hostTicked} @change=${(/** @type {Event} */ e) => { run.hostTicked = /** @type {HTMLInputElement} */ (e.target).checked; ctx.rerender(); }}><span>${t('I have read the text above and want to send it to {host}.', { host })}</span></label>` : nothing}

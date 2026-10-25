@@ -146,3 +146,5 @@ body.ai-sheet-open{overflow:hidden}
 }
 
 .prompt-five-parts{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;line-height:1.6;background:var(--soft-2);padding:16px;border-radius:12px;max-height:560px;overflow:auto}.prompt-five-parts strong{color:var(--deep);font-weight:750}
+
+.example-answer,.example-draft,.example-custom{overflow-wrap:anywhere;line-height:1.65;padding:16px;background:var(--soft-2);border-radius:12px}.example-gap{background:var(--soft);color:var(--ink);text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}.example-prompt-note{border-inline-start:3px solid var(--primary);padding-inline-start:10px}.example-answer-note{font-size:.9rem}.example-exchange .review-box{margin-block-start:16px}

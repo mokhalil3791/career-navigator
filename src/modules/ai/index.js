@@ -3,6 +3,7 @@
  * Built-in AI module: adds AI buttons to pages and the AI panel. Every AI
  * route ends in either an unverified draft or proposals the user reviews.
  */
+import { examplePromptNote, exampleText } from '../../components/example.js';
 import { html, nothing } from 'lit-html';
 import { button } from '../../components/ui.js';
 import { icon } from '../../components/icon.js';
@@ -75,10 +76,10 @@ ${f.dutch ? html`<p class="pill ${f.dutch === 'required' ? 'alert' : f.dutch ===
     const add = () => { const id = uid('prompt'); if (ctx.dispatch({ type: 'addRow', path: 'ai.customPrompts', row: { id, title: t('My prompt'), task: '', dataFrom: 'profile' } })) ctx.focusAfterRender('cp-title-' + id); };
     const edit = (/** @type {string} */ id, /** @type {string} */ key) => (/** @type {Event} */ e) => ctx.dispatch({ type: 'editRow', path: 'ai.customPrompts', id, key, value: /** @type {HTMLInputElement} */ (e.target).value });
     return html`<details class="details mt-15"><summary>${t('My own prompts ({n})', { n: state.ai.customPrompts.length })}</summary>
-${state.ai.customPrompts.map((/** @type {any} */ c) => html`<div class="custom-prompt"><div class="field"><label for="cp-title-${c.id}">${t('Name')}</label><input id="cp-title-${c.id}" maxlength="200" .value=${c.title} @input=${edit(c.id, 'title')}></div><div class="field"><label for="cp-task-${c.id}">${t('What should the AI do?')}</label><textarea id="cp-task-${c.id}" rows="3" maxlength="8000" .value=${c.task} @input=${edit(c.id, 'task')}></textarea></div>
+${state.ai.customPrompts.map((/** @type {any} */ c) => html`<div class="custom-prompt"><div class="field"><label for="cp-title-${c.id}">${t('Name')}</label><input id="cp-title-${c.id}" maxlength="200" .value=${c.title} @input=${edit(c.id, 'title')}></div>${state.demo ? html`${examplePromptNote(ctx)}<div class="example-custom preserve">${exampleText(c.task)}</div>` : nothing}<div class="field"><label for="cp-task-${c.id}">${t('What should the AI do?')}</label><textarea id="cp-task-${c.id}" rows="3" maxlength="8000" .value=${c.task} @input=${edit(c.id, 'task')}></textarea></div>
 <div class="field"><label for="cp-data-${c.id}">${t('Include')}</label><select id="cp-data-${c.id}" @change=${edit(c.id, 'dataFrom')}><option value="profile" ?selected=${c.dataFrom === 'profile'}>${t('My profile')}</option><option value="job" ?selected=${c.dataFrom === 'job'}>${t('My profile and selected advert')}</option><option value="cv" ?selected=${c.dataFrom === 'cv'}>${t('My profile and CV draft')}</option></select></div>
 <div class="actions">${button(t('Use'), () => openAi(ctx, { kind: 'custom', id: c.id, title: c.title, page: 'prompts' }), { style: 'small' })}${button(t('Remove'), () => ctx.dispatch({ type: 'removeRow', path: 'ai.customPrompts', id: c.id }), { style: 'ghost small' })}</div></div>`)}
-${button(t('Add my own prompt'), add, { style: 'secondary small' })}<p class="source-note">${t('The safety rules are always added in front of your prompt and cannot be removed.')}</p></details>`;
+${button(t('Add my own prompt'), add, { style: 'secondary small' })}<p class="source-note">${t('The safety rules are always included in your prompt and cannot be removed.')}</p></details>`;
   };
 
   s.mockInterview = mockInterview;

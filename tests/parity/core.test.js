@@ -126,9 +126,14 @@ describe('helpers match v0.1', () => {
       expect(rest).toEqual(v01Content.roles.find((/** @type {any} */ r) => r.id === role.id));
     }
   });
-  it('interview questions and demo are the v0.1 content', () => {
+  it('interview questions and demo facts retain v0.1 parity; only teaching examples are enriched', () => {
     expect(content.interviewQuestions).toEqual(v01Content.interviewQuestions);
-    expect(normalizeWorkspace(content.demo)).toMatchObject(asV2(v01.normalizeWorkspace(v01Content.demo)));
+    const legacy = asV2(v01.normalizeWorkspace(v01Content.demo));
+    const showcase = normalizeWorkspace(content.demo);
+    expect({ ...showcase,
+      interview: { ...showcase.interview, answers: {}, notes: {}, mock: legacy.interview.mock },
+      ai: { ...showcase.ai, extra: '', drafts: legacy.ai.drafts, customPrompts: [] },
+    }).toMatchObject(legacy);
   });
   it('draftCvFromProfile', () => {
     for (const { text } of v01Backups()) {

@@ -1,5 +1,30 @@
 # v1 status by requirement
 
+## Sam showcase (2026-10-25, branch `sam-showcase`)
+
+**Implemented:** sixteen fictional interview answers with reflections, one labelled mock exchange, five
+example AI replies, the supplied extra instruction and a five-part custom prompt. Demo-only teaching
+labels and highlighted gaps make the examples readable without editing them. Unsupported details use
+placeholders under the maintainer's approval; Sam's existing profile, adverts and CV are unchanged.
+Complete custom templates are prepared as five parts with mandatory safeguards and quoted data.
+Developer content hints have moved to `CUSTOMISING.md`. Start my own clears every example.
+
+**Automatically tested:** 422 unit/parity/guardrail tests; core line coverage above the 90% gate; typecheck,
+hosted/single-file builds and content checks. The full local Chromium, desktop WebKit, mobile Chrome and
+mobile Safari suite passed 347 cases with nine existing browser-specific skips. New E2E cases visit all
+sixteen answers and reflections, inspect the five replies and custom prompt, and export the cleared own
+workspace to prove no example remains. Unit tests check exact evidence quotes, approved placeholders,
+neutral/no-score wording, verbatim reflections/custom template and review reset on demo backup import.
+G1–G15 and the G5 fixture are unchanged. Dutch string coverage: 738/738; shell approximately 130 KB gzip.
+Firefox is checked in CI; final CI results are on the PR.
+
+**Agent visual check:** [four 390 px screenshots](reports/sam-showcase/README.md): interview questions 2
+and 6, fit reply and custom prompt. The answers remain editable; teaching copies never approve a CV.
+
+**Verified by a person:** none. The examples are authored fictional material, not actual AI responses or
+verified employment claims. Real-device checks, fluent Dutch review and the five-user observation remain
+pending. No manual release item, runtime dependency, network host or release tag changed.
+
 ## Five-part prompt library (2026-10-25, branch `prompts-v2`)
 
 **Implemented:** eight numbered public/app prompts and a Write your own template, using the supplied
