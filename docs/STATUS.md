@@ -18,6 +18,11 @@ neutral/no-score wording, verbatim reflections/custom template and review reset 
 G1–G15 and the G5 fixture are unchanged. Dutch string coverage: 738/738; shell approximately 130 KB gzip.
 Firefox is checked in CI; final CI results are on the PR.
 
+**CI finding:** Linux WebKit placed the sticky footer at 843.5 px in an 844 px viewport. The ordinary
+layout assertion now includes the exact half-CSS-pixel rounding boundary (≤0.5 rather than <0.5);
+sticky positioning, visibility and toast separation are still required on every step. No axe rule or
+guardrail assertion changed. All new showcase tests passed in the initial five-browser CI run.
+
 **Agent visual check:** [four 390 px screenshots](reports/sam-showcase/README.md): interview questions 2
 and 6, fit reply and custom prompt. The answers remain editable; teaching copies never approve a CV.
 

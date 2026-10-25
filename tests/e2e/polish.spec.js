@@ -58,7 +58,9 @@ test('sticky Back/Next stays at the viewport bottom on every step and toasts sta
         return { position: getComputedStyle(bar).position, bar: bar.getBoundingClientRect().toJSON(), toast: toast.getBoundingClientRect().toJSON(), height: innerHeight };
       });
       expect(layout.position).toBe('sticky');
-      expect(layout.bar.bottom).toBeCloseTo(layout.height, 0);
+      // Scroll extents are integer CSS pixels, but WebKit retains half-pixel layout edges.
+      // Include the rounding boundary; still reject any displacement over half a pixel.
+      expect(Math.abs(layout.bar.bottom - layout.height)).toBeLessThanOrEqual(0.5);
       expect(layout.bar.top).toBeGreaterThan(0);
       expect(layout.toast.bottom).toBeLessThanOrEqual(layout.bar.top - 8);
     }
