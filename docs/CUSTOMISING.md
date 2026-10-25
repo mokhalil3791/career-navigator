@@ -47,6 +47,8 @@ a JSON answer) also sets `output: json`, `schema: <name>` and `library: false`, 
 **Guard rails:** G1 (no scores), G2 (safeguards always present) and G7 (the name never appears) run on every prompt.
 
 ## 3. Add an interview question pack
+
+Coaches can add question sets as JSON files in `content/interview/`.
 **Edit:** `content/interview/<pack>.json`
 
 ```json
@@ -109,3 +111,8 @@ npm test          # must stay green, including tests/guardrails
 npm run build:all # then: npm run serve  →  http://localhost:4174/next/
 ```
 To publish your fork for free, follow [DEPLOY.md](DEPLOY.md).
+
+
+## Add free events
+
+Coaches can add free events in `content/events.json`. Keep dates, locations and links current, and verify that participation is free.

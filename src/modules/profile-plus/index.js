@@ -96,6 +96,6 @@ ${last.length ? html`<ul class="tip-list mt-15">${last.map((c) => html`<li><stro
   s.packPicker = (/** @type {any} */ ctx) => {
     const packs = ctx.content.interviewPacks;
     if (packs.length < 2) return nothing;
-    return html`<div class="field section-space pack-picker"><label for="question-pack">${ctx.t('Question set')}</label><select id="question-pack" @change=${(/** @type {Event} */ e) => { ctx.update('interview.packId', /** @type {HTMLSelectElement} */ (e.target).value); ctx.update('interview.questionIndex', 0); }}>${packs.map((/** @type {any} */ p) => html`<option value=${p.id} ?selected=${ctx.state.interview.packId === p.id}>${ctx.t(p.title)}</option>`)}</select><span class="field-hint">${ctx.t('Coaches can add question sets as JSON files in content/interview/.')}</span></div>`;
+    return html`<div class="field section-space pack-picker"><label for="question-pack">${ctx.t('Question set')}</label><select id="question-pack" @change=${(/** @type {Event} */ e) => { ctx.update('interview.packId', /** @type {HTMLSelectElement} */ (e.target).value); ctx.update('interview.questionIndex', 0); }}>${packs.map((/** @type {any} */ p) => html`<option value=${p.id} ?selected=${ctx.state.interview.packId === p.id}>${ctx.t(p.title)}</option>`)}</select></div>`;
   };
 }

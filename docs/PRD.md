@@ -512,3 +512,13 @@ The wording scan covers prompts and interface prose, not knowledge source materi
 workshop references. Official organisation names and source URLs are preserved. G14 was already assigned
 to workspace URL privacy, so the new wording check is G15. This work changes no workshop/demo fixtures,
 AI network hosts, runtime dependencies, release settings or human-verification checklist entries.
+
+**Sam showcase (2026-10-25, maintainer-approved).** The fictional workspace now contains sixteen
+interview answers/reflections, one labelled mock exchange, five labelled example replies and a complete
+custom prompt. Existing profile, advert and CV facts are unchanged. The maintainer approved replacing
+unsupported claims in the supplied answers with visible placeholders; the verbatim brief and deviations
+are saved in `docs/plans/sam-showcase.md` and `sam-showcase-decisions.md`. Evidence categories remain
+Supported / Partly supported / Not shown / Unclear; the prohibition on personal-status wording remains.
+Complete five-part custom templates retain their sections when prepared, with the same mandatory
+safeguards and quoted workspace data. Examples are visible only in demo workspaces; Start my own clears
+all of them. No AI call, automatic acceptance or review approval is implied by a teaching example.
