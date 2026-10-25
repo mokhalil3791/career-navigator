@@ -14,7 +14,7 @@ export const SCHEMA_VERSION = 2;
 export const MAX_JOBS = 8;
 export const MAX_REQUIREMENTS = 20;
 export const MAX_APPLICATIONS = 60;
-export const STEPS = /** @type {const} */ (['profile', 'search', 'compare', 'fit', 'tailor', 'interview', 'letter']);
+export const STEPS = /** @type {const} */ (['profile', 'search', 'read', 'fit', 'compare', 'tailor', 'interview', 'letter']);
 export const STATUSES = /** @type {const} */ (['supported', 'partial', 'missing', 'unknown']);
 export const PROFILE_KEYS = ['name', 'headline', 'city', 'availability', 'travel', 'about', 'experience', 'education', 'skills', 'languages', 'cvText'];
 export const CV_KEYS = ['headline', 'summary', 'experience', 'education', 'skills', 'languages', 'letter'];
@@ -40,7 +40,7 @@ export function newWorkspace() {
     interview: { questionIndex: 0, answers: {}, notes: {}, packId: 'default', mock: { messages: [], feedback: '' } },
     plan: { roleId: 'custom', targetRole: '', priorities: ['', '', ''], project: '', day30: '', day60: '', day90: '', nextAction: '', nextDate: '', hours: 6, milestoneDates: { day30: '', day60: '', day90: '' }, checkins: [] },
     applications: [],
-    ai: { step: 'profile', language: 'English', extra: '', drafts: { profile: '', search: '', compare: '', fit: '', tailor: '', interview: '', letter: '' }, customPrompts: [] },
+    ai: { step: 'profile', language: 'English', extra: '', drafts: { profile: '', search: '', read: '', compare: '', fit: '', tailor: '', interview: '', letter: '' }, customPrompts: [] },
     coachNotes: [],
     settings: { remember: false, uiLanguage: 'en', applicationLanguage: 'English', simpleLanguage: false, onboarded: false, aiMode: 'copy', aiRouteChosen: false, aiRoute: 'copy', aiChat: '', aiChatUrl: '' },
   };

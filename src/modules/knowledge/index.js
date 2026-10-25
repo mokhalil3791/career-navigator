@@ -22,7 +22,7 @@ function cardView(ctx, card, open = false) {
   return html`<details class="card knowledge" ?open=${open}><summary><span class="eyebrow">${t('Good to know')}</span><strong>${card.title}</strong><small>${card.summary}</small><span>${t('Read more')}</span></summary>
 <div class="knowledge-body">${renderMarkdown(card.body)}</div>
 <p class="source-note"><strong>${t('Sources:')}</strong> ${card.sources.map((s, i) => html`${i ? ' · ' : ''}<a href=${safeUrl(s.url)} target="_blank" rel="noopener noreferrer">${s.title}</a>`)}<br>${t('Last reviewed: {date}', { date: card.lastReviewed })}${card.lang !== ctx.state.settings.uiLanguage ? ' · ' + t('Shown in English until a translation is reviewed.') : ''}</p>
-<p class="source-note">${t('This is general information, not legal, immigration, tax or benefits advice.')} <a href=${safeUrl(report)} target="_blank" rel="noopener noreferrer">${t('Report a wrong fact')}</a></p></details>`;
+<p class="source-note">${t('This is general information, not legal, tax or benefits advice.')} <a href=${safeUrl(report)} target="_blank" rel="noopener noreferrer">${t('Report a wrong fact')}</a></p></details>`;
 }
 
 /** @param {import('../../app-context.js').Ctx} ctx */

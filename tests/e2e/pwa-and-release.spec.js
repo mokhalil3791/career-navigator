@@ -28,7 +28,7 @@ test('journey 5: installable (manifest + service worker), works offline after th
   await page.reload();
   await expect(page.locator('h1')).toBeVisible();
   await navigate(page, 'AI prompt studio', 'prompts');
-  await expect(page.locator('#prompt-preview')).toHaveValue(/CAREER NAVIGATOR/);
+  await expect(page.locator('#prompt-preview')).toHaveValue(/^GOAL/);
   await context.setOffline(false);
 });
 

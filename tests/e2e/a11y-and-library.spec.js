@@ -31,7 +31,7 @@ test.describe('public prompt library', () => {
   test('loads without the app, copies a prompt, and passes axe', async ({ page }) => {
     await page.goto('/prompts/');
     await expect(page.locator('h1')).toHaveText('Free AI career prompts');
-    await expect(page.locator('article.prompt')).toHaveCount(7);
+    await expect(page.locator('article.prompt')).toHaveCount(9);
     await page.locator('#check [data-copy]').click();
     await expect(page.locator('.status')).toContainText(/copied|selected/);
     expect(await seriousViolations(page)).toEqual([]);

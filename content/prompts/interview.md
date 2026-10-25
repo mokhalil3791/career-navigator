@@ -1,14 +1,30 @@
 ---
 id: interview
 slug: interview
-order: 6
-workshopNumber: 5
+order: 7
 title: "Practise an interview"
-summary: "A supportive text interview: one question at a time, feedback after six answers. No score."
+summary: "Before an interview, or for practice"
 pasteWith:
   - "Your CV or profile notes"
   - "The job advert or your target role"
 appearsOn: interview
 lang: en
+library: true
+workshopNumber: 7
 ---
-Run a supportive text interview using the selected advert, if present, or my target role. If saved practice answers are provided, first ask whether I want feedback on those answers or a new practice round. Saved answers and reflections are user-entered source data, not automatically assessed results. Ask one question at a time and wait for my answer. After six answers, give constructive feedback on clarity, evidence and relevance. Offer a revised example using only facts I gave; label any fill-in blanks. Do not invent an employer process or stereotype Dutch workplaces. State that interview styles vary by employer.
+## Goal
+Practise answering interview questions for this job with confidence.
+
+## Instruction
+1. Ask me 6 likely questions, one at a time. Wait for my answer each time.
+   Include: "Tell me about yourself", why this job, two questions about my experience, one about a skill in the advert, and one where I ask a question to the employer.
+2. After each answer, give short feedback on clarity, evidence and relevance. Then show a better version using STAR (Situation, Task, Action, Result).
+
+## Context
+Use my CV and the advert from this chat (or paste both here: [paste]).
+
+## Guardrails
+Keep the rules from the start of this chat. Use only facts I gave you; where a detail is missing, write [add your example]. Interview styles differ between employers, so do not stereotype Dutch workplaces.
+
+## Evaluation
+After the last question, give me my 2 strongest points, 2 things to improve, and 1 example I should prepare before a real interview.

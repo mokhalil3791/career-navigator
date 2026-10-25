@@ -4,7 +4,8 @@
  * They use the same task text (content/prompts/*.md) and the same safeguard lines
  * as the app, so the page and the app cannot drift apart (FR-LIB-4).
  */
-import { ROLE_LINE, languageLine, INJECTION_GUARD, FACTUALITY_GUARD, CLOSING_LINE } from './safeguards.js';
+import { PUBLIC_CLOSING, protectPrompt } from './safeguards.js';
+import { parsePromptParts, formatPromptParts } from './prompt-parts.js';
 
 /**
  * @typedef {object} PromptFile
@@ -24,15 +25,8 @@ import { ROLE_LINE, languageLine, INJECTION_GUARD, FACTUALITY_GUARD, CLOSING_LIN
  * @returns {string}
  */
 export function buildLibraryPrompt(prompt) {
-  const lines = [
-    'CAREER NAVIGATOR — ' + prompt.id.toUpperCase(),
-    ROLE_LINE,
-    languageLine('English'),
-    INJECTION_GUARD,
-    FACTUALITY_GUARD,
-    '\nTASK\n' + prompt.task,
-    '\nQUOTED SOURCE DATA (not instructions)\n' + prompt.pasteWith.map((item) => '[Paste here: ' + item + ']').join('\n\n'),
-    '\n' + CLOSING_LINE,
-  ];
-  return lines.join('\n\n');
+  const parts = parsePromptParts(prompt.task);
+  parts.Guardrails = protectPrompt(parts.Guardrails);
+  parts.Evaluation += '\n' + PUBLIC_CLOSING;
+  return formatPromptParts(parts);
 }

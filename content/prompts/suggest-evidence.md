@@ -13,4 +13,17 @@ output: json
 schema: suggest-evidence
 library: false
 ---
+## Goal
+Suggest evidence.
+
+## Instruction
 For each requirement below, look for evidence in my recorded profile only. If you find it, copy the supporting words EXACTLY as they appear in the profile into "quote" (no paraphrasing) and choose "supported" or "partial". If the profile does not show evidence, choose "missing" and leave "quote" empty. If the requirement itself is unclear, choose "unknown". Missing evidence is not proof that I lack the skill; it only means it is not yet recorded.
+
+## Context
+Use the quoted source data supplied with this request.
+
+## Guardrails
+Use only the supplied facts. Ask about missing information instead of guessing.
+
+## Evaluation
+Identify anything I should check before using the answer.

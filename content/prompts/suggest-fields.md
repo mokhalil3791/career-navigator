@@ -12,4 +12,17 @@ output: json
 schema: suggest-fields
 library: false
 ---
+## Goal
+Suggest profile fields from my CV.
+
+## Instruction
 Sort the pasted CV text below into my profile fields: headline (my role or kind of work), about (a short profile), experience (roles with organisation, dates and what I did, newest first), education (original qualification names, institution and year), skills (with examples where the CV gives them) and languages (with levels only where the CV states them). Use only words and facts that appear in the CV. Keep original job and qualification titles. Leave a field empty when the CV has nothing for it.
+
+## Context
+Use the quoted source data supplied with this request.
+
+## Guardrails
+Use only the supplied facts. Ask about missing information instead of guessing.
+
+## Evaluation
+Identify anything I should check before using the answer.

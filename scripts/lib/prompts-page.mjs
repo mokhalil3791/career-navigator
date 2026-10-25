@@ -11,22 +11,23 @@ export const SITE_URL = 'https://mokhalil3791.github.io/career-navigator/';
 /**
  * @param {import('../../src/core/library.js').PromptFile[]} prompts
  * @param {{ chats: { id: string, label: string, url: string }[] }} providers
+ * @param {import('../../src/core/library.js').PromptFile} [template]
  * @returns {string} complete HTML document
  */
-export function renderPromptsPage(prompts, providers) {
+export function renderPromptsPage(prompts, providers, template) {
   const chats = providers.chats
     .map((c) => ({ ...c, url: safeUrl(c.url) }))
     .filter((c) => c.url)
     .map((c) => `<a href="${E(c.url)}" target="_blank" rel="noopener noreferrer">${E(c.label)}</a>`)
     .join('');
-  const cards = prompts.map((p, i) => {
+  const cards = [...prompts, ...(template ? [template] : [])].map((p, i) => {
     const text = buildLibraryPrompt(p);
     const openLinks = [['ChatGPT', 'chatgpt'], ['Claude', 'claude'], ['Gemini', 'gemini']].map(([label, id]) => `<a class="link" data-open-chat="${id}" data-prompt="text-${E(p.slug)}" target="_blank" rel="noopener noreferrer" hidden>Open in ${label}</a>`).join(' ');
     return `<article class="prompt" id="${E(p.slug)}">
-  <header><span class="num">${i + 1}</span><div><h2>${E(p.title)}</h2><p>${E(p.summary)}</p></div></header>
-  <p class="source-note">Works best inside Career Navigator, which adds your facts for you.</p>
+  <header><span class="num">${p.id === 'template' ? '+' : i + 1}</span><div><h2>${E(p.title)}</h2><p><strong>When to use it:</strong> ${E(p.summary)}</p></div></header>
+  ${i === 0 ? '<p class="start-badge">Start here</p>' : ''}
   <p class="paste"><strong>Paste with it:</strong> ${p.pasteWith.map(E).join(' · ')}</p>
-  <details class="full"><summary>Show the full prompt</summary><pre id="text-${E(p.slug)}" tabindex="0" aria-label="Full prompt: ${E(p.title)}">${E(text)}</pre></details>
+  <div class="full"><pre id="text-${E(p.slug)}" tabindex="0" aria-label="Full prompt: ${E(p.title)}">${E(text).replace(/^(GOAL|INSTRUCTION|CONTEXT|GUARDRAILS|EVALUATION)(?=\n| \()/gm, '<strong class="prompt-label">$1</strong>')}</pre></div>
   <div class="actions"><button type="button" class="btn" data-copy="text-${E(p.slug)}">Copy prompt</button><button type="button" class="btn secondary" data-share="text-${E(p.slug)}" hidden>Share to an app</button><a class="link" href="#${E(p.slug)}">Link to this prompt</a></div>
 <div class="actions">${openLinks}</div><p class="source-note">The prompt is filled in; you press send.</p>
 </article>`;
@@ -48,14 +49,21 @@ export function renderPromptsPage(prompts, providers) {
 <main id="main">
 <a class="btn" href="../">Open Career Navigator</a>
 <h1>Free AI career prompts</h1>
-<p class="lead">Seven prompts for building your CV and finding work in the Netherlands. They work in any free AI chat. Each prompt asks the AI to stick to your real facts and to use evidence instead of scores.</p>
+<p class="lead">Use these in one chat. Start with prompt 1; later prompts reuse what the chat already knows. Each prompt also works on its own.</p>
 <ol class="how">
   <li><strong>Copy</strong> a prompt.</li>
   <li><strong>Open</strong> a free AI chat: <span class="chats">${chats}</span></li>
   <li><strong>Paste</strong> the prompt, then add your CV or the job advert where it says <em>[Paste here]</em>.</li>
   <li><strong>Check</strong> every claim in the answer. AI can make mistakes.</li>
 </ol>
-<p class="note"><strong>Your privacy:</strong> this page saves nothing and sends nothing. AI chats have their own terms. Leave out your BSN, passport or residence-permit details, and anything you would not want stored. To get explanations in another language, change the word <em>English</em> in the third paragraph of the prompt.</p>
+<p class="note"><strong>Your privacy:</strong> this page saves nothing and sends nothing. AI chats have their own terms. Leave out ID numbers, your home address and other private details. To get explanations in another language, add <em>Explain things in: your language</em> to CONTEXT.</p>
+<section class="five-parts" aria-labelledby="five-parts-title"><h2 id="five-parts-title">Five parts of a useful prompt</h2><dl>
+<dt>Goal</dt><dd>Understand what this job asks for.</dd>
+<dt>Instruction</dt><dd>List the requirements and find my evidence.</dd>
+<dt>Context</dt><dd>Here is my CV and the advert.</dd>
+<dt>Guardrails</dt><dd>Use only my facts. Ask if unsure.</dd>
+<dt>Evaluation</dt><dd>End with what I should check myself.</dd>
+</dl></section>
 ${cards}
 <section class="handout" aria-label="Printed handout">
   <img src="../qr/prompts.svg" alt="QR code linking to this page" width="132" height="132">

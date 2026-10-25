@@ -1,14 +1,33 @@
 ---
 id: letter
 slug: letter
-order: 7
-workshopNumber: 6
+order: 8
 title: "Write a motivation letter"
-summary: "A short letter (at most 250 words) built only from your facts, with questions for anything missing."
+summary: "When the advert asks for one"
 pasteWith:
   - "Your CV"
   - "The full text of the job advert"
 appearsOn: cv
 lang: en
+library: true
+workshopNumber: 8
 ---
-Draft an English motivation letter of at most 250 words for the selected advert, based only on recorded facts. Make the tone clear, specific and friendly. Do not invent motivation, employer knowledge, achievements or personal history. Put questions for missing details after the letter, never inside a submission-ready claim. Ask me to check all claims. If no advert is selected, ask for it.
+## Goal
+A short, clear motivation letter for this job.
+
+## Instruction
+Write a letter of at most 250 words:
+- an opening that says which job and why it interests me
+- two short paragraphs linking my evidence to the most important requirements
+- a closing with my availability and an invitation to talk
+Then, after the letter, list questions about any missing details.
+
+## Context
+Use my CV and the advert from this chat (or paste both here: [paste]).
+Why I am interested in this employer, in my own words: [write 1–2 sentences]
+
+## Guardrails
+Keep the rules from the start of this chat. Do not invent motivation, knowledge of the company or achievements. Clear, friendly and direct.
+
+## Evaluation
+End with "Please check:", and tell me which sentence is the weakest and why.
