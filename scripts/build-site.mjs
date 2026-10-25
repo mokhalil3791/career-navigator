@@ -10,7 +10,7 @@
  */
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { ROOT, readPrompts, readProviders } from './lib/content.mjs';
+import { ROOT, readPrompts, readProviders, readAllPrompts } from './lib/content.mjs';
 import { legacyRedirect, redirectScript } from './lib/legacy-redirect.mjs';
 import { renderPromptsPage, renderShortLink } from './lib/prompts-page.mjs';
 
@@ -24,7 +24,7 @@ cpSync(dist, OUT, { recursive: true });
 
 const prompts = readPrompts();
 mkdirSync(join(OUT, 'prompts'), { recursive: true });
-writeFileSync(join(OUT, 'prompts', 'index.html'), renderPromptsPage(prompts, readProviders()));
+writeFileSync(join(OUT, 'prompts', 'index.html'), renderPromptsPage(prompts, readProviders(), readAllPrompts().find((p) => p.id === 'template')));
 cpSync(join(ROOT, 'site', 'prompts'), join(OUT, 'prompts'), { recursive: true });
 
 for (const p of prompts) {

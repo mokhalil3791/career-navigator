@@ -9,6 +9,9 @@
 
 /** Exact phrases that ban scores. They are removed before scanning. */
 export const ALLOWED_BAN_PHRASES = [
+  'No percentage or "match" scores',
+  'No percentage or &quot;match&quot; scores',
+
   'including a numeric match score',
   'rather than percentages',
   'do not assign a fit percentage',

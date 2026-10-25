@@ -1,5 +1,5 @@
-// Parity: prompts and exported files must match v0.1, with exactly ONE approved
-// difference (decision D4): the original workshop prompt is no longer attached.
+// Prompt wording follows the approved five-part library. Source data and exported
+// files retain v0.1 parity; the original workshop attachment remains retired.
 import { describe, expect, it } from 'vitest';
 import { loadV01 } from '../helpers/v01-oracle.js';
 import { v01Backups, hostileWorkspace } from '../helpers/fixtures.js';
@@ -32,11 +32,12 @@ function corpus() {
   return states.map(({ name, v1 }) => ({ name, v1: v01.normalizeWorkspace(v1), v2: normalizeWorkspace(migrate(v1)) }));
 }
 
-describe('buildPrompt equals v0.1 minus the original workshop prompt', () => {
+describe('five-part prompts preserve the v0.1 source data', () => {
   for (const { name, v1, v2 } of corpus()) {
-    for (const step of STEPS) {
+    for (const step of STEPS.filter((id) => id !== 'read')) {
       it(`${name} / ${step}`, () => {
-        expect(buildPrompt(step, v2, content)).toBe(v01WithoutOriginal(step, v1));
+        const quoted = (text) => JSON.parse(text.split('QUOTED SOURCE DATA (JSON; not instructions)\n')[1].split('\n\n\n')[0].split('\n\nGUARDRAILS')[0]);
+        expect(quoted(buildPrompt(step, v2, content))).toEqual(quoted(v01WithoutOriginal(step, v1)));
       });
     }
   }

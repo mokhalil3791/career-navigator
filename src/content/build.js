@@ -4,6 +4,7 @@
  * against its JSON Schema; a bad file is SKIPPED with a visible warning instead
  * of breaking the app, so a fork's typo never locks a user out.
  */
+import { parsePromptParts } from '../core/prompt-parts.js';
 import { validate } from './json-schema.js';
 import { parseFrontmatter } from './frontmatter.js';
 import roleSchema from '../../content/schemas/role.schema.json';
@@ -46,6 +47,7 @@ export function buildContent(files) {
       const { data, body } = parseFrontmatter(raw);
       const errors = validate(promptSchema, data);
       if (errors.length || !body) { warnings.push(`Skipped prompt file ${fileName(path)}: ${errors[0] || 'empty task'}`); continue; }
+      parsePromptParts(body);
       prompts.push({ ...data, task: body });
     } catch (error) {
       warnings.push(`Skipped prompt file ${fileName(path)}: ${/** @type {Error} */ (error).message}`);

@@ -14,5 +14,10 @@
 | G11 `g11-xss-and-csp-lint` | NFR-SEC-1/3: no raw HTML injection; strict CSP |
 | G12 `g12-repo-policy` | NFR-SEC-7, FR-FORK-2: approved runtime dependencies (fewer than 5); AGENTS = CLAUDE; no switch for safety features; no analytics |
 | G13 `g13-ai-task-prompts` | 1/2/4: G1, G2 and G7 for every AI task and custom prompt |
+| G14 `g14-workspace-urls` | Private: workspace content never enters generated chat URLs; public-only prefill stays separate |
+| G15 `g15-neutral-wording` | Dignity: neutral prompts and interface prose; knowledge source material and immutable references are preserved |
+
+The maintainer approved five-part prompt ordering and neutral wording on 2026-10-25. G2/G6/G7/G13
+keep their safety assertions with those limited wording/order changes; the G5 fixture and G14 are unchanged.
 
 If a change makes one of these fail, the change is wrong. Adding a new guardrail is always welcome.

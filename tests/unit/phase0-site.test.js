@@ -4,7 +4,7 @@ import { readPrompts, readProviders } from '../../scripts/lib/content.mjs';
 import { renderPromptsPage, renderShortLink } from '../../scripts/lib/prompts-page.mjs';
 import { patchV01 } from '../../scripts/lib/patch-v01.mjs';
 import { parseFrontmatter } from '../../src/content/frontmatter.js';
-import { v01Html, v01Task } from '../helpers/v01-oracle.js';
+import { v01Html } from '../helpers/v01-oracle.js';
 
 describe('reference v0.1', () => {
   it('is never edited (pinned SHA-256)', () => {
@@ -13,11 +13,11 @@ describe('reference v0.1', () => {
 });
 
 describe('improved prompts (FR-LIB-4, FR-PS-1)', () => {
-  it('there are seven, one per v0.1 step, in v0.1 order', () => {
-    expect(readPrompts().map((p) => p.id)).toEqual(['profile', 'search', 'compare', 'fit', 'tailor', 'interview', 'letter']);
+  it('there are eight, in workshop order', () => {
+    expect(readPrompts().map((p) => p.id)).toEqual(['profile', 'search', 'read', 'fit', 'compare', 'tailor', 'interview', 'letter']);
   });
-  it('each task text is exactly the v0.1 task', () => {
-    for (const p of readPrompts()) expect(p.task, p.id).toBe(v01Task(p.id));
+  it('workshop numbers equal the public order', () => {
+    for (const p of readPrompts()) expect(p.workshopNumber, p.id).toBe(p.order);
   });
   it('slugs are short and URL-safe', () => {
     for (const p of readPrompts()) expect(p.slug).toMatch(/^[a-z]{2,12}$/);
@@ -40,7 +40,7 @@ describe('prompt library page (FR-LIB)', () => {
   });
   it('links free AI chats and escapes everything', () => {
     for (const c of readProviders().chats) expect(html).toContain(c.label.replace('&', '&amp;'));
-    expect(renderPromptsPage([{ id: 'x', slug: 'x', order: 1, title: '<b>', summary: '"', pasteWith: ['<i>'], task: '<script>' }], { chats: [{ id: 'bad', label: 'Bad', url: 'javascript:alert(1)' }] }))
+    expect(renderPromptsPage([{ id: 'x', slug: 'x', order: 1, title: '<b>', summary: '"', pasteWith: ['<i>'], task: readPrompts()[0].task.replace('Get a clear', '<script>Get a clear') }], { chats: [{ id: 'bad', label: 'Bad', url: 'javascript:alert(1)' }] }))
       .not.toMatch(/<script>|<b>|<i>|javascript:/);
   });
   it('short links redirect to the right anchor', () => {

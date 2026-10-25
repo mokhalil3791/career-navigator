@@ -1,5 +1,32 @@
 # v1 status by requirement
 
+## Five-part prompt library (2026-10-25, branch `prompts-v2`)
+
+**Implemented:** eight numbered public/app prompts and a Write your own template, using the supplied
+[source text](prompts/library-v2.md). Every content prompt has Goal, Instruction, Context, Guardrails and
+Evaluation; invalid structure fails automated checks. Public cards explain the five parts, show when to use
+each prompt, style its labels and copy the exact displayed text. App prompts fill Context with quoted
+workspace data and the chosen explanation/application languages. JSON reply shapes and proposal handling
+are unchanged. New interface strings have Dutch translations, awaiting fluent review.
+
+**Approved safety interpretation:** the source document and content bodies retain the supplied wording.
+Builders add standalone safeguards, with Context before Guardrails. G2/G6/G7/G13 wording/order assertions
+reflect that approval; their safety checks remain. Existing G14 (workspace URL privacy) is unchanged; G15
+checks neutral prompt/interface wording. Knowledge source material, official names/URLs and immutable
+workshop references remain outside that scan. No dependencies, G5 fixture or manual checklist changed.
+
+**Automatically tested:** 415 unit/parity/guardrail tests; core coverage exceeds the 90% line gate; typecheck,
+hosted/single-file builds, 732/732 Dutch string coverage and a roughly 124 KB gzipped shell. The full local
+Chromium, desktop WebKit, mobile Chrome and mobile Safari run passed 339 cases with nine existing
+browser-specific skips. Firefox is checked in CI. Final CI status is reported on the PR.
+
+**Agent visual check:** [public page at 390 and 1366 px](reports/prompts-v2/README.md), including first-prompt
+and full-page captures. No horizontal overflow. The printed prompt index still fits one A4 page.
+
+**Verified by a person:** none. Provider replies remain mocked; real chat quality, fluent Dutch review and
+the five-user workshop/usability test remain pending. No release tag or deployment setting changed.
+
+
 ## Phone polish (2026-10-24, branch `v1-polish`)
 
 **Implemented:** one welcome action pair, no duplicate example action during demo use; a single-row phone

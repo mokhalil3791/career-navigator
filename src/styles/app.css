@@ -144,3 +144,5 @@ body.ai-sheet-open{overflow:hidden}
   .notice{bottom:calc(var(--journey-bar-height, 0px) + 12px);max-width:calc(100vw - 32px)}
   html{scroll-padding-bottom:calc(var(--journey-bar-height, 0px) + 12px)}
 }
+
+.prompt-five-parts{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;line-height:1.6;background:var(--soft-2);padding:16px;border-radius:12px;max-height:560px;overflow:auto}.prompt-five-parts strong{color:var(--deep);font-weight:750}

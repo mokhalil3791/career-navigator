@@ -65,3 +65,13 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 30px;font-size:.78rem;color:
 }
 
 @media print{main>.btn,.prompt>.source-note{display:none!important}}
+
+.five-parts{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--white)}
+.five-parts dl{display:grid;grid-template-columns:100px 1fr;gap:8px 12px;margin-bottom:0}
+.five-parts dt,.prompt-label{font-weight:750;color:var(--deep)}
+.five-parts dd{margin:0}
+.start-badge{display:inline-block;background:var(--soft);color:var(--deep);font-weight:700;padding:4px 10px;border-radius:6px}
+.prompt pre{font-family:inherit;font-size:.92rem;line-height:1.6;max-height:560px}
+.prompt .actions>[data-copy]{min-width:160px}
+@media(max-width:480px){.prompt .actions>[data-copy]{width:100%}}
+@media print{.five-parts,.start-badge,#template{display:none!important}}

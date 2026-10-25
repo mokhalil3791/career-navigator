@@ -191,7 +191,7 @@ function sharedSummary(ctx, run) {
   else if (['compare', 'search'].includes(run.id)) summary = t('Shared: your profile and saved adverts.');
   else if (['tailor-cv', 'tailor', 'letter'].includes(run.id)) summary = t('Shared: your profile, CV draft and the “{job}” advert.', { job: job?.title || t('Untitled advert') });
   else if (run.id === 'interview') summary = t('Shared: your profile, target advert and saved interview practice.');
-  else if (run.id === 'fit' && job) summary = t('Shared: your profile and the “{job}” advert.', { job: job.title });
+  else if (['read', 'fit'].includes(run.id) && job) summary = t('Shared: your profile and the “{job}” advert.', { job: job.title });
   else if (run.kind === 'custom') {
     const from = ctx.state.ai.customPrompts.find(c => c.id === run.id)?.dataFrom;
     if (from === 'cv') summary = t('Shared: your profile and CV draft.');

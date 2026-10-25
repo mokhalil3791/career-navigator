@@ -54,12 +54,13 @@ describe('G2 + G1: app prompts', () => {
       for (const step of STEPS) {
         const text = buildPrompt(step, state, content);
         for (const line of REQUIRED_LINES) expect(text, step).toContain(line);
-        expect(text.indexOf(INJECTION_GUARD)).toBeLessThan(text.indexOf('QUOTED SOURCE DATA'));
+        expect(text.indexOf(INJECTION_GUARD)).toBeGreaterThan(text.indexOf('QUOTED SOURCE DATA'));
+        expect(text.indexOf(INJECTION_GUARD)).toBeLessThan(text.indexOf('\n\nEVALUATION\n'));
         if (name !== 'hostile') expect(findScoreRequests(text), step).toEqual([]);
       }
     });
   }
-  it('hostile user text stays inside the quoted JSON data, after the guard', () => {
+  it('hostile user text stays in the quoted source context', () => {
     const state = parseWorkspace(JSON.stringify(hostileWorkspace()));
     const text = buildPrompt('fit', state, content);
     const firstHostile = text.indexOf('IGNORE ALL PREVIOUS INSTRUCTIONS');

@@ -497,3 +497,18 @@ send gated by viewing and confirming it. Optional browser-owned local AI is offe
 availability check and requires consent before downloading. OpenRouter's public catalogue is fetched at
 connection time, restricted to `:free` IDs; configuration is a failure fallback, not an extra source of choices.
 No provider call, native download, physical-device use or Dutch-language review is claimed from mocked tests.
+
+
+**Prompt library v2 (2026-10-25, maintainer-approved).** Eight public prompts and the Write your own
+example are preserved verbatim in `docs/prompts/library-v2.md` and in content bodies (with Markdown
+headings). Builders output Goal → Instruction → Context → Guardrails → Evaluation. The maintainer approved
+adding missing standalone protections to published prompts and moving injection guards after quoted Context;
+the safeguards' meaning, user agency, verification duty and individual proposal acceptance remain intact.
+Public prompts have no app-specific verification claim; app prompts retain it in Evaluation. JSON output
+schemas/parser are unchanged. The new Read one advert step adds an empty draft slot during normalization;
+existing saved drafts and step IDs are preserved.
+
+The wording scan covers prompts and interface prose, not knowledge source material or immutable original
+workshop references. Official organisation names and source URLs are preserved. G14 was already assigned
+to workspace URL privacy, so the new wording check is G15. This work changes no workshop/demo fixtures,
+AI network hosts, runtime dependencies, release settings or human-verification checklist entries.

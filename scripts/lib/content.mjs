@@ -3,6 +3,7 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
+import { parsePromptParts } from '../../src/core/prompt-parts.js';
 import { parseFrontmatter } from '../../src/content/frontmatter.js';
 
 export const ROOT = fileURLToPath(new URL('../../', import.meta.url));
@@ -26,6 +27,7 @@ export function readAllPrompts() {
     .filter((name) => name.endsWith('.md'))
     .map((name) => {
       const { data, body } = parseFrontmatter(readFileSync(join(dir, name), 'utf8'));
+      parsePromptParts(body);
       return /** @type {any} */ ({ ...data, task: body });
     })
     .sort((a, b) => a.order - b.order);

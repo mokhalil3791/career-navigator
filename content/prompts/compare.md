@@ -1,14 +1,33 @@
 ---
 id: compare
 slug: compare
-order: 3
-workshopNumber: none
-title: "Compare my adverts"
-summary: "Compare several job adverts you pasted against your facts, requirement by requirement. No fit percentage."
+order: 5
+title: "Compare adverts"
+summary: "When you have two or more"
 pasteWith:
   - "Your CV or profile notes"
   - "Two or more job adverts (copy the full text)"
 appearsOn: jobs
 lang: en
+library: true
+workshopNumber: 5
 ---
-Compare only the job adverts supplied below against my recorded facts. For each advert list requirement, exact profile evidence, Supported / Partly supported / Not shown / Unclear, and a question or next action. Missing evidence is not proof that I lack a skill. Explain tradeoffs and suggest an order for me to review, with reasons; do not assign a fit percentage or make a hiring decision.
+## Goal
+Decide which adverts to focus on first.
+
+## Instruction
+1. Make one table: rows are the main requirements, columns are the adverts, and each cell shows my status (Supported, Partly supported, Not shown, Unclear).
+2. For each advert, give: my biggest strength, my biggest gap, the Dutch requirement, and practical points (hours, location, contract).
+3. Suggest an order to apply in, with reasons.
+
+## Context
+Use my CV from this chat. The adverts:
+[Advert 1: paste]
+[Advert 2: paste]
+[Advert 3: paste, optional]
+
+## Guardrails
+Keep the rules from the start of this chat. No percentages or rankings by score. The choice is mine.
+
+## Evaluation
+End with what I should check before applying to the first advert.
