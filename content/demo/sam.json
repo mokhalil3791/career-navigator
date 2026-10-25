@@ -255,7 +255,7 @@
   "ai": {
     "step": "profile",
     "language": "English",
-    "extra": "Use plain English. Keep each answer under 150 words. Ask me before you assume anything.",
+    "extra": "Use plain English and ask before you assume anything.",
     "drafts": {
       "profile": "",
       "search": "",

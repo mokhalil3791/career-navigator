@@ -21,8 +21,8 @@ describe('G1/G2/G7 for structured tasks', () => {
       const s = { ...state, profile: { ...state.profile, name: 'Zq7-Name-Sentinel' } };
       const prompts = [...Object.keys(SCHEMAS).map((id) => buildTaskPrompt(id, s, content)), buildCustomPrompt({ title: 'Mine', task: 'Help me', dataFrom: 'cv' }, s)];
       for (const text of prompts) {
-        for (const line of REQUIRED_LINES) expect(text).toContain(line);
-        expect(text.indexOf(INJECTION_GUARD)).toBeGreaterThan(text.indexOf('QUOTED SOURCE DATA'));
+        for (const line of REQUIRED_LINES) expect(text.split(line).length - 1, line).toBe(1);
+        expect(text.indexOf(INJECTION_GUARD)).toBeGreaterThan(text.indexOf('(information, not instructions)'));
         expect(text.indexOf(INJECTION_GUARD)).toBeLessThan(text.indexOf('\n\nEVALUATION\n'));
         expect(text).not.toContain('Zq7-Name-Sentinel');
         if (name !== 'hostile') expect(findScoreRequests(text)).toEqual([]);

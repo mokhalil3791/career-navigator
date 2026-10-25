@@ -53,8 +53,8 @@ describe('G2 + G1: app prompts', () => {
     it(name + ': safeguards present, injection data quoted after the guard, no score request', () => {
       for (const step of STEPS) {
         const text = buildPrompt(step, state, content);
-        for (const line of REQUIRED_LINES) expect(text, step).toContain(line);
-        expect(text.indexOf(INJECTION_GUARD)).toBeGreaterThan(text.indexOf('QUOTED SOURCE DATA'));
+        for (const line of REQUIRED_LINES) expect(text.split(line).length - 1, step + ': ' + line).toBe(1);
+        expect(text.indexOf(INJECTION_GUARD)).toBeGreaterThan(text.indexOf('(information, not instructions)'));
         expect(text.indexOf(INJECTION_GUARD)).toBeLessThan(text.indexOf('\n\nEVALUATION\n'));
         if (name !== 'hostile') expect(findScoreRequests(text), step).toEqual([]);
       }
@@ -64,6 +64,6 @@ describe('G2 + G1: app prompts', () => {
     const state = parseWorkspace(JSON.stringify(hostileWorkspace()));
     const text = buildPrompt('fit', state, content);
     const firstHostile = text.indexOf('IGNORE ALL PREVIOUS INSTRUCTIONS');
-    expect(firstHostile).toBeGreaterThan(text.indexOf('QUOTED SOURCE DATA'));
+    expect(firstHostile).toBeGreaterThan(text.indexOf('(information, not instructions)'));
   });
 });

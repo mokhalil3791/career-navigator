@@ -3,6 +3,7 @@ import { navigate, loadDemo } from './navigation.js';
 import { readAllPrompts, readPrompts } from '../../scripts/lib/content.mjs';
 import { buildLibraryPrompt } from '../../src/core/library.js';
 import { parsePromptParts } from '../../src/core/prompt-parts.js';
+import { practiceInstruction } from '../../src/core/prompt-data.js';
 
 async function clipboardMock(page) {
   await page.addInitScript(() => {
@@ -45,8 +46,8 @@ test('app uses the same eight numbered titles and instructions with personal con
     await tab.click();
     const text = await page.locator('#prompt-preview').inputValue();
     const parts = parsePromptParts(prompt.task);
-    expect(text).toContain(parts.Instruction);
-    expect(text).toContain('QUOTED SOURCE DATA');
+    expect(text).toContain(practiceInstruction(parts.Instruction, true));
+    expect(text).toContain('(information, not instructions)');
     expect(text).not.toMatch(/\[paste|\[target role\]/i);
     await expect(page.locator('section.card .prompt-five-parts strong')).toHaveText(['GOAL', 'INSTRUCTION', 'CONTEXT', 'GUARDRAILS', 'EVALUATION']);
     await page.getByTestId('studio-copy-open').click();

@@ -1,5 +1,30 @@
 # v1 status by requirement
 
+## Prompt assembly cleanup (2026-10-25, branch `prompt-assembly`)
+
+**Implemented:** shared safety wording is consolidated into the appropriate five-part sections; target
+roles are filled from the profile; CVs, adverts, drafts and interview practice appear as readable labelled
+data with real line breaks. Sam uses gap placeholders instead of question-and-answer instructions, and
+his additional request no longer limits a CV to 150 words. The panel says “Shared: your profile. Your
+name is hidden.” when redaction is enabled. Mock-interview previews retain every outgoing message as
+readable text. JSON reply schemas, parsing and individual proposal acceptance are unchanged.
+
+**Automatically tested:** 428 unit/parity/guardrail tests, core line coverage above 90%, type checking,
+hosted/single-file builds, 738/738 Dutch string coverage and a roughly 131 KB gzipped shell. Tests require
+one occurrence of every shared safeguard, one checking instruction, real source newlines, filled target
+roles, demo/own-workspace differences, source delimiter isolation, and exact preview-to-clipboard parity.
+The existing nine-backup source-data parity checks now compare readable source blocks against the same
+v0.1 inputs. G2/G6/G7/G13 expected wording/markers are updated and occurrence checks strengthened; the
+G5 fixture and other guardrails are unchanged. Final browser results and the full generated Sam profile
+prompt are in the PR description.
+
+**Local browser results:** Chromium and mobile Chrome passed 179 cases with one existing skip. Local
+WebKit exited before opening a page; reinstalling its browser bundle reports a missing `libsharpyuv.dll`.
+This is not a passing Safari check. Desktop/mobile Safari and Firefox are covered by CI.
+
+**Verified by a person:** none. No real AI provider was used; the fluent Dutch review, physical-device
+checks and five-user observation remain pending. No manual release item or release tag changed.
+
 ## Sam showcase (2026-10-25, branch `sam-showcase`)
 
 **Implemented:** sixteen fictional interview answers with reflections, one labelled mock exchange, five
