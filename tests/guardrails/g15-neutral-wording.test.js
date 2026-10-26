@@ -38,3 +38,7 @@ it('G15: every prompt and English/Dutch interface string uses neutral wording', 
 it('G15 detects every prohibited term, including hyphenated variants', () => {
   for (const text of ['refugee', 'asylum', 'status holder', 'statushouder', 'vluchteling', 'immigration', 'residence permit', 'work authorisation', 'residence-permit']) expect(text).toMatch(banned);
 });
+
+it('G15 includes the Career Kit HTML and script in its static-site scan', () => {
+  expect(allTextFiles(['site'])).toEqual(expect.arrayContaining(['site/kit/index.html', 'site/kit/kit.js']));
+});

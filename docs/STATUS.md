@@ -1,5 +1,32 @@
 # v1 status by requirement
 
+## Career Kit workshop publication (2026-10-26)
+
+The supplied Data & AI Career Kit is published at `/kit/`, including the printed
+`/kit/#example2` destination and all six fictional emails. `/p/kit/` and `/p/ex2/`
+redirect to it. The app Tools group, 90-day plan, public prompt footer and printed
+handout link to the kit; the handout includes the Exercise 2 QR.
+
+Scripts/styles are local under a strict CSP. The hosted service worker caches the
+kit and serves its own page offline. Personal plans stay in memory unless the user
+opts into device saving; switching saving off deletes that kit's saved data.
+Approved wording adjustments preserve the supplied figures as “out of 100” and
+report exercise checks passed. Market claims retain hidden TODO verification notes;
+publication does not mean those claims have been independently verified.
+
+**Automatically tested:** G15 explicitly includes the kit; existing guardrails and
+G5 are preserved. Browser tests cover all four hash tabs, six emails, all five prompt
+Copy buttons, six role plans and dated day 30/60/90 exports, opt-in saving, no overflow
+at 360 px, axe serious/critical issues, same-origin requests, short links, app links,
+and independent decoding of both SVG QR codes. The QR decoder (`jsqr`) is a development
+only test dependency, never shipped to browsers. Chromium tests also reload the kit
+offline after a direct first visit. The handout still prints on one A4 page.
+
+**Verified by a person:** none. Physical-device scanning, workshop use and market-source
+review remain manual; no release checklist item has been ticked. CI and live deployment
+results are recorded in the PR and delivery report.
+
+
 ## Prompt assembly cleanup (2026-10-25, branch `prompt-assembly`)
 
 **Implemented:** shared safety wording is consolidated into the appropriate five-part sections; target

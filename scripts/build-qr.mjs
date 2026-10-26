@@ -10,7 +10,7 @@ import QRCode from 'qrcode';
 import { ROOT } from './lib/content.mjs';
 import { SITE_URL } from './lib/prompts-page.mjs';
 
-const targets = { app: SITE_URL, prompts: SITE_URL + 'prompts/' };
+const targets = { app: SITE_URL, prompts: SITE_URL + 'prompts/', kit: SITE_URL + 'kit/', ex2: SITE_URL + 'kit/#example2' };
 mkdirSync(join(ROOT, 'assets', 'qr'), { recursive: true });
 for (const [name, url] of Object.entries(targets)) {
   const svg = await QRCode.toString(url, { type: 'svg', errorCorrectionLevel: 'M', margin: 2, color: { dark: '#123e3cff', light: '#ffffffff' } });

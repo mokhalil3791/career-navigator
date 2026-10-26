@@ -71,7 +71,7 @@ ${cards}
 </section>
 <p class="more">Want to keep your work in one place? Try the free <a href="../">Career Navigator workspace</a>: it runs in your browser, with no account.</p>
 </main>
-<footer>Career Navigator is an independent, open-source tool. No employer or partner endorsement is implied. Prompts © Career Navigator contributors, <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer">CC BY 4.0</a>.</footer>
+<footer><a href="../kit/">Career Kit</a> · Career Navigator is an independent, open-source tool. No employer or partner endorsement is implied. Prompts © Career Navigator contributors, <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer">CC BY 4.0</a>.</footer>
 <script src="./prompts.js"></script>
 </body>
 </html>
@@ -81,8 +81,8 @@ ${cards}
 /**
  * A tiny redirect page for short slide URLs such as /p/cv.
  * @param {string} slug
+ * @param {string} [target]
  */
-export function renderShortLink(slug) {
-  const target = '../../prompts/#' + encodeURIComponent(slug);
+export function renderShortLink(slug, target = '../../prompts/#' + encodeURIComponent(slug)) {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="referrer" content="no-referrer"><meta http-equiv="refresh" content="0; url=${E(target)}"><title>Career Navigator prompt</title></head><body><p><a href="${E(target)}">Open the prompt</a></p></body></html>\n`;
 }
