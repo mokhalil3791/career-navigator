@@ -23,7 +23,10 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET' || url.origin !== self.location.origin) return;
   if (request.mode === 'navigate') {
     // Network first for the page, so updates arrive; cached page when offline.
-    event.respondWith(fetch(request).catch(() => caches.match(new URL('./', self.registration.scope).href).then((r) => r || caches.match('index.html'))));
+    event.respondWith(fetch(request).catch(async () =>
+      await caches.match(request, { ignoreSearch: true }) ||
+      await caches.match(new URL('./', self.registration.scope).href) ||
+      await caches.match('index.html')));
     return;
   }
   // Cache first for versioned assets; lazy files (pdf.js, WebLLM library) are cached on first use.

@@ -92,7 +92,7 @@ test('example remains one click away after welcome; comparison and writing tabs 
 
 test('workshop handout has both links, no scripts, passes axe and prints on one A4 page', async ({ page, browserName }) => {
   await page.goto('/handout/');
-  await expect(page.locator('.qr-pair img')).toHaveCount(2);
+  await expect(page.locator('.qr-pair img')).toHaveCount(3);
   await expect(page.locator('script')).toHaveCount(0);
   expect(seriousAxe(await new AxeBuilder({ page }).analyze())).toEqual([]);
   if (browserName === 'chromium' && !test.info().project.use.isMobile) {

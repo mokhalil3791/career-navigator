@@ -34,6 +34,16 @@ for (const p of prompts) {
 
 cpSync(join(ROOT, 'assets', 'qr'), join(OUT, 'qr'), { recursive: true });
 cpSync(join(ROOT, 'site', 'handout'), join(OUT, 'handout'), { recursive: true });
+cpSync(join(ROOT, 'site', 'kit'), join(OUT, 'kit'), { recursive: true });
+for (const [slug, target] of Object.entries({ kit: '../../kit/', ex2: '../../kit/#example2' })) {
+  mkdirSync(join(OUT, 'p', slug), { recursive: true });
+  writeFileSync(join(OUT, 'p', slug, 'index.html'), renderShortLink(slug, target));
+}
+// These static pages are assembled after Vite. Add their files only to the hosted
+// worker, so a standalone dist build never tries to cache files it does not have.
+const swPath = join(OUT, 'sw.js');
+writeFileSync(swPath, readFileSync(swPath, 'utf8').replace(/const PRECACHE = (\[[^;]+\]);/, (_match, list) =>
+  'const PRECACHE = ' + JSON.stringify([...JSON.parse(list), 'kit/', 'kit/index.html', 'kit/kit.js', 'kit/kit.css']) + ';'));
 
 mkdirSync(join(OUT, 'next'), { recursive: true });
 writeFileSync(join(OUT, 'next', 'index.html'), legacyRedirect());
