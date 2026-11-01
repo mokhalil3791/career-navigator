@@ -87,6 +87,10 @@ endorses it, and it makes no hiring decisions. It does not give legal, immigrati
 - [Deploy your own copy](docs/DEPLOY.md) to GitHub Pages without a command line.
 - [Ready-made prompts for AI coding assistants](starter-prompts/).
 
+## Next level: build your own job-search agent
+
+Ready to go further? [**Career Navigator Agent — Take-Home PRD**](docs/next-level/PRD-agent.md) shows how to build a private agent on your own laptop with Claude Code, Codex or Gemini CLI. It remembers your profile, checks allowed job sources every day, and prepares truthful applications. It never sends anything without your approval. Build it in six evenings, one level at a time. Your copy must be a **private** repository, because it holds your personal data.
+
 ## For developers
 
 Read [`docs/PRD.md`](docs/PRD.md), [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) and [`AGENTS.md`](AGENTS.md). Privacy: [`docs/PRIVACY.md`](docs/PRIVACY.md).
