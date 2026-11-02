@@ -180,5 +180,51 @@ footer{padding-block:24px 48px;border-top:1px solid var(--line);font-size:.85rem
 [data-kit-style="kit-style-10"]{margin-top:-6px}
 [data-kit-style="kit-style-11"]{justify-content:flex-start;gap:6px}
 
+/* Exercise 2 team workspace: unframed sections with border separators and blue accents. */
+.ws{display:flex;flex-direction:column;gap:14px;min-width:0;border-top:3px solid var(--blue);padding-top:18px}
+.ws+.ws{border-top-width:1px;border-top-color:var(--line)}
+.ws h4{font-family:var(--display);font-size:1.05rem;font-weight:600;margin:0;color:var(--blue)}
+.ws-eyebrow{color:var(--blue)}
+.ws-review{margin-top:8px}
+.ws fieldset{min-width:0;margin:0;padding:0;border:0}
+.ws legend{font-weight:800;font-size:.95rem;padding:0;margin-bottom:8px;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.ws-two,.ws-criteria,.ws-canvas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.ws-three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:560px){.ws-three{grid-template-columns:1fr}}
+@media (max-width:520px){.ws-two,.ws-criteria,.ws-canvas{grid-template-columns:1fr}}
+.ws-roles{display:flex;flex-wrap:wrap;gap:8px}
+.ws-roles button{font:700 .95rem var(--body);background:transparent;color:var(--blue);border:2px solid var(--blue);border-radius:999px;padding:9px 18px;cursor:pointer;min-height:44px}
+.ws-roles button[aria-pressed="true"]{background:var(--blue);color:var(--bg)}
+.ws-task{border-left:4px solid var(--blue);background:var(--blue-tint);padding:10px 14px;border-radius:0 8px 8px 0;overflow-wrap:anywhere}
+.ws-reminder{font-weight:700;color:var(--blue)}
+.copy.blue{background:var(--blue);color:var(--bg)}
+.copy.ghost.blue{background:transparent;color:var(--blue);border:2px solid var(--blue)}
+.copy.blue.done{background:var(--ok);color:var(--surface)}
+.ws-note{background:var(--blue-tint);color:var(--ink);border-radius:8px;padding:8px 12px;font-size:.9rem}
+.ws-rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px;font-size:.93rem}
+.ws-totals{font:700 1.05rem var(--display);color:var(--blue);background:var(--blue-tint);border-radius:8px;padding:10px 14px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.ws-emails{display:flex;flex-direction:column}
+.ws-email{border-top:1px solid var(--line)!important;padding:14px 0!important;display:flex;flex-direction:column;gap:12px}
+.ws-email details>summary{font-size:.92rem}
+.ws-orig{font-size:.93rem;overflow-wrap:anywhere}
+.ws-ref{margin:0;display:grid;gap:6px;font-size:.9rem}
+.ws-ref div{display:grid;grid-template-columns:minmax(0,9rem) minmax(0,1fr);gap:8px}
+.ws-ref dt{font-weight:700;color:var(--muted)}
+.ws-ref dd{margin:0;overflow-wrap:anywhere}
+@media (max-width:480px){.ws-ref div{grid-template-columns:1fr;gap:0}}
+.ws-crit{display:flex;flex-direction:column;gap:6px;min-width:0;border-left:4px solid var(--line);padding-left:10px}
+.ws-crit[data-state="pass"]{border-left-color:var(--ok)}
+.ws-crit[data-state="fail"]{border-left-color:var(--bad)}
+.ws-compare,.ws-summary{margin:0;display:grid;gap:8px}
+.ws-compare div,.ws-summary div{display:grid;grid-template-columns:minmax(0,11rem) minmax(0,1fr);gap:10px;border-bottom:1px solid var(--line);padding-bottom:8px}
+.ws-compare dt,.ws-summary dt{font-weight:700;color:var(--muted)}
+.ws-compare dd,.ws-summary dd{margin:0;overflow-wrap:anywhere;white-space:pre-wrap}
+.ws-summary dd{font-weight:700}
+@media (max-width:480px){.ws-compare div,.ws-summary div{grid-template-columns:1fr;gap:2px}}
+.ws-target{scroll-margin-top:72px}
+.ws-target:focus-visible,.ws-target:focus{outline:3px solid var(--blue);outline-offset:3px;border-radius:8px}
+.vh{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.ws label{min-width:0}
 .save-choice{display:flex;align-items:flex-start;gap:10px}.save-choice input{width:20px;height:20px;flex:none}input,select,textarea{min-width:0;max-width:100%}.card,.stack,.stack-lg{min-width:0}
 
+#answerKeySummary{scroll-margin-top:72px}

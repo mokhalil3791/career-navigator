@@ -81,6 +81,22 @@ endorses it, and it makes no hiring decisions. It does not give legal, immigrati
 - CV import (PDF, Word, text) in your browser, Word (DOCX) export, an applications tracker and calendar (.ics) reminders.
 - A free coach view: share one file (optionally protected with a passphrase), get notes back.
 
+## Data & AI Career Kit
+
+The [Career Kit](https://mokhalil3791.github.io/career-navigator/kit/) has 90-day plans for six Data & AI roles, facts about the Dutch market, and a hands-on workshop exercise.
+
+**Exercise 2** ([`/kit/#example2`](https://mokhalil3791.github.io/career-navigator/kit/#example2)) is about Tulip Insurance, a fictional insurer that receives 1,200 customer emails a week. It now includes a **team workspace** for evaluating AI output by hand:
+
+- Three roles, each with its own tasks and a button that jumps to their part of the exercise:
+  - **Driver** runs the prompts in a free AI chat.
+  - **Checker** compares the AI's table with the answer key.
+  - **Scribe** records the evidence and the team canvas.
+- A place to paste the AI's answer, kept as an *unverified draft*. You can also load a **practice response with deliberate mistakes**: wrong urgency for a burst pipe, a copied BSN and bank number, a hidden instruction that gets followed, and invented coverage. It is a teaching sample, not a real AI run.
+- **24 human checks** (6 emails × Correct, Grounded, Safe, Useful). Every check starts as Pending, and only an explicit Pass counts. Failed safety checks are shown separately. There is no automatic grading, and nothing rates a person.
+- **Compare runs**, a reviewed solution canvas, a 30-second share-back, and team notes you can copy or download as `tulip-team-notes.txt`.
+
+The workspace is **session only**: it is never saved or sent anywhere, and reloading the page clears it.
+
 ## Make it your own
 
 - [Customise](docs/CUSTOMISING.md): add a role, prompt, language, question pack or free AI provider; rebrand; switch modules on or off.
